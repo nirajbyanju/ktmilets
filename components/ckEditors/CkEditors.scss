@@ -1,0 +1,204 @@
+/* styles/globals.css */
+
+/* CKEditor Custom Styles */
+.ck-editor__editable {
+    min-height: 200px !important;
+    max-height: 600px !important;
+}
+
+.ck.ck-editor {
+    width: 100%;
+    max-width: 100%;
+}
+
+.ck.ck-editor__main {
+    min-height: 200px;
+}
+
+.ck.ck-content {
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.ck.ck-content h1 { font-size: 2em; margin: 0.67em 0; }
+.ck.ck-content h2 { font-size: 1.5em; margin: 0.75em 0; }
+.ck.ck-content h3 { font-size: 1.17em; margin: 0.83em 0; }
+.ck.ck-content h4 { font-size: 1em; margin: 1.12em 0; }
+.ck.ck-content h5 { font-size: 0.83em; margin: 1.5em 0; }
+.ck.ck-content h6 { font-size: 0.67em; margin: 1.67em 0; }
+
+.ck.ck-content p {
+    margin: 1em 0;
+}
+
+.ck.ck-content ul,
+.ck.ck-content ol {
+    padding-left: 2em;
+    margin: 1em 0;
+}
+
+.ck.ck-content blockquote {
+    border-left: 4px solid #ccc;
+    font-style: italic;
+    margin: 1em 0;
+    padding: 0.5em 2em;
+    background: #f9f9f9;
+}
+
+.ck.ck-content code {
+    background: #f4f4f4;
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.ck.ck-content pre {
+    background: #f4f4f4;
+    border-radius: 4px;
+    padding: 1em;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+.ck.ck-content pre code {
+    background: none;
+    padding: 0;
+}
+
+.ck.ck-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.ck.ck-content table td,
+.ck.ck-content table th {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+}
+
+.ck.ck-content table th {
+    background: #f4f4f4;
+    font-weight: bold;
+}
+
+.ck.ck-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.ck.ck-content .image {
+    margin: 1em 0;
+}
+
+.ck.ck-content .image-style-side {
+    float: right;
+    margin-left: 1em;
+    max-width: 50%;
+}
+
+.ck.ck-content .image-style-align-left {
+    float: left;
+    margin-right: 1em;
+    max-width: 50%;
+}
+
+.ck.ck-content .image-style-align-center {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.ck.ck-content .image-style-align-right {
+    float: right;
+    margin-left: 1em;
+    max-width: 50%;
+}
+
+.ck.ck-content .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    margin: 1em 0;
+}
+
+.ck.ck-content .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* CKEditor toolbar customization */
+.ck.ck-toolbar {
+    border-top-left-radius: 0.375rem !important;
+    border-top-right-radius: 0.375rem !important;
+    border: 1px solid #d1d5db !important;
+    border-bottom: none !important;
+    background: #f9fafb !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable {
+    border-bottom-left-radius: 0.375rem !important;
+    border-bottom-right-radius: 0.375rem !important;
+    border: 1px solid #d1d5db !important;
+    border-top: none !important;
+}
+
+/* Error state */
+.border-red-500 .ck.ck-toolbar,
+.border-red-500 .ck.ck-editor__main > .ck-editor__editable {
+    border-color: #ef4444 !important;
+}
+
+/* Disabled state */
+.opacity-50 .ck.ck-editor {
+    pointer-events: none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .ck.ck-toolbar {
+        flex-wrap: wrap !important;
+    }
+    
+    .ck.ck-toolbar > .ck-toolbar__items {
+        flex-wrap: wrap !important;
+    }
+    
+    .ck.ck-toolbar .ck-button {
+        padding: 0.3em !important;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .ck.ck-toolbar {
+        background: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+    
+    .ck.ck-editor__main > .ck-editor__editable {
+        background: #111827 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
+    
+    .ck.ck-content blockquote {
+        background: #1f2937;
+        border-left-color: #4b5563;
+    }
+    
+    .ck.ck-content code {
+        background: #1f2937;
+        color: #f3f4f6;
+    }
+    
+    .ck.ck-content pre {
+        background: #1f2937;
+    }
+}

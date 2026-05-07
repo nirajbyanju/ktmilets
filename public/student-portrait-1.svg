@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Smiling Nepalese student">
+  <rect width="240" height="240" rx="120" fill="#eef3ff"/>
+  <circle cx="120" cy="88" r="48" fill="#9a613d"/>
+  <path d="M70 86c3-54 36-76 82-66 32 7 51 37 39 77-45-21-80-23-121-11z" fill="#171d30"/>
+  <path d="M43 230c10-66 42-102 78-102s68 36 78 102z" fill="#30398f"/>
+  <path d="M96 128c16 12 32 12 49 0l-6 38h-37z" fill="#efbd9a"/>
+  <path d="M98 98c12 12 30 12 44 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

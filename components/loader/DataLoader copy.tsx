@@ -1,0 +1,16 @@
+import React from "react";
+
+interface DataLoaderProps {
+  size?: number;
+  color?: string;
+}
+
+const DataLoader: React.FC<DataLoaderProps> = () => {
+ 
+
+  return <div className="p-4 flex justify-center">
+     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+   </div>;
+};
+
+export default DataLoader;

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Nepalese students using computers">
+  <rect width="900" height="620" fill="#fff8f8"/>
+  <rect x="94" y="402" width="712" height="98" rx="20" fill="#fff" stroke="#d9e2ef"/>
+  <g transform="translate(120 110)">
+    <circle cx="140" cy="94" r="54" fill="#a86b44"/>
+    <path d="M84 102c-3-65 35-94 91-83 39 8 62 44 50 93-49-23-93-25-141-10z" fill="#20263a"/>
+    <path d="M28 395c13-105 58-163 116-163 62 0 107 58 120 163z" fill="#30398f"/>
+    <rect x="56" y="272" width="180" height="108" rx="14" fill="#eef3ff"/>
+  </g>
+  <g transform="translate(448 96)">
+    <circle cx="142" cy="96" r="56" fill="#8f5b3a"/>
+    <path d="M82 98c4-70 46-101 104-88 42 10 64 50 48 102-55-29-101-31-152-14z" fill="#161b2f"/>
+    <path d="M24 408c16-118 65-180 126-180 64 0 113 62 128 180z" fill="#ed1b2a"/>
+    <rect x="54" y="280" width="196" height="118" rx="14" fill="#fff"/>
+    <path d="M92 320h116M92 352h82" stroke="#30398f" stroke-width="12" stroke-linecap="round" opacity=".22"/>
+  </g>
+  <text x="450" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#172033">Computer-Based Preparation</text>
+</svg>

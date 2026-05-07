@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Confident Nepalese student">
+  <rect width="240" height="240" rx="120" fill="#f2fbf8"/>
+  <circle cx="120" cy="88" r="48" fill="#a66a44"/>
+  <path d="M69 87c4-56 39-78 86-66 34 9 52 39 38 79-45-19-82-23-124-13z" fill="#161b2f"/>
+  <path d="M42 230c12-67 43-103 78-103s66 36 78 103z" fill="#30398f"/>
+  <path d="M96 128c16 12 32 12 49 0l-6 38h-37z" fill="#f0bf9a"/>
+  <path d="M98 98c13 11 31 11 44 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

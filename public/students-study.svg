@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Nepalese student studying online">
+  <rect width="900" height="620" fill="#f7faff"/>
+  <circle cx="710" cy="110" r="80" fill="#ffe0e4"/>
+  <circle cx="150" cy="120" r="62" fill="#dfe9ff"/>
+  <rect x="145" y="380" width="610" height="112" rx="22" fill="#fff" stroke="#d9e2ef"/>
+  <rect x="285" y="232" width="330" height="210" rx="20" fill="#30398f"/>
+  <rect x="315" y="263" width="270" height="148" rx="12" fill="#eef3ff"/>
+  <circle cx="450" cy="170" r="64" fill="#9a613d"/>
+  <path d="M382 164c4-72 53-105 115-88 41 12 66 48 54 103-55-26-107-31-169-15z" fill="#151a2d"/>
+  <path d="M287 530c16-121 81-190 164-190 86 0 151 69 165 190z" fill="#ed1b2a"/>
+  <path d="M411 230c26 18 52 18 78 0l-8 78h-62z" fill="#efbd9a"/>
+  <path d="M362 371h176" stroke="#fff" stroke-width="20" stroke-linecap="round" opacity=".5"/>
+  <text x="450" y="570" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#172033">Live Online Class</text>
+</svg>
