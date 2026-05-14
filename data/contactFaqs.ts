@@ -7,56 +7,50 @@ export type ContactFaq = {
 export const contactFaqs: ContactFaq[] = [
   {
     id: 1,
-    question: 'How many agents are there in Samriddhi Real Estate?',
+    question: "Do you teach IELTS and PTE online?",
     answer:
-      'We have a dedicated team of over 26 agents spread throughout the Kathmandu Valley, each specializing in specific areas to provide you with the best possible service.',
+      "Yes. KTM Test Preparation Centre provides live online computer-based IELTS and PTE classes through Zoom with admin, teacher, WhatsApp, and email support.",
   },
   {
     id: 2,
-    question: 'What documents are required by the seller to sell property?',
+    question: "Can students outside Nepal join the classes?",
     answer:
-      'Essential documents include the land ownership certificate, tax clearance certificate, citizenship certificate, house blueprint when applicable, recent land revenue certificate, and any required no objection certificates. Our team guides sellers through the full documentation process.',
+      "Yes. Students in Nepal and abroad can join online classes. Global Flex, evening, weekend, and one-to-one options can be arranged depending on batch availability.",
   },
   {
     id: 3,
-    question: 'Do you offer services outside the valley?',
+    question: "How long is the IELTS or PTE preparation course?",
     answer:
-      'Yes. While our primary focus is the Kathmandu Valley, we also support clients in major cities such as Pokhara, Chitwan, Butwal, and Birgunj depending on the project and property type.',
+      "The standard course is 6 weeks with 30 total hours. Start date, end date, and class time are confirmed during batch allocation.",
   },
   {
     id: 4,
-    question: 'How long does the property buying process usually take?',
+    question: "How do I pay for a class?",
     answer:
-      'Most transactions take around 2 to 4 weeks from agreement to final transfer, depending on document verification, financing, and legal requirements.',
+      "Generate or request an invoice, pay by Siddhartha Bank QR or bank transfer, and send the receipt to the official admin WhatsApp number for verification.",
   },
   {
     id: 5,
-    question: 'What fees are involved in buying or selling property?',
+    question: "When is enrollment confirmed?",
     answer:
-      'Our seller commission is typically 2 percent of the property value. Buyer services are generally free, while government taxes and registration fees apply according to current regulations.',
+      "Enrollment is confirmed only after admin verifies the payment against the bank record, updates the CRM payment status, assigns the batch tag, and sends the confirmation email.",
   },
   {
     id: 6,
-    question: 'Do you help with home loans and financing?',
+    question: "Do you support exam booking?",
     answer:
-      'Yes. We help connect buyers with banks and financial institutions in Nepal and guide them through the home loan process.',
+      "Yes. Students can request IELTS Academic, IELTS General Training, or PTE Academic booking support through the exam booking page.",
   },
   {
     id: 7,
-    question: 'Can I list my property for rent instead of sale?',
+    question: "Do you provide mock-test practice?",
     answer:
-      'Absolutely. We support rental listings, tenant screening, agreement preparation, and ongoing landlord assistance.',
+      "Yes. Alfa IELTS and Alfa PTE mock-test practice can be requested through the mock-test page, with admin follow-up and access instructions after payment verification.",
   },
   {
     id: 8,
-    question: 'How do you verify property documents?',
+    question: "Which support channels are used?",
     answer:
-      'Our team verifies land records, checks for disputes or liens, and reviews documentation with the relevant authorities before a transaction moves forward.',
-  },
-  {
-    id: 9,
-    question: 'What makes Samriddhi Real Estate different from other real estate agencies?',
-    answer:
-      'We combine local market knowledge, transparent communication, technology-driven listing support, legal guidance, and client-first service throughout the property journey.',
+      "The system uses Zoom for live classes, WhatsApp Community for reminders and coordination, email for formal notices, and CRM records for tracking payment, batch, attendance, and follow-up.",
   },
 ];

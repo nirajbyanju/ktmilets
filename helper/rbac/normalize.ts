@@ -11,11 +11,9 @@ import {
 type LooseRecord = Record<string, unknown>;
 
 const ADMIN_SEGMENTS = new Set([
-  "dashboard",
-  "property",
-  "fieldVisit",
-  "propertyInquery",
-  "blog",
+  "courses",
+  "invoices",
+  "enrollments",
   "settings",
   "rbac",
   "users",

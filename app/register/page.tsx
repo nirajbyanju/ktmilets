@@ -141,7 +141,7 @@ export default function RegisterPage() {
 
       const state = useAuthStore.getState();
       if (state.isAuthenticated && state.token) {
-        router.replace("/admin/dashboard");
+        router.replace("/admin/courses");
         return;
       }
 
@@ -243,7 +243,7 @@ export default function RegisterPage() {
             Join Us
           </h1>
           <p className="text-sm font-medium text-gray-600">
-            Create your account to get started with our real estate platform.
+            Create your account to manage course registration, invoices, and class enrollment.
           </p>
         </div>
 

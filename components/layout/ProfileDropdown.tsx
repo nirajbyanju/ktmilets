@@ -31,6 +31,8 @@ interface ProfileDropdownProps {
   dropdownRef: RefObject<HTMLDivElement | null>;
   profile?: Profile;
   userData: UserData;
+  canManageSystem?: boolean;
+  canManageUsers?: boolean;
   onClose?: () => void;
 }
 
@@ -43,6 +45,8 @@ const ProfileDropdown = ({
   dropdownRef, 
   profile, 
   userData,
+  canManageSystem = false,
+  canManageUsers = false,
   onClose,
 }: ProfileDropdownProps) => {
   const router = useRouter();
@@ -108,14 +112,16 @@ const ProfileDropdown = ({
           My Profile
         </Link>
 
-        <Link
-          href="/admin/user-management"
-          className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-          onClick={onClose}
-        >
-          <FaUsers className="mr-3 text-gray-500" />
-          User Management
-        </Link>
+        {canManageUsers ? (
+          <Link
+            href="/admin/user-management"
+            className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+            onClick={onClose}
+          >
+            <FaUsers className="mr-3 text-gray-500" />
+            User Management
+          </Link>
+        ) : null}
 
         <Link
           href="/help-support"

@@ -7,8 +7,8 @@ export default function FaqsContent() {
     <main className="flex-grow bg-opsh-background-light">
       <PublicPageHero
         eyebrow="FAQs"
-        title="Answers that help you move with more confidence"
-        description="Find quick guidance on buying, selling, renting, tours, and the support Samriddhi Real Estate provides across the transaction journey."
+        title="Answers that help students enroll with confidence"
+        description="Find quick guidance on IELTS and PTE classes, payment verification, exam booking support, mock-test practice, and student support."
       />
       <FaqAccordion
         items={contactFaqs}

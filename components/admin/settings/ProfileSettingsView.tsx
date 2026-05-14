@@ -32,6 +32,7 @@ import {
 } from "@/components/admin/settings/settingsShared";
 import ContentLoader from "@/components/loader/ContentLoader";
 import ProfileAvatar from "@/components/profileAvatar/profileAvatar";
+import { canManageUsers } from "@/data/adminMenu";
 import { toAuthUserRecord } from "@/helper/user/normalize";
 import useAuthStore from "@/stores/auth/AuthStore";
 import type { UserProfile, UserProfileUpdatePayload } from "@/types/userProfile";
@@ -173,6 +174,7 @@ export default function ProfileSettingsView() {
     : Array.isArray(authUser?.roles)
       ? authUser.roles.map(String)
       : [];
+  const canManageUserAccounts = canManageUsers({ roles: userRoleLabels });
 
   const handleProfileSubmit = profileForm.handleSubmit((values) => {
     if (!values.firstName.trim() || !values.lastName.trim() || !values.username.trim() || !values.email.trim()) {
@@ -235,13 +237,15 @@ export default function ProfileSettingsView() {
           </div>
 
           <div className="flex flex-wrap gap-2 lg:justify-end">
-            <Link
-              href="/admin/user-management"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-white hover:bg-white/20"
-            >
-              <FaUsers />
-              Manage Users
-            </Link>
+            {canManageUserAccounts ? (
+              <Link
+                href="/admin/user-management"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-white hover:bg-white/20"
+              >
+                <FaUsers />
+                Manage Users
+              </Link>
+            ) : null}
             <button
               type="button"
               onClick={() => void profileQuery.refetch()}

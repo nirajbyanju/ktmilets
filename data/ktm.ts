@@ -40,13 +40,13 @@ export const ktmSocials = [
 
 export const publicNavItems = [
   { label: "Home", href: "/" },
-  { label: "IELTS", href: "/ielts" },
-  { label: "PTE", href: "/pte" },
+  { label: "IELTS Online Class", shortLabel: "IELTS", href: "/ielts" },
+  { label: "PTE Online Class", shortLabel: "PTE", href: "/pte" },
   { label: "Demo Class", href: "/demo" },
   { label: "Exam Booking", href: "/exam-booking" },
-  { label: "Mock Tests", href: "/mock-tests" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Mock Test Practice", shortLabel: "Mock Tests", href: "/mock-tests" },
+  { label: "About Us", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 export const pricingPlans = [
@@ -157,9 +157,54 @@ export const courseTypeOptions = [
 export const pricePlanOptions = pricingPlans.map((plan) => plan.name);
 
 export const paymentMethodOptions = [
-  "Siddhartha Bank Gateway",
-  "NPR Local Payment",
-  "International Payment",
+  "Siddhartha Bank QR",
   "Bank Transfer",
+  "International USD Transfer",
   "Contact Admin",
+];
+
+export const corePlatforms = [
+  { tool: "Zoom", use: "Live class delivery, speaking support, mock support, and special support calls" },
+  { tool: "CRM", use: "Lead capture, class tagging, attendance, payment status, student tracking, and feedback records" },
+  { tool: "Siddhartha Bank QR / Bank Transfer", use: "Manual payment collection and admin verification" },
+  { tool: "Email", use: "Formal communication, onboarding, notices, schedules, and end-of-course reminders" },
+  { tool: "WhatsApp Community", use: "Class reminders, announcements, support updates, voice submissions, and assessment coordination" },
+  { tool: "Google Drive", use: "Demo class and organised material sharing or backup" },
+  { tool: "Laptop + XP Pen tablet", use: "Main teaching setup and live explanation board" },
+  { tool: "Noise-cancelling headset", use: "Improved audio quality and professionalism" },
+];
+
+export const manualPaymentWorkflow = [
+  "Lead captured in CRM",
+  "Registration QR or link shared",
+  "Student pays by Siddhartha Bank QR or bank transfer",
+  "Student sends payment screenshot to admin WhatsApp",
+  "Admin verifies payment against bank record",
+  "CRM payment status and batch tag updated",
+  "Confirmation email sent",
+  "Student added to WhatsApp Community",
+  "Teacher notified and student enrolled",
+];
+
+export const paymentVerificationStudentSteps = [
+  "Scan Siddhartha Bank QR or complete bank transfer manually.",
+  "Send payment screenshot or receipt to official admin WhatsApp.",
+  "Include full name, selected course, preferred batch time, and contact number.",
+];
+
+export const paymentVerificationAdminSteps = [
+  "Verify receipt with bank statement or mobile banking notification.",
+  "Update CRM payment status.",
+  "Assign the correct batch tag.",
+  "Send confirmation email.",
+  "Add student to WhatsApp Community.",
+  "Notify teacher regarding the new enrollment.",
+];
+
+export const paymentPolicyPoints = [
+  "Full payment is required before final class access is granted.",
+  "Nepal/India pricing should be shown in NPR; other countries can be charged in USD equivalent.",
+  "Students must send payment screenshot or receipt to the official admin WhatsApp for verification.",
+  "Enrollment is confirmed only after admin verification.",
+  "Any international transfer charge must be borne by the student unless otherwise stated.",
 ];

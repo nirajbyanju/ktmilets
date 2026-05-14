@@ -87,7 +87,7 @@ export const estimateBlogReadTime = (content?: string | null): string => {
 };
 
 export const getBlogCategoryLabel = (blog?: Blogs | null): string =>
-  toText(blog?.category?.label ?? blog?.category?.name) || "Real Estate";
+  toText(blog?.category?.label ?? blog?.category?.name) || "Test Preparation";
 
 export const getBlogImage = (blog?: Blogs | null): string =>
   toText(blog?.thumbnail) || "/images/default-blog.png";
@@ -97,7 +97,7 @@ export const getBlogExcerpt = (blog?: Blogs | null, maxLength = 180): string => 
   const rawText = preferred || stripBlogHtml(blog?.content || "");
 
   if (!rawText) {
-    return "Explore practical real estate insight, market observations, and property guidance from our editorial team.";
+    return "Explore practical IELTS, PTE, exam preparation, and student support guidance from our academic team.";
   }
 
   if (rawText.length <= maxLength) {
@@ -108,7 +108,7 @@ export const getBlogExcerpt = (blog?: Blogs | null, maxLength = 180): string => 
 };
 
 export const getBlogAuthorName = (blog?: Blogs | null): string =>
-  toText(blog?.user?.full_name ?? blog?.user?.username ?? blog?.author) || "Samriddhi Editorial";
+  toText(blog?.user?.full_name ?? blog?.user?.username ?? blog?.author) || "KTM Test Prep Editorial";
 
 export const getBlogTags = (tags?: string | null): string[] =>
   toText(tags)

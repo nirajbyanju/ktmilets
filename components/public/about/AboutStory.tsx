@@ -16,7 +16,7 @@ export default function AboutStory() {
           <div className="flex md:min-h-[420px] items-center justify-center rounded-[22px] bg-white p-8">
             <Image
               src={aboutLogo}
-              alt="Samriddhi Real Estate company logo"
+              alt="KTM Test Preparation Centre logo"
               className="h-auto w-full max-w-[420px] object-contain"
               priority
             />
@@ -26,7 +26,7 @@ export default function AboutStory() {
         <div className="space-y-8">
           <PublicSectionHeading
             eyebrow="Who We Are"
-            title="A real estate team focused on clarity, service, and long-term value"
+            title="An online test-preparation team focused on clarity, service, and long-term student success"
             description={aboutNarrative}
           />
 
@@ -38,13 +38,13 @@ export default function AboutStory() {
 
           <div className="flex flex-wrap gap-4 pt-2">
             <Link
-              href="/properties-list"
+              href="/ielts"
               className="rounded-lg bg-opsh-primary px-5 py-3 text-sm font-medium text-opsh-text transition hover:bg-opsh-primary-hover"
             >
-              Browse Properties
+              IELTS Online Class
             </Link>
             <Link
-              href="/contact-us"
+              href="/contact"
               className="rounded-lg border border-opsh-primary px-5 py-3 text-sm font-medium text-opsh-primary transition hover:bg-opsh-primary hover:text-opsh-text"
             >
               Contact Us

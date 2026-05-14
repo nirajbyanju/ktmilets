@@ -9,8 +9,8 @@ export default function AboutLeadership() {
       <div className="container mx-auto max-w-[1440px]">
         <PublicSectionHeading
           eyebrow="Team"
-          title="People shaping the direction of Samriddhi Real Estate"
-          description="We are building a more dependable property experience through service-led leadership, clearer communication, and responsible execution."
+          title="People shaping the direction of KTM Test Preparation Centre"
+          description="We are building a more dependable student experience through service-led leadership, clearer communication, and responsible execution."
           align="between"
         />
 
@@ -24,7 +24,7 @@ export default function AboutLeadership() {
                 <div className="relative min-h-[340px]">
                   <Image
                     src={leader.image}
-                    alt={`${leader.name}, ${leader.role} at Samriddhi Real Estate`}
+                    alt={`${leader.name}, ${leader.role} at KTM Test Preparation Centre`}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 40vw"

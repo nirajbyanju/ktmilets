@@ -26,7 +26,7 @@ export default function NotFoundContent() {
                 Return Home
               </Link>
               <Link
-                href="/contact-us"
+                href="/contact"
                 className="inline-flex items-center justify-center rounded-xl border border-opsh-primary px-6 py-3 text-sm font-semibold text-opsh-primary transition-colors hover:bg-opsh-primary hover:text-opsh-text"
               >
                 Contact Support

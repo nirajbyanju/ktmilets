@@ -27,53 +27,53 @@ export type AboutLeader = {
   image: StaticImageData;
 };
 
-export const aboutTitle = "Built on trust. Guided by clarity.";
+export const aboutTitle = "Computer-based test preparation with clear support.";
 
 export const aboutDescription =
-  "Samriddhi Real Estate delivers trusted property guidance with professionalism, market awareness, and practical support so every decision feels more transparent and more secure.";
+  "KTM Test Preparation Centre delivers online IELTS and PTE preparation with live Zoom classes, mock-test support, exam booking guidance, and CRM-managed student follow-up.";
 
 export const aboutNarrative =
-  "Samriddhi Real Estate is an emerging real estate company in Nepal focused on service, value, and long-term trust. We believe property decisions are rarely just transactions. They shape homes, businesses, and future opportunities, so our role is to bring structure, honesty, and confidence to every step.";
+  "KTM Test Preparation Centre is an online test-preparation unit under KTM Educational Consultancy. We support students in Nepal and abroad with structured computer-based preparation, clear onboarding, WhatsApp support, email communication, and teacher-led academic guidance.";
 
 
 export const aboutStoryPoints: string[] = [
-  "A wide range of residential and commercial opportunities across Nepal.",
-  "Support for buying, selling, and renting with grounded market guidance.",
-  "Practical help with loans, paperwork, and transaction planning.",
-  "Legal and compliance awareness for safer property decisions.",
+  "Live online IELTS and PTE classes for students in Nepal and abroad.",
+  "Computer-based preparation with demo class, mock-test practice, and flexible batches.",
+  "Admin and teacher support through WhatsApp, email, Zoom, and CRM tracking.",
+  "Exam booking support and Alfa IELTS/PTE mock-test workflow support.",
 ];
 
 export const aboutPrinciples: AboutPrinciple[] = [
   {
     number: "01",
-    title: "Expert Guidance",
+    title: "Structured Guidance",
     description:
-      "Our real estate professionals provide practical advice at every step so clients can make informed decisions with greater confidence.",
-    focus: "Clear recommendations shaped by market context and client goals.",
+      "Our academic and admin teams help students understand the course path, batch options, support process, and next steps.",
+    focus: "Clear guidance shaped by course goals, target score, and schedule needs.",
     icon: FiCheckCircle,
   },
   {
     number: "02",
     title: "Trusted and Transparent",
     description:
-      "We prioritize honest communication, realistic expectations, and process clarity to build trust across every relationship.",
-    focus: "No hidden surprises, just straightforward guidance and accountability.",
+      "We use clear registration, payment verification, onboarding, and communication workflows so students know what happens next.",
+    focus: "Straightforward class, payment, and support communication.",
     icon: FiShield,
   },
   {
     number: "03",
     title: "Comprehensive Support",
     description:
-      "From first inquiry to final handover, we support clients through the broader property journey, not just a single transaction.",
-    focus: "Support across paperwork, negotiation, coordination, and follow-through.",
+      "From inquiry to enrollment and course completion, students receive admin, teacher, WhatsApp, and email support.",
+    focus: "Support across registration, batch allocation, class access, and follow-up.",
     icon: FiHeart,
   },
   {
     number: "04",
-    title: "Strong Network",
+    title: "System-driven Operations",
     description:
-      "Our network of buyers, sellers, landlords, and partners helps clients discover stronger-fit opportunities without unnecessary friction.",
-    focus: "A wider reach that improves visibility, access, and responsiveness.",
+      "CRM tagging, payment status, attendance, and follow-up records help the team operate smoothly as batches grow.",
+    focus: "A scalable workflow for students, admin staff, teachers, and managers.",
     icon: PiNetworkXBold,
   },
 ];
@@ -82,21 +82,21 @@ export const aboutLeaders: AboutLeader[] = [
   {
     name: "Bimal Nhemafuki",
     role: "Founder",
-    bio: "Guiding the company with a relationship-first mindset grounded in trust, service, and responsible growth.",
+    bio: "Guiding the education service with a relationship-first mindset grounded in trust, student support, and responsible growth.",
     image: about2,
   },
   {
     name: "Niraj Byanju",
     role: "Chief Executive Officer",
-    bio: "Focused on modern execution, client experience, and building a more transparent real estate journey in Nepal.",
+    bio: "Focused on modern execution, student experience, CRM workflows, and clear online class operations.",
     image: about1,
   },
 ];
 
 export const aboutCommitments: string[] = [
-  "We recommend only what aligns with the client's real goals and circumstances.",
-  "We communicate clearly about process, documents, risks, and next steps.",
-  "We stay invested in trust long after a deal moves forward.",
+  "We recommend class options that match the student's goals, schedule, and support needs.",
+  "We communicate clearly about registration, payment verification, batch timing, and next steps.",
+  "We stay invested in student support before, during, and after enrollment.",
 ];
 
 export const aboutLogo = Logo;

@@ -32,21 +32,6 @@ const remotePatterns = [
     port: "8000",
     pathname: "/**",
   },
-  {
-    protocol: "https",
-    hostname: "samriddhirealestate.com",
-    pathname: "/**",
-  },
-  {
-    protocol: "https",
-    hostname: "www.samriddhirealestate.com",
-    pathname: "/**",
-  },
-  {
-    protocol: "https",
-    hostname: "api.hellolalpurja.com",
-    pathname: "/**",
-  },
   buildRemotePattern(process.env.NEXT_PUBLIC_API_URL),
   buildRemotePattern(process.env.NEXT_PUBLIC_SITE_URL),
 ].filter(Boolean);

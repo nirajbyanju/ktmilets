@@ -1,25 +1,19 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import QRBank from "@/public/QRBank.jpeg";
+import Image from 'next/image';
 
-import StudentWorkflowForm from "@/components/public/ktm/StudentWorkflowForm";
+import InvoiceCheckout from "@/components/public/ktm/InvoiceCheckout";
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
-import { ktmContact, paymentMethodOptions } from "@/data/ktm";
 import { buildPageMetadata, buildWebPageSchema } from "@/helper/seo/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Payment and Checkout",
+  title: "Payment and Enrollment",
   description:
-    "Payment and checkout request page for KTM Test Preparation Centre classes and mock-test packages.",
+    "Manual Siddhartha Bank QR and bank-transfer payment verification page for KTM Test Preparation Centre classes and mock-test packages.",
   path: "/payment",
   keywords: ["KTM Test Prep payment", "IELTS class payment Nepal", "PTE class payment Nepal"],
 });
-
-const paymentWorkflow = [
-  "Show selected course or package, fee, currency, and payment method",
-  "Support NPR and USD display where gateway setup allows",
-  "Send class schedule and joining process after successful verification",
-  "Update CRM payment status, enrolment status, class tag, and attendance eligibility",
-  "Notify admin after payment request or gateway confirmation",
-];
 
 export default function PaymentPage() {
   return (
@@ -32,45 +26,42 @@ export default function PaymentPage() {
         schemas={[
           buildWebPageSchema({
             title: "Payment and Checkout",
-            description: "Payment request and gateway-ready checkout workflow.",
+            description: "Manual QR and bank-transfer payment verification workflow.",
             path: "/payment",
           }),
         ]}
       />
 
       <section className="bg-white py-12 lg:py-16">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.85fr,1.15fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.85fr,0.35fr] lg:px-8">
           <div>
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Payment / checkout
-            </p>
-            <h1 className="mt-3 text-4xl font-black leading-tight text-opsh-primary sm:text-5xl">
-              Secure Payment Workflow for Classes and Mock Tests
-            </h1>
-            <p className="mt-5 text-lg leading-8 text-slate-700">
-              The production gateway should be connected to Siddhartha Bank or another
-              Nepal-supported merchant gateway approved by the client. This checkout page
-              captures the data needed for payment verification and student onboarding.
-            </p>
-            <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <h2 className="text-lg font-black text-opsh-primary">Payment methods</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {paymentMethodOptions.join(", ")}
-              </p>
+            <Suspense fallback={null}>
+              <InvoiceCheckout />
+            </Suspense>
             </div>
-            <div className="mt-5 grid gap-3">
-              {paymentWorkflow.map((item) => (
-                <div key={item} className="rounded border border-slate-200 bg-white px-4 py-3">
-                  <p className="text-sm font-bold text-slate-700">{item}</p>
-                </div>
-              ))}
-            </div>
-            <p className="mt-5 text-sm leading-6 text-slate-600">
-              For payment support, contact {ktmContact.phone} or WhatsApp {ktmContact.whatsapp}.
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Payment Instructions</h2>
+            <p className="mt-4 text-gray-600">
+              Please make your payment using the following details and then fill out the form to verify your payment.
             </p>
+            <Image src={QRBank} alt="Siddhartha Bank QR Code" className="mt-6 w-full rounded-lg object-cover  shadow-sm" />
+            <p className="mt-4 text-gray-600">
+              Please make your payment using the above QR code and then fill out the form to verify your payment.
+            </p>
+            <p className="mt-4 text-gray-600">
+              For bank transfers, please use the following details:
+              <br />
+              <strong>Bank Name:</strong> Siddhartha Bank
+              <br />
+              <strong>Account Name:</strong> KTM Test Preparation Centre
+              <br />
+              <strong>Account Number:</strong> 1234567890
+              <br />
+              <strong>Branch:</strong> Kathmandu Main Branch
+            </p>
+            </div>
+            <div className="mt-6">
           </div>
-
-          <StudentWorkflowForm kind="payment" submitLabel="Submit Payment Details" />
         </div>
       </section>
     </>

@@ -31,7 +31,7 @@ export default function AuthInitializer({ children }: { children: React.ReactNod
       if (!isAuthenticated && !isPublicPath) {
         router.replace('/login');
       } else if (isAuthenticated && isPublicPath) {
-        router.replace('/admin/dashboard');
+        router.replace('/admin/courses');
       }
     }
   }, [isInitialized, isLoading, isAuthenticated, pathname, router]);

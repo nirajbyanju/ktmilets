@@ -35,7 +35,7 @@ export default function MobilePropertyShareMenu({
     return new URL(propertyPath, window.location.origin).toString();
   }, [propertyPath]);
 
-  const shareTitle = `${propertyTitle} | Samriddhi Real Estate`;
+  const shareTitle = `${propertyTitle} | KTM Test Preparation Centre`;
 
   const handleShareTrigger = async () => {
     if (typeof navigator !== "undefined" && typeof navigator.share === "function") {

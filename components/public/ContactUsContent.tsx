@@ -23,8 +23,8 @@ export default function ContactUsContent() {
                 Get in touch with us
               </h1>
               <p className="mb-12 text-opsh-text/85 dark:text-slate-400">
-                Samriddhi Real Estate is here to help you find your next property in Nepal,
-                whether you are buying, selling, or investing from abroad.
+                KTM Test Preparation Centre is here to help with IELTS and PTE online classes,
+                mock-test practice, exam booking support, and student onboarding.
               </p>
 
               <ul className="mb-6 md:mb-0">
@@ -49,7 +49,7 @@ export default function ContactUsContent() {
                   <div className="ml-4 mb-4">
                     <h2 className="text-lg font-medium leading-6 text-gray-900">Our Address</h2>
                     <a
-                      href="https://maps.google.com/?q=Bhaktapur%2C%20Nepal"
+                      href="https://maps.app.goo.gl/Pb8aM8Y8stbB63ed6"
                       target="_blank"
                       rel="noreferrer"
                       className="text-gray-600 dark:text-slate-400 hover:text-opsh-secondary"
@@ -118,7 +118,7 @@ export default function ContactUsContent() {
                       Working hours
                     </h2>
                     <p className="text-gray-600 dark:text-slate-400">Sunday - Friday: 08:00 - 17:00</p>
-                    <p className="text-gray-600 dark:text-slate-400">Saturday: 08:00 - 12:00</p>
+                    <p className="text-gray-600 dark:text-slate-400">Saturday: Closed</p>
                   </div>
                 </li>
               </ul>
@@ -198,7 +198,7 @@ export default function ContactUsContent() {
         <div className="relative overflow-hidden h-96 w-full rounded-lg mb-10">
           <div className="relative min-h-[340px]">
               <iframe
-                src="https://maps.google.com/maps?q=Bhaktapur%2C%20Nepal&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                src="https://www.google.com/maps?q=Putalisadak%20Way%20to%20Dillibazar%20Kathmandu%20Nepal&output=embed"
                 width="100%"
                 height="100%"
                 className="absolute inset-0 h-full w-full"
@@ -206,7 +206,7 @@ export default function ContactUsContent() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Map to Samriddhi Real Estate office in Bhaktapur, Nepal"
+                title="Map to KTM Test Preparation Centre office in Kathmandu, Nepal"
               />
             </div>
 

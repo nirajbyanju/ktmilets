@@ -4,7 +4,7 @@ import { absoluteUrl, authNoIndexMetadata } from '@/helper/seo/site';
 export const metadata: Metadata = {
   ...authNoIndexMetadata,
   title: 'Register',
-  description: 'Create your Samriddhi Real Estate account.',
+  description: 'Create your KTM Test Prep account.',
   alternates: {
     canonical: absoluteUrl('/register'),
   },

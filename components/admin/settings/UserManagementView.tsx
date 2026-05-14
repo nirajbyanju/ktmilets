@@ -54,7 +54,7 @@ type AddUserFormValues = {
 };
 
 const emptyAddUserValues: AddUserFormValues = {
-  role: "employee",
+  role: "user",
   firstName: "",
   middleName: "",
   lastName: "",
@@ -388,14 +388,14 @@ export default function UserManagementView() {
               <h2 className="text-lg font-semibold text-opsh-black">Add User</h2>
             </div>
             {/* <p className="mt-1 text-sm text-opsh-text-dark">
-              Create Employee or Admin accounts using `POST /api/v1/rbac/users`.
+              Create User or Admin accounts using `POST /api/v1/rbac/users`.
             </p> */}
           </div>
 
           <form onSubmit={handleAddUserSubmit} className="space-y-4">
             <Field label="Role">
               <select {...addUserForm.register("role")} className={inputClass}>
-                <option value="employee">Employee</option>
+                <option value="user">User</option>
                 <option value="admin">Admin</option>
               </select>
             </Field>

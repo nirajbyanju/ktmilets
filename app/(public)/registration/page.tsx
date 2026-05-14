@@ -14,6 +14,12 @@ export const metadata: Metadata = buildPageMetadata({
   keywords: ["IELTS registration Nepal", "PTE registration Nepal", "KTM Test Prep registration"],
 });
 
+const registrationVerificationMessage =
+  "Hello KTM Test Prep, I have submitted class registration details and want to send my payment screenshot for verification.";
+const registrationWhatsappUrl = `https://api.whatsapp.com/send?phone=${ktmContact.whatsappDigits}&text=${encodeURIComponent(
+  registrationVerificationMessage
+)}`;
+
 export default function RegistrationPage() {
   return (
     <>
@@ -57,6 +63,21 @@ export default function RegistrationPage() {
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {pricePlanOptions.join(", ")}
               </p>
+            </div>
+            <div className="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 p-5">
+              <h2 className="text-lg font-black text-opsh-primary">Payment screenshot verification</h2>
+              <p className="mt-3 text-sm leading-6 text-emerald-950">
+                After registration, pay using the official payment QR or bank-transfer details provided by admin, then
+                send the payment screenshot to WhatsApp for verification.
+              </p>
+              <a
+                href={registrationWhatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="mt-4 inline-flex rounded bg-emerald-600 px-4 py-2 text-sm font-black text-white transition hover:bg-emerald-700"
+              >
+                Send screenshot on WhatsApp
+              </a>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link

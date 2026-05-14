@@ -4,7 +4,7 @@ import { absoluteUrl, authNoIndexMetadata } from '@/helper/seo/site';
 export const metadata: Metadata = {
   ...authNoIndexMetadata,
   title: 'Forgot Password',
-  description: 'Request a password reset for your Samriddhi Real Estate account.',
+  description: 'Request a password reset for your KTM Test Prep account.',
   alternates: {
     canonical: absoluteUrl('/forgot-password'),
   },

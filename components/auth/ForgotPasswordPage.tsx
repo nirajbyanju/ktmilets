@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
 
       const state = useAuthStore.getState();
       if (state.isAuthenticated && state.token) {
-        router.replace("/admin/dashboard");
+        router.replace("/admin/courses");
         return;
       }
 

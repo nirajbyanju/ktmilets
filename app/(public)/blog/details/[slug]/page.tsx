@@ -404,7 +404,7 @@ export default function BlogDetailsPage() {
                     <p className="text-xs uppercase tracking-[0.18em] text-opsh-muted">Written By</p>
                     <h2 className="mt-1 text-xl font-semibold text-opsh-black">{getBlogAuthorName(blog)}</h2>
                     <p className="mt-1 max-w-2xl text-sm leading-6 text-opsh-text-dark">
-                      Part of the Samriddhi editorial stream covering property updates, market signals, and practical housing guidance.
+                      Part of the KTM Test Prep editorial stream covering IELTS, PTE, mock-test, exam booking, and student support updates.
                     </p>
                   </div>
                 </div>
@@ -539,7 +539,7 @@ export default function BlogDetailsPage() {
             <section className="rounded-opsh-xl bg-opsh-primary p-5 text-white">
               <h2 className="text-xl font-semibold">Explore the full journal</h2>
               <p className="mt-3 text-sm leading-6 text-white/80">
-                Return to the main blog feed to browse more market analysis, project stories, and property updates.
+                 Return to the main blog feed to browse more IELTS, PTE, class, exam booking, and mock-test updates.
               </p>
               <Link
                 href="/blog"

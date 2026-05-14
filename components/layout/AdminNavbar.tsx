@@ -6,7 +6,14 @@ import useAuthStore from '@/stores/auth/AuthStore';
 import ProfileAvatar from "@/components/profileAvatar/profileAvatar";
 import ProfileDropdown from "./ProfileDropdown";
 import AdminNotificationBell from "./AdminNotificationBell";
-import { ensureSettingsProfileMenu, fallbackAdminMenu } from "@/data/adminMenu";
+import {
+  canManageUsers,
+  ensureSettingsProfileMenu,
+  fallbackAdminMenu,
+  isPrivilegedUser,
+  removeUserManagementMenus,
+  studentPortalMenu,
+} from "@/data/adminMenu";
 import { flattenMenuItems } from "@/helper/rbac/normalize";
 import {
   IoReorderThreeOutline,
@@ -46,6 +53,11 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
   const user = useAuthStore((state) => state.user as Record<string, unknown> | null);
   const menu = useAuthStore((state) => state.menu);
   const menuLoaded = useAuthStore((state) => state.menuLoaded);
+  const roles = useAuthStore((state) => state.roles);
+  const permissions = useAuthStore((state) => state.permissions);
+  const directPermissions = useAuthStore((state) => state.directPermissions);
+  const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
+  const canManageUserAccounts = canManageUsers({ roles });
   const userDetail = toRecord(user?.userdetail) ?? toRecord(user?.userDetail) ?? toRecord(user?.user_detail);
   const profile: Profile = {
     first_name: toText(user?.first_name) || toText(user?.firstName),
@@ -141,7 +153,13 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
     email: toText(user?.email) || "",
   };
 
-  const searchableMenus = flattenMenuItems(ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu)).filter(
+  const adminMenu = ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu);
+  const activeMenu = canManageSystem
+    ? canManageUserAccounts
+      ? adminMenu
+      : removeUserManagementMenus(adminMenu)
+    : studentPortalMenu;
+  const searchableMenus = flattenMenuItems(activeMenu).filter(
     (item) => item.path
   );
 
@@ -224,7 +242,7 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
         </div>
 
         <div className="flex items-center space-x-4 mr-4">
-          <AdminNotificationBell />
+          {canManageSystem ? <AdminNotificationBell /> : null}
           
           {/* FIXED: Added relative positioning to the profile container */}
           <div className="relative flex flex-row gap-4 items-center">
@@ -251,6 +269,8 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
               dropdownRef={dropdownRef} 
               profile={profile} 
               userData={userData} 
+              canManageSystem={canManageSystem}
+              canManageUsers={canManageUserAccounts}
               onClose={() => setIsDropdownOpen(false)} 
             />
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import AdminFooter from "@/components/layout/AdminFooter";
 import AdminLoader from "@/components/loader/Loader";
@@ -9,6 +9,9 @@ import AdminNavbar from "@/components/layout/AdminNavbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import useAuthStore from "@/stores/auth/AuthStore";
 import useOptionStore from "@/stores/common/OptionStore";
+import { canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
+
+const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/enrollments", "/admin/settings/profile"];
 
 export default function AdminLayout({
   children,
@@ -16,6 +19,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isExpand, setIsExpand] = useState(true);
   const [isReady, setIsReady] = useState(false);
   const [hasBootstrapped, setHasBootstrapped] = useState(false);
@@ -27,12 +31,18 @@ export default function AdminLayout({
     initializeAuth,
     menuLoaded,
     loadUserMenu,
+    roles,
+    permissions,
+    directPermissions,
   } = useAuthStore();
 
   const {
     fetchAllOptions,
     isLoaded,
   } = useOptionStore();
+
+  const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
+  const canManageUserAccounts = canManageUsers({ roles });
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -65,7 +75,7 @@ export default function AdminLayout({
           await loadUserMenu();
         }
 
-        if (!isLoaded()) {
+        if (canManageSystem && !isLoaded()) {
           setBootMessage("Loading shared options and admin data.");
           await fetchAllOptions();
         }
@@ -83,7 +93,32 @@ export default function AdminLayout({
     loadUserMenu,
     fetchAllOptions,
     isLoaded,
+    canManageSystem,
   ]);
+
+  useEffect(() => {
+    if (!isReady || !isAuthenticated || canManageSystem) {
+      return;
+    }
+
+    const isAllowed =
+      pathname === "/admin" ||
+      studentAllowedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+
+    if (!isAllowed) {
+      router.replace("/admin/invoices");
+    }
+  }, [canManageSystem, isAuthenticated, isReady, pathname, router]);
+
+  useEffect(() => {
+    if (!isReady || !isAuthenticated || !canManageSystem || canManageUserAccounts) {
+      return;
+    }
+
+    if (pathname.startsWith("/admin/user-management") || pathname.startsWith("/admin/rbac")) {
+      router.replace("/admin/courses");
+    }
+  }, [canManageSystem, canManageUserAccounts, isAuthenticated, isReady, pathname, router]);
 
   useEffect(() => {
     if (isReady && !isAuthenticated) {
@@ -94,7 +129,7 @@ export default function AdminLayout({
   if (!isReady || (isAuthenticated && !hasBootstrapped)) {
     return (
       <AdminLoader
-        title={isReady ? "Preparing Admin Dashboard" : "Loading Admin Workspace"}
+        title={isReady ? "Preparing Admin Workspace" : "Loading Admin Workspace"}
         message={bootMessage}
       />
     );

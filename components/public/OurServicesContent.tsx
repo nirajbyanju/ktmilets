@@ -75,8 +75,8 @@ export default function OurServicesContent() {
   return (
     <main className="flex-grow bg-opsh-background-light">
       <PublicPageHero
-        title="Real Estate Support for Smart Decisions"
-        description="Samriddhi Real Estate offers disciplined, client-focused services designed to make each property step clearer, safer, and easier to act on. From first listing to final negotiation, we bring structure where the market often feels uncertain."
+        title="Test Preparation Support for Smart Decisions"
+        description="KTM Test Preparation Centre offers disciplined, student-focused services designed to make each IELTS, PTE, exam booking, and mock-test step clearer, safer, and easier to act on."
       />
 
       <section className="bg-white px-6 py-20 md:px-12 lg:py-24">
@@ -136,7 +136,7 @@ export default function OurServicesContent() {
                 <PublicSectionHeading
                   eyebrow="What You Can Expect"
                   title="Service shaped by clarity, responsiveness, and long-term trust"
-                  description="We do not treat real estate as a one-step transaction. Our work is built around preparation, transparency, and practical follow-through so clients can act with confidence."
+                  description="We do not treat test preparation as a one-step transaction. Our work is built around preparation, transparency, and practical follow-through so students can act with confidence."
                 />
 
                 <ul className="list-disc space-y-3 pl-5 text-sm leading-7 text-opsh-darkgrey marker:text-opsh-secondary">

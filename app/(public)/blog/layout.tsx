@@ -2,16 +2,16 @@ import type { Metadata } from 'next';
 import { buildPageMetadata } from '@/helper/seo/site';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Real Estate Blog',
+  title: 'KTM Test Prep Blog',
   description:
-    'Read Samriddhi Real Estate insights on buying, selling, investing, pricing, and property trends in Nepal.',
+    'Read KTM Test Preparation Centre insights on IELTS, PTE, mock-test practice, exam booking support, and online classes.',
   path: '/blog',
   keywords: [
-    'real estate blog Nepal',
-    'property market Nepal',
-    'Samriddhi Real Estate blog',
-    'buy property guide Nepal',
-    'real estate investment Nepal',
+    'IELTS blog Nepal',
+    'PTE blog Nepal',
+    'KTM Test Preparation Centre blog',
+    'IELTS online class Nepal',
+    'PTE online class Nepal',
   ],
 });
 

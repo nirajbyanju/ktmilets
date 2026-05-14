@@ -13,13 +13,12 @@ import { FaInfoCircle } from "react-icons/fa";
 
 import LogoGreen from "@/public/LogoGreen.png";
 import { footerMobileMenuItems } from "@/components/layout/footer/footer.data";
-import { MOBILE_FEED_SEARCH_EVENT } from "@/helper/home/mobileFeed";
 import useAuthStore from "@/stores/auth/AuthStore";
 
 const LoginModal = dynamic(() => import("@/components/loginComponent"), { ssr: false });
 
 const isProfilePath = (pathname: string) =>
-  pathname.startsWith("/admin/settings/profile") || pathname.startsWith("/admin/dashboard");
+  pathname.startsWith("/admin/settings/profile");
 
 export default function MobileFooter() {
   const pathname = usePathname();
@@ -32,9 +31,9 @@ export default function MobileFooter() {
   const activeStates = useMemo(
     () => ({
       home: pathname === "/",
-      "sell-property": pathname === "/request-post",
-      search: false,
-      "about-us": pathname === "/about-us",
+      ielts: pathname === "/ielts",
+      register: pathname === "/registration",
+      about: pathname === "/about",
       profile: isProfilePath(pathname),
     }),
     [pathname]
@@ -56,15 +55,6 @@ export default function MobileFooter() {
     }
 
     router.push("/");
-  };
-
-  const handleSearchClick = () => {
-    if (pathname === "/") {
-      window.dispatchEvent(new Event(MOBILE_FEED_SEARCH_EVENT));
-      return;
-    }
-
-    router.push("/?mobileFeedSearch=1#mobile-feed");
   };
 
   const handleProfileClick = () => {
@@ -104,7 +94,7 @@ export default function MobileFooter() {
                     <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-opsh-background">
                       <Image
                         src={LogoGreen}
-                        alt="Samriddhi Real Estate"
+                        alt="KTM Test Preparation Centre"
                         className="h-5 w-auto"
                       />
                     </span>
@@ -113,13 +103,13 @@ export default function MobileFooter() {
                 );
               }
 
-              if (item.id === "sell-property") {
+              if (item.id === "ielts") {
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => router.push("/request-post")}
-                    aria-label="Open add request post page"
+                    onClick={() => router.push("/ielts")}
+                    aria-label="Open IELTS online class page"
                     className={`flex min-w-0 flex-col items-center rounded-2xl px-2 py-2.5 transition-all ${
                       isActive ? "text-opsh-primary" : "text-opsh-muted"
                     }`}
@@ -130,13 +120,13 @@ export default function MobileFooter() {
                 );
               }
 
-              if (item.id === "search") {
+              if (item.id === "register") {
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={handleSearchClick}
-                    aria-label="Open mobile property search"
+                    onClick={() => router.push("/registration")}
+                    aria-label="Open registration page"
                     className="relative -mt-8 flex h-16 w-16 min-w-0 flex-col items-center justify-center justify-self-center rounded-full bg-opsh-primary px-2 py-2.5 text-opsh-text shadow-[0_18px_32px_rgba(4,72,69,0.3)] transition-all"
                   >
                     <FiSearch className="text-xl" />
@@ -145,12 +135,12 @@ export default function MobileFooter() {
                 );
               }
 
-              if (item.id === "about-us") {
+              if (item.id === "about") {
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => router.push("/about-us")}
+                    onClick={() => router.push("/about")}
                     aria-label="Go to about us"
                     className={`flex min-w-0 flex-col items-center rounded-2xl px-2 py-2.5 transition-all ${
                       isActive

@@ -11,7 +11,14 @@ import { IconType } from 'react-icons';
 
 import Logo from '@/public/apple-icon.png';
 import useAuthStore from '@/stores/auth/AuthStore';
-import { ensureSettingsProfileMenu, fallbackAdminMenu } from '@/data/adminMenu';
+import {
+  canManageUsers,
+  ensureSettingsProfileMenu,
+  fallbackAdminMenu,
+  isPrivilegedUser,
+  removeUserManagementMenus,
+  studentPortalMenu,
+} from '@/data/adminMenu';
 import { AppMenuItem } from '@/types/rbac';
 
 interface AdminSidebarProps {
@@ -38,10 +45,6 @@ const isPathMatch = (pathname: string, menuPath: string) => {
     return true;
   }
 
-  if (menuPath === '/admin/dashboard') {
-    return pathname === menuPath;
-  }
-
   return pathname.startsWith(`${menuPath}/`);
 };
 
@@ -58,9 +61,19 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
   const menu = useAuthStore((state) => state.menu);
   const menuLoaded = useAuthStore((state) => state.menuLoaded);
   const user = useAuthStore((state) => state.user);
+  const roles = useAuthStore((state) => state.roles);
+  const permissions = useAuthStore((state) => state.permissions);
+  const directPermissions = useAuthStore((state) => state.directPermissions);
   const [submenuStates, setSubmenuStates] = useState<Record<string, boolean>>({});
 
-  const sidebarMenu = ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu);
+  const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
+  const canManageUserAccounts = canManageUsers({ roles });
+  const adminMenu = ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu);
+  const sidebarMenu = canManageSystem
+    ? canManageUserAccounts
+      ? adminMenu
+      : removeUserManagementMenus(adminMenu)
+    : studentPortalMenu;
 
   const toggleSubmenu = (id: string) => {
     setSubmenuStates((current) => ({ ...current, [id]: !current[id] }));
@@ -89,7 +102,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
                     isExpand ? 'opacity-100' : 'opacity-0 hidden'
                   }`}
                 >
-                  Samriddhi
+                  KTM Test Prep
                 </div>
               </Link>
             </div>

@@ -10,8 +10,8 @@ export default function AboutCommitment() {
             <div className="space-y-8 p-8 md:p-12 lg:p-16">
               <PublicSectionHeading
                 eyebrow="What We Stand For"
-                title="We aim to make real estate feel more transparent, more human, and easier to trust"
-                description="That means practical support before decisions are made, honest communication during the process, and dependable follow-through once a deal starts moving."
+                title="We aim to make online test preparation clear, supportive, and easier to trust"
+                description="That means practical support before enrollment, honest communication during the course, and dependable follow-through until students complete their preparation."
               />
 
               <ul className="list-disc space-y-3 pl-5 text-sm leading-7 text-opsh-darkgrey marker:text-opsh-secondary">
@@ -26,10 +26,10 @@ export default function AboutCommitment() {
                 Our Promise
               </p>
               <h3 className="font-brand mt-4 text-2xl leading-tight md:text-3xl">
-                We do not chase transactions at the cost of trust.
+                We do not chase enrollments at the cost of trust.
               </h3>
               <p className="mt-5 text-sm leading-7 text-opsh-text">
-                We would rather guide clients with realism, patience, and document clarity than push rushed decisions. That is how we plan to earn lasting confidence in the market.
+                We would rather guide students with realistic advice, patient support, and clear class information than push rushed decisions. That is how we plan to earn lasting confidence.
               </p>
 
               <div className="mt-8 space-y-4 border-t border-white/15 pt-6">
@@ -38,7 +38,7 @@ export default function AboutCommitment() {
                     Best Fit
                   </h4>
                   <p className="text-sm font-medium leading-6 text-opsh-text">
-                    Buyers, sellers, landlords, tenants, and investors looking for a more disciplined and supportive property experience.
+                    IELTS and PTE students who want structured online classes, clear payment verification, and dependable support.
                   </p>
                 </div>
                 <div>
@@ -46,7 +46,7 @@ export default function AboutCommitment() {
                     Core Outcome
                   </h4>
                   <p className="text-sm font-medium leading-6 text-opsh-text">
-                    Better decisions, smoother execution, and a stronger sense of confidence throughout the property journey.
+                    Better preparation, smoother onboarding, and a stronger sense of confidence throughout the course journey.
                   </p>
                 </div>
               </div>

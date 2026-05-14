@@ -26,7 +26,7 @@ export async function generateMetadata({
   if (!blog) {
     return {
       title: `Blog Article | ${COMPANY_NAME}`,
-      description: 'Read the latest Samriddhi Real Estate article.',
+      description: 'Read the latest KTM Test Preparation Centre article.',
       alternates: {
         canonical: absoluteUrl(`/blog/details/${slug}`),
       },
@@ -35,7 +35,7 @@ export async function generateMetadata({
 
   const title = blog.title;
   const description =
-    blog.description || 'Read the latest Samriddhi Real Estate article.';
+    blog.description || 'Read the latest KTM Test Preparation Centre article.';
   const canonicalPath = `/blog/details/${blog.slug}`;
 
   return {

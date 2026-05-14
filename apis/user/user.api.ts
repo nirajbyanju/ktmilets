@@ -41,7 +41,7 @@ const buildProfilePayload = (payload: UserProfileUpdatePayload) => ({
 
 const buildManagedUserPayload = (payload: ManagedUserRegistrationPayload) => {
   const name = [payload.firstName, payload.middleName, payload.lastName].filter(Boolean).join(" ").trim();
-  const roleLabel = payload.role === "admin" ? "Admin" : "Employee";
+  const roleLabel = payload.role === "admin" ? "Admin" : "User";
 
   return {
     first_name: payload.firstName,

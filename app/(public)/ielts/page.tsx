@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import PlanPurchaseButton from "@/components/public/ktm/PlanPurchaseButton";
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
 import { courseFacts, ktmContact, pricingPlans } from "@/data/ktm";
+import { getPublicCourseCatalog } from "@/helper/public/courseCatalog";
 import { buildPageMetadata, buildWebPageSchema } from "@/helper/seo/site";
+import type { Batch, CourseCatalogPayload } from "@/types/courseCatalog";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "IELTS Online Class",
@@ -46,7 +49,98 @@ const ieltsSkills = [
   },
 ];
 
-export default function IeltsPage() {
+const formatBatchSize = (batch: Batch) => {
+  if (batch.min_size && batch.max_size) {
+    return batch.min_size === batch.max_size
+      ? String(batch.min_size)
+      : `${batch.min_size}-${batch.max_size}`;
+  }
+
+  return "Variable";
+};
+
+const formatBatchPrice = (batch: Batch) => {
+  if (batch.is_price_variable || batch.price_npr === null || batch.price_npr === undefined) {
+    return "Contact";
+  }
+
+  return `NPR ${Number(batch.price_npr).toLocaleString("en-NP", {
+    maximumFractionDigits: 2,
+  })}`;
+};
+
+const calculateDiscount = (batch: Batch) => {
+  const price = Number(batch.price_npr ?? 0);
+  const discountValue = Number(batch.discount_value ?? 0);
+
+  if (!batch.offer_label || !batch.discount_type || price <= 0 || discountValue <= 0) {
+    return null;
+  }
+
+  const discount =
+    batch.discount_type === "percent"
+      ? Math.min(price, (price * Math.min(discountValue, 100)) / 100)
+      : Math.min(price, discountValue);
+
+  return {
+    label: batch.offer_label,
+    total: price - discount,
+  };
+};
+
+const getSupportValue = (catalog: CourseCatalogPayload | null, type: string, fallback: string) =>
+  catalog?.support_channels.find(
+    (channel) => channel.channel_type.toLowerCase() === type.toLowerCase()
+  )?.contact_value ?? fallback;
+
+export default async function IeltsPage() {
+  const catalog = await getPublicCourseCatalog("ielts");
+  const course = catalog?.courses[0] ?? null;
+  const whatsapp = getSupportValue(catalog, "WhatsApp", ktmContact.whatsapp);
+  const email = getSupportValue(catalog, "Email", ktmContact.email);
+  const supportSummary = catalog?.support_channels.length
+    ? catalog.support_channels.map((channel) => channel.channel_type).join(", ")
+    : "WhatsApp, email, admin, and teacher follow-up";
+  const displayedCourseFacts = course
+    ? [
+        {
+          label: "Duration",
+          value: `${course.duration_weeks} weeks / ${course.total_hours} total hours`,
+        },
+        { label: "Delivery", value: course.delivery_mode },
+        { label: "Support", value: supportSummary },
+        { label: "Instruction", value: course.instruction_lang },
+      ]
+    : courseFacts;
+  const displayedSkills =
+    catalog && (catalog.skills_modules.length > 0 || catalog.additional_services.length > 0)
+      ? [
+          ...catalog.skills_modules.map((skill) => ({
+            title: skill.skill_name,
+            text: [
+              skill.topics_covered,
+              skill.feedback_included ? "Teacher feedback included." : null,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          })),
+          ...catalog.additional_services.map((service) => ({
+            title: service.service_name,
+            text: service.description ?? "Available as an additional student support service.",
+          })),
+        ]
+      : ieltsSkills;
+  const displayedPricing = catalog?.batches.length
+    ? catalog.batches.map((batch) => ({
+        id: batch.id,
+        name: batch.batch_type,
+        size: formatBatchSize(batch),
+        price: formatBatchPrice(batch),
+        offer: calculateDiscount(batch),
+        note: batch.schedule_notes ?? "Start date, end date, and class time are confirmed during allocation.",
+      }))
+    : pricingPlans;
+
   return (
     <>
       <StandardPageStructuredData
@@ -119,7 +213,9 @@ export default function IeltsPage() {
               Course overview
             </p>
             <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              6 weeks, 30 total hours, all four IELTS skills
+              {course
+                ? `${course.duration_weeks} weeks, ${course.total_hours} total hours, all four IELTS skills`
+                : "6 weeks, 30 total hours, all four IELTS skills"}
             </h2>
             <p className="mt-4 leading-7 text-slate-700">
               IELTS batches support 20-30 students for the main volume model while still
@@ -127,7 +223,7 @@ export default function IeltsPage() {
               higher interaction or special timing.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {courseFacts.map((fact) => (
+              {displayedCourseFacts.map((fact) => (
                 <div key={fact.label} className="rounded border border-slate-200 bg-slate-50 p-4">
                   <p className="text-xs font-black uppercase tracking-wide text-slate-500">
                     {fact.label}
@@ -148,14 +244,14 @@ export default function IeltsPage() {
                   Support
                 </p>
                 <p className="mt-1 text-sm font-black text-opsh-primary">
-                  WhatsApp {ktmContact.whatsapp} and email {ktmContact.email}
+                  WhatsApp {whatsapp} and email {email}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {ieltsSkills.map((skill) => (
+            {displayedSkills.map((skill) => (
               <article key={skill.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-opsh-sm">
                 <h3 className="text-lg font-black text-opsh-primary">{skill.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{skill.text}</p>
@@ -176,12 +272,20 @@ export default function IeltsPage() {
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {pricingPlans.map((plan) => (
+            {displayedPricing.map((plan) => (
               <article key={plan.name} className="rounded-lg border border-slate-200 bg-white p-5 shadow-opsh-sm">
                 <h3 className="text-lg font-black text-opsh-primary">{plan.name}</h3>
                 <p className="mt-2 text-sm font-bold text-slate-600">Batch size: {plan.size}</p>
                 <p className="mt-4 text-2xl font-black text-opsh-secondary">{plan.price}</p>
+                {"offer" in plan && plan.offer ? (
+                  <p className="mt-2 text-sm font-black text-emerald-700">
+                    {plan.offer.label}: NPR {plan.offer.total.toLocaleString("en-NP")}
+                  </p>
+                ) : null}
                 <p className="mt-3 text-sm leading-6 text-slate-600">{plan.note}</p>
+                {"id" in plan && plan.id ? (
+                  <PlanPurchaseButton batchId={plan.id} />
+                ) : null}
               </article>
             ))}
           </div>

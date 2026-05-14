@@ -119,9 +119,9 @@ export default function BlogPage() {
       { name: "Blog", path: "/blog" },
     ]),
     buildWebPageSchema({
-      title: "Real Estate Blog",
+      title: "KTM Test Prep Blog",
       description:
-        "Read Samriddhi Real Estate insights on buying, selling, investing, pricing, and property trends in Nepal.",
+        "Read KTM Test Preparation Centre updates on IELTS, PTE, mock-test practice, exam booking support, and online class preparation.",
       path: "/blog",
       type: "CollectionPage",
     })
@@ -347,7 +347,7 @@ export default function BlogPage() {
                       </h2>
                     </div>
                     <p className="max-w-md text-sm leading-6 text-opsh-text-dark">
-                      A cleaner feed of current market commentary, property insights, and project updates.
+                      A cleaner feed of IELTS, PTE, exam booking, mock-test practice, and online class updates.
                     </p>
                   </div>
 
@@ -479,17 +479,17 @@ export default function BlogPage() {
                   Continue Exploring
                 </p>
                 <h2 className="font-brand mt-3 text-2xl font-semibold sm:text-3xl">
-                  Stay on top of new property stories and local market insight.
+                  Stay on top of IELTS, PTE, and student support updates.
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-opsh-text">
-                  Use the category and topic filters to move between editorial updates, practical real estate guidance, and featured project coverage.
+                  Use the category and topic filters to move between IELTS, PTE, mock-test, exam booking, and student support updates.
                 </p>
               </div>
               <Link
-                href="/contact-us"
+                href="/contact"
                 className="inline-flex items-center justify-center gap-2 rounded-opsh-lg bg-white px-5 py-3 text-sm font-semibold text-opsh-primary transition-colors hover:bg-opsh-white-off"
               >
-                Contact Samriddhi
+                Contact KTM Test Prep
                 <FaArrowRight className="text-xs" />
               </Link>
             </div>

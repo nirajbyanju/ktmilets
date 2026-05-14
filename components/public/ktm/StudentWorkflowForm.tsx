@@ -134,7 +134,7 @@ const fieldGroups: Record<WorkflowKind, FieldConfig[]> = {
       name: "message",
       label: "Payment note",
       type: "textarea",
-      placeholder: "Mention transaction reference, country, or preferred gateway.",
+      placeholder: "Mention transaction reference, bank transfer note, country, or WhatsApp receipt detail.",
     },
   ],
   exam: [
@@ -242,7 +242,7 @@ const successCopy: Record<WorkflowKind, string> = {
   registration:
     "Thank you. Your registration details have been captured for admin follow-up and batch allocation.",
   payment:
-    "Thank you. Your payment request has been captured so the admin team can verify gateway details and send joining instructions.",
+    "Thank you. Your payment request has been captured so the admin team can verify the QR or bank-transfer receipt and send joining instructions.",
   exam:
     "Thank you. Your exam booking support request has been captured for document and payment follow-up.",
   mock:

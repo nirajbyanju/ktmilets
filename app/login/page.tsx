@@ -24,6 +24,22 @@ const loginSchema = z.object({
 
 type LoginInput = z.infer<typeof loginSchema>;
 
+const defaultLoginRedirect = "/admin/courses";
+
+const getRedirectTarget = () => {
+  if (typeof window === "undefined") {
+    return defaultLoginRedirect;
+  }
+
+  const redirect = new URLSearchParams(window.location.search).get("redirect");
+
+  if (!redirect || !redirect.startsWith("/") || redirect.startsWith("//") || redirect.includes("://")) {
+    return defaultLoginRedirect;
+  }
+
+  return redirect;
+};
+
 export default function LoginPage() {
   const { login, initializeAuth } = useAuthStore();
   const router = useRouter();
@@ -53,7 +69,7 @@ export default function LoginPage() {
 
       const state = useAuthStore.getState();
       if (state.isAuthenticated && state.token) {
-        router.replace("/admin/dashboard");
+        router.replace(getRedirectTarget());
         return;
       }
 
@@ -74,7 +90,7 @@ export default function LoginPage() {
     try {
       await login(data.email, data.password);
       toast.success("Login successful!");
-      router.replace("/admin/dashboard");
+      router.replace(getRedirectTarget());
     } catch (err: unknown) {
       let errorMessage = "Login failed";
 

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { OptionsAll, BaseOption } from '@/types/setting/optionsManager/OptionsManager';
-import { getAllOptionsManagers } from '@/apis/common/alloption.api';
 
 interface OptionStore {
     options: Partial<OptionsAll>;
@@ -57,10 +56,8 @@ const useOptionStore = create<OptionStore>((set, get) => ({
 
         set({ loading: true, error: null });
 
-        optionsRequestPromise = getAllOptionsManagers()
-            .then((data) => {
-                const nextOptions = data || {};
-
+        optionsRequestPromise = Promise.resolve({})
+            .then((nextOptions) => {
                 set({
                     options: nextOptions,
                     loading: false,
@@ -68,19 +65,6 @@ const useOptionStore = create<OptionStore>((set, get) => ({
                 });
 
                 return nextOptions;
-            })
-            .catch((error) => {
-                const errorMessage =
-                    error instanceof Error
-                        ? error.message
-                        : 'Failed to fetch options';
-
-                set({
-                    loading: false,
-                    error: errorMessage,
-                });
-
-                return {};
             })
             .finally(() => {
                 optionsRequestPromise = null;
@@ -122,17 +106,5 @@ const useOptionStore = create<OptionStore>((set, get) => ({
         return get().fetchAllOptions();
     },
 }));
-
-if (typeof window !== 'undefined') {
-    const initializeStore = async () => {
-        const state = useOptionStore.getState();
-
-        if (!state.loading && !state.isLoaded()) {
-            await state.fetchAllOptions();
-        }
-    };
-
-    setTimeout(initializeStore, 100);
-}
 
 export default useOptionStore;

@@ -16,52 +16,81 @@ export const userManagementMenuItem: AppMenuItem = {
   children: [],
 };
 
-export const propertyLikesMenuItem: AppMenuItem = {
-  id: "property-likes",
-  name: "Property Likes",
-  icon: "FaHeart",
-  path: "/admin/property-likes",
+
+
+export const courseCatalogMenuItem: AppMenuItem = {
+  id: "course-catalog",
+  name: "Course Catalog",
+  icon: "FaGraduationCap",
+  path: "/admin/courses",
   children: [],
 };
 
+export const invoicesMenuItem: AppMenuItem = {
+  id: "invoices",
+  name: "Invoices",
+  icon: "FaFileInvoiceDollar",
+  path: "/admin/invoices",
+  children: [],
+};
+
+export const enrollmentsMenuItem: AppMenuItem = {
+  id: "my-enrollments",
+  name: "My Courses",
+  icon: "FaBookOpen",
+  path: "/admin/enrollments",
+  children: [],
+};
+
+export const studentPortalMenu: AppMenuItem[] = [
+  {
+    ...invoicesMenuItem,
+    name: "My Invoices",
+  },
+  enrollmentsMenuItem,
+  settingsProfileMenuItem,
+];
+
+export const isPrivilegedUser = (source: {
+  roles?: string[];
+  permissions?: string[];
+  directPermissions?: string[];
+}): boolean => {
+  const roles = new Set((source.roles ?? []).map((role) => role.toLowerCase()));
+  const permissions = new Set([...(source.permissions ?? []), ...(source.directPermissions ?? [])]);
+
+  return (
+    permissions.has("manage_all") ||
+    roles.has("super admin") ||
+    roles.has("admin") ||
+    roles.has("manager") ||
+    roles.has("owner")
+  );
+};
+
+export const canManageUsers = (source: {
+  roles?: string[];
+}): boolean => {
+  const roles = new Set((source.roles ?? []).map((role) => role.toLowerCase()));
+
+  return roles.has("super admin");
+};
+
+export const removeUserManagementMenus = (menuItems: AppMenuItem[]): AppMenuItem[] =>
+  menuItems
+    .filter((item) => item.path !== userManagementMenuItem.path && item.path !== "/admin/rbac")
+    .map((item) => ({
+      ...item,
+      children: removeUserManagementMenus(item.children ?? []),
+    }));
+
 export const fallbackAdminMenu: AppMenuItem[] = [
-  {
-    id: "dashboard",
-    name: "Dashboard",
-    icon: "FaTachometerAlt",
-    path: "/admin/dashboard",
-    children: [],
-  },
-  {
-    id: "property",
-    name: "Property Management",
-    icon: "FaBuilding",
-    path: "/admin/property",
-    children: [],
-  },
-  {
-    id: "field-visit",
-    name: "Field Visit",
-    icon: "FaMapMarkedAlt",
-    path: "/admin/fieldVisit",
-    children: [],
-  },
-  {
-    id: "property-inquiry",
-    name: "Property Inquiry",
-    icon: "FaClipboardList",
-    path: "/admin/propertyInquery",
-    children: [],
-  },
+  courseCatalogMenuItem,
+  invoicesMenuItem,
+  enrollmentsMenuItem,
+ 
   userManagementMenuItem,
-  propertyLikesMenuItem,
-  {
-    id: "blog",
-    name: "Blog",
-    icon: "FaNewspaper",
-    path: "/admin/blog",
-    children: [],
-  },
+
   {
     id: "access-control",
     name: "Access Control",
@@ -77,13 +106,6 @@ export const fallbackAdminMenu: AppMenuItem[] = [
     children: [
       settingsProfileMenuItem,
       {
-        id: "settings-option",
-        name: "Option Manager",
-        icon: "FaList",
-        path: "/admin/settings/option",
-        children: [],
-      },
-      {
         id: "settings-menu",
         name: "Menu Manager",
         icon: "FaSitemap",
@@ -98,7 +120,8 @@ export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem
   const hasDirectProfileEntry = menuItems.some((item) => item.path === settingsProfileMenuItem.path);
   const hasSettingsRoot = menuItems.some((item) => item.path === "/admin/settings");
   const hasUserManagementEntry = menuItems.some((item) => item.path === userManagementMenuItem.path);
-  const hasPropertyLikesEntry = menuItems.some((item) => item.path === propertyLikesMenuItem.path);
+  const hasCourseCatalogEntry = menuItems.some((item) => item.path === courseCatalogMenuItem.path);
+  const hasInvoicesEntry = menuItems.some((item) => item.path === invoicesMenuItem.path);
 
   const nextMenuItems = menuItems.map((item) => {
     if (item.path !== "/admin/settings") {
@@ -119,8 +142,9 @@ export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem
   if (hasSettingsRoot || hasDirectProfileEntry) {
     return [
       ...nextMenuItems,
+      ...(hasCourseCatalogEntry ? [] : [courseCatalogMenuItem]),
+      ...(hasInvoicesEntry ? [] : [invoicesMenuItem]),
       ...(hasUserManagementEntry ? [] : [userManagementMenuItem]),
-      ...(hasPropertyLikesEntry ? [] : [propertyLikesMenuItem]),
     ];
   }
 
@@ -137,7 +161,8 @@ export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem
 
   return [
     ...menuWithSettings,
+    ...(hasCourseCatalogEntry ? [] : [courseCatalogMenuItem]),
+    ...(hasInvoicesEntry ? [] : [invoicesMenuItem]),
     ...(hasUserManagementEntry ? [] : [userManagementMenuItem]),
-    ...(hasPropertyLikesEntry ? [] : [propertyLikesMenuItem]),
   ];
 };

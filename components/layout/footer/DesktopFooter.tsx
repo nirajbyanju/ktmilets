@@ -8,6 +8,7 @@ import {
   footerCompanyLinks,
   footerContactItems,
 } from "@/components/layout/footer/footer.data";
+import { ktmBrand } from "@/data/ktm";
 
 const contactIcons = {
   address: FaMapMarkerAlt,
@@ -24,23 +25,23 @@ export default function DesktopFooter() {
             <div className="mb-6 flex flex-col items-end gap-4 sm:flex-row">
               <Image
                 src={FooterLogo}
-                alt="Samriddhi Real Estate footer logo"
+                alt={`${ktmBrand.officialName} footer logo`}
                 className="h-16 w-auto"
               />
               <div className="text-center">
                 <div className="space-y-[-2px]">
                   <span className="block font-brand text-2xl tracking-tight text-opsh-text md:text-3xl">
-                    SAMRIDDHI
+                    KTM
                   </span>
                   <span className="block font-brand text-sm tracking-wider text-opsh-text/80 md:text-base">
-                    REAL ESTATE
+                    TEST PREP
                   </span>
                 </div>
               </div>
             </div>
 
             <p className="text-sm leading-7 text-opsh-text">
-              Trusted real estate patterns for buying, selling, and property verification delivered with transparency and genuine care.
+              Live online computer-based IELTS and PTE preparation with registration, mock-test practice, exam booking support, and CRM-managed student follow-up.
             </p>
 
             <div className="mt-6 space-y-3 text-sm text-opsh-text">
@@ -84,7 +85,7 @@ export default function DesktopFooter() {
           </div>
 
           <div>
-            <h2 className="mb-4 font-brand text-lg font-semibold">Browse Properties</h2>
+            <h2 className="mb-4 font-brand text-lg font-semibold">Student Services</h2>
             <ul className="space-y-3 text-sm text-opsh-text/75">
               {footerBrowseLinks.map((link) => (
                 <li key={link.label}>
@@ -102,17 +103,17 @@ export default function DesktopFooter() {
           <div className="rounded-opsh-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
             <h2 className="font-brand text-lg font-semibold">Stay Connected</h2>
             <p className="mt-3 text-sm leading-7 text-opsh-text/75">
-              Browse curated property categories, compare locations, and reach out when you are ready to shortlist your next move.
+              Register for a class, request exam booking support, buy mock-test practice, or contact the admin team on WhatsApp.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/properties-list"
+                href="/registration"
                 className="rounded border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-opsh-text transition-colors hover:bg-white/20"
               >
-                Explore Listings
+                Register Now
               </Link>
               <Link
-                href="/contact-us"
+                href="/contact"
                 className="rounded bg-opsh-text px-4 py-2 text-sm font-semibold text-opsh-primary transition-colors hover:bg-opsh-white-off"
               >
                 Contact Team
@@ -124,7 +125,7 @@ export default function DesktopFooter() {
         <div className="my-8 border-t border-white/15" />
 
         <div className="flex flex-col gap-4 text-sm text-opsh-text/70 md:flex-row md:items-center md:justify-between">
-          <div>Samriddhi Real Estate &copy; 2026 All Rights Reserved</div>
+          <div>{ktmBrand.officialName} &copy; 2026 All Rights Reserved</div>
           <div className="flex flex-wrap items-center gap-3">
             <Link href="/terms-and-conditions" className="hover:text-opsh-text">
               Terms of Service

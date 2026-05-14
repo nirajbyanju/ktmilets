@@ -91,7 +91,7 @@ export interface Tag {
     { id: 85, name: "Event Planning" },
     { id: 86, name: "Hospitality" },
     { id: 87, name: "Travel" },
-    { id: 88, name: "Real Estate" },
+    { id: 88, name: "Test Preparation" },
     { id: 89, name: "Logistics" },
     { id: 90, name: "Supply Chain" },
     { id: 91, name: "Retail" },

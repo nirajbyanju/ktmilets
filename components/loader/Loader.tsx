@@ -8,7 +8,7 @@ interface AdminLoaderProps {
 
 export default function AdminLoader({
   title = "Loading Admin Workspace",
-  message = "Preparing your menu, permissions, and dashboard data.",
+  message = "Preparing your menu, permissions, and admin data.",
   hint = "The page will appear once the initial data is ready.",
 }: AdminLoaderProps) {
   return (
