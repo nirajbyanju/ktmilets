@@ -1,0 +1,36 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CI: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_API_URL=https://schoolback.opportunitiessharing.com/api/v1" >> .env
+          echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=672554477640-01ss1t81l6rsl5e66s219umejl3gnu1l.apps.googleusercontent.com" >> .env
+
+      - name: Deploy to Vercel
+        run: npx vercel --token=${{ secrets.VERCEL_TOKEN }} --prod --confirm
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_USER_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
