@@ -26,7 +26,7 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "NEXT_PUBLIC_API_URL=https://schoolback.opportunitiessharing.com/api/v1" >> .env
+          echo "NEXT_PUBLIC_API_URL=https://upload.opportunitiessharing.com/api/v1" >> .env
           echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=672554477640-01ss1t81l6rsl5e66s219umejl3gnu1l.apps.googleusercontent.com" >> .env
 
       - name: Deploy to Vercel
