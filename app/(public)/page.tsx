@@ -4,11 +4,8 @@ import Link from "next/link";
 
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
 import {
-  crmWorkflows,
-  ktmBrand,
   ktmContact,
   pricingPlans,
-  valuePoints,
 } from "@/data/ktm";
 import { buildPageMetadata, buildWebPageSchema } from "@/helper/seo/site";
 
@@ -26,37 +23,68 @@ export const metadata: Metadata = buildPageMetadata({
   ],
 });
 
-const quickLinks = [
+const courses = [
   {
     title: "IELTS Online Class",
-    text: "6-week computer-based IELTS preparation with all four skills, Alfa IELTS mock support, and booking guidance.",
+    text: "Computer-based IELTS preparation for Reading, Writing, Listening, and Speaking over 6 weeks.",
     href: "/ielts",
+    cta: "View IELTS Class",
+    img: "/student1.jpeg",
+    alt: "Students studying together for IELTS preparation",
   },
   {
     title: "PTE Online Class",
-    text: "Live computer-based PTE Academic preparation with speaking, writing, reading, listening, and mock practice.",
+    text: "PTE Academic preparation with speaking, writing, reading, listening, and Alfa mock practice.",
     href: "/pte",
+    cta: "View PTE Class",
+    img: "/student2.jpeg",
+    alt: "Student with notes studying for PTE online class",
   },
   {
-    title: "Exam Booking",
-    text: "Request IELTS Academic, IELTS General Training, or PTE Academic booking support from the admin team.",
-    href: "/exam-booking",
-  },
-  {
-    title: "Mock Test Practice",
-    text: "Buy Alfa IELTS or Alfa PTE mock-test practice packages with access and follow-up workflow.",
+    title: "Alfa Mock Practice",
+    text: "Buy IELTS or PTE mock test packages and receive access instructions after payment.",
     href: "/mock-tests",
+    cta: "Buy Mock Tests",
+    img: "/student3.jpeg",
+    alt: "Student using computer for mock test practice",
   },
 ];
 
-const classSystem = [
-  "Live Zoom delivery with teacher verification before class access",
-  "6 weeks / 30 total hours for IELTS and PTE preparation",
-  "Group batches, premium focus groups, one-to-one classes, evening, weekend, and global flex options",
-  "Writing and speaking practice through Zoom, WhatsApp simulation, and guided feedback",
+const features = [
+  { icon: "💻", title: "Computer-Based Prep", text: "Focused on computer-based IELTS and PTE test interfaces, timing, and practice style." },
+  { icon: "📡", title: "Live Online Classes", text: "Interactive Zoom sessions with teacher verification before students enter class." },
+  { icon: "🎬", title: "Free Demo Class", text: "A 2-hour demo class helps students understand the teaching approach before enrolment." },
+  { icon: "📝", title: "Alfa Mock Tests", text: "IELTS and PTE mock practice packages with access and result status tracked by admin." },
+  { icon: "📅", title: "Exam Booking Support", text: "Submit passport details and preferred test date for IELTS/PTE booking follow-up." },
+  { icon: "💬", title: "WhatsApp Support", text: "Support through WhatsApp, email, class notices, reminders, and CRM notes." },
+];
+
+const testimonials = [
+  {
+    name: "Aashish Karki",
+    course: "IELTS Academic",
+    text: "The online class felt organised and practical. The computer-based practice made the real test feel less stressful.",
+    img: "/student-portrait-1.svg",
+  },
+  {
+    name: "Prakriti Shrestha",
+    course: "PTE Academic",
+    text: "I liked the speaking practice and quick WhatsApp support. The mock test follow-up helped me understand my weak areas.",
+    img: "/student-portrait-2.svg",
+  },
+  {
+    name: "Sagar Thapa",
+    course: "IELTS Academic",
+    text: "The registration and payment process was clear, and the admin team guided me for exam booking without confusion.",
+    img: "/student-portrait-3.svg",
+  },
 ];
 
 export default function HomePage() {
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=${ktmContact.whatsappDigits}&text=${encodeURIComponent(
+    "Hello KTM Test Prep, I would like to know more about IELTS/PTE online classes."
+  )}`;
+
   return (
     <>
       <StandardPageStructuredData
@@ -71,74 +99,172 @@ export default function HomePage() {
         ]}
       />
 
-      <section className="overflow-hidden bg-white">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr,0.95fr] lg:px-8 lg:py-16">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              {ktmBrand.tagline}
-            </p>
-            <h1 className="mt-3 max-w-4xl text-4xl font-black leading-tight text-opsh-primary sm:text-5xl lg:text-6xl">
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-white" style={{ minHeight: 580 }}>
+        {/* Full-width background photo */}
+        <div className="absolute inset-0">
+          <Image
+            src="/main.jpeg"
+            alt=""
+            fill
+            className="object-cover object-center"
+            priority
+            aria-hidden="true"
+          />
+          {/* White-to-transparent gradient so left text stays readable */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.92) 38%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0) 100%)",
+            }}
+            aria-hidden="true"
+          />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <div className="max-w-[640px]">
+            {/* Eyebrow badge */}
+            <span className="inline-block rounded-full border border-opsh-primary/30 bg-opsh-primary/5 px-3 py-1 text-xs font-black uppercase tracking-wide text-opsh-primary">
+              Nepal&apos;s online test-preparation centre
+            </span>
+
+            <h1 className="mt-4 text-4xl font-black leading-tight text-opsh-primary sm:text-5xl lg:text-[3.6rem]">
               Computer-Based IELTS and PTE Online Classes
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-              {ktmBrand.officialName} supports students in Nepal and abroad with live
-              online preparation, a recorded 2-hour demo class, Alfa mock-test practice,
-              exam booking support, and structured student follow-up.
+            <p className="mt-4 text-lg leading-8 text-slate-700">
+              Live Zoom classes, Alfa mock test practice, exam booking support, and CRM-managed
+              follow-up for students in Nepal and abroad.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+
+            {/* Button row 1 */}
+            <div className="mt-6 flex flex-wrap gap-2">
               <Link
                 href="/registration"
-                className="rounded bg-opsh-secondary px-5 py-3 text-sm font-black text-white shadow-opsh-secondary transition hover:bg-opsh-secondary-hover"
+                className="rounded bg-opsh-secondary px-4 py-2.5 text-sm font-black text-white transition hover:bg-opsh-secondary-hover"
               >
-                Register Now
+                Enroll in Class Now
               </Link>
               <Link
                 href="/demo"
-                className="rounded border border-opsh-primary px-5 py-3 text-sm font-black text-opsh-primary transition hover:bg-opsh-primary hover:text-white"
+                className="rounded bg-opsh-primary px-4 py-2.5 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
               >
                 Watch Demo Class
               </Link>
+              <Link
+                href="/exam-booking"
+                className="rounded bg-opsh-primary px-4 py-2.5 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
+              >
+                Book IELTS / PTE Exam
+              </Link>
+              <Link
+                href="/mock-tests"
+                className="rounded bg-opsh-primary px-4 py-2.5 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
+              >
+                Buy Mock Practice
+              </Link>
+            </div>
+
+            {/* WhatsApp button row 2 */}
+            <div className="mt-2.5">
               <a
-                href={`https://api.whatsapp.com/send?phone=${ktmContact.whatsappDigits}`}
+                href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="rounded border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
+                className="inline-flex items-center gap-2 rounded border border-opsh-primary px-4 py-2 text-sm font-black text-opsh-primary transition hover:bg-opsh-primary hover:text-white"
               >
-                Contact on WhatsApp
+                <svg className="h-4 w-4 flex-shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+                WhatsApp
               </a>
             </div>
-          </div>
 
-          <div className="relative">
-            <Image
-              src="/students-hero.svg"
-              alt="Student attending an online IELTS and PTE preparation class"
-              width={760}
-              height={560}
-              className="mx-auto h-auto w-full max-w-xl"
-              priority
-            />
+            {/* Stats row */}
+            <div className="mt-8 flex flex-wrap gap-4">
+              {[
+                { dt: "6 weeks", dd: "30 teaching hours" },
+                { dt: "1:1 to 30", dd: "Flexible batch options" },
+                { dt: "80%", dd: "Certificate attendance target" },
+              ].map((s) => (
+                <div
+                  key={s.dt}
+                  className="rounded-xl border border-slate-200 bg-white/80 px-5 py-3 backdrop-blur-sm"
+                >
+                  <p className="text-xl font-black text-opsh-primary">{s.dt}</p>
+                  <p className="mt-0.5 text-sm text-slate-600">{s.dd}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 py-10">
+      {/* ── Stats strip ── */}
+      <div className="grid grid-cols-2 divide-x divide-blue-100 border-y border-blue-100 bg-blue-50 sm:grid-cols-4">
+        {[
+          { strong: "Live", span: "Online Zoom classes" },
+          { strong: "Alfa", span: "IELTS/PTE mock practice" },
+          { strong: "CRM", span: "Follow-up and attendance" },
+          { strong: "NPR/USD", span: "Payment-ready workflow" },
+        ].map((s) => (
+          <div key={s.strong} className="flex flex-col items-center justify-center gap-1 px-4 py-5 text-center">
+            <strong className="text-lg font-black text-opsh-primary">{s.strong}</strong>
+            <span className="text-xs text-slate-500">{s.span}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Courses ── */}
+      <section className="bg-slate-50 py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {valuePoints.map((point) => (
-              <div key={point} className="rounded border border-slate-200 bg-white p-4 shadow-opsh-sm">
-                <p className="text-sm font-black text-opsh-primary">{point}</p>
-              </div>
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">Courses</p>
+            <h2 className="mt-2 text-3xl font-black text-opsh-primary">
+              Choose IELTS, PTE, or mock practice
+            </h2>
+            <p className="mt-3 leading-7 text-slate-600">
+              Computer-based preparation classes with live sessions, real test-style practice, and
+              admin support throughout your journey.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {courses.map((c) => (
+              <article
+                key={c.href}
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-opsh-sm transition hover:-translate-y-1 hover:shadow-opsh-md"
+              >
+                <div className="h-56 overflow-hidden bg-slate-100">
+                  <Image
+                    src={c.img}
+                    alt={c.alt}
+                    width={600}
+                    height={400}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-black text-opsh-primary">{c.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{c.text}</p>
+                  <Link
+                    href={c.href}
+                    className="mt-5 inline-block rounded bg-opsh-primary px-4 py-2 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
+                  >
+                    {c.cta}
+                  </Link>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Pricing ── */}
       <section className="bg-white py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Pricing preview
+              Pricing plans
             </p>
             <h2 className="mt-2 text-3xl font-black text-opsh-primary">
               Flexible plans for private, group, weekend, evening, and overseas learners
@@ -182,113 +308,201 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Features ── */}
       <section className="bg-slate-50 py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.95fr,1.05fr] lg:px-8">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Class system
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              Built for launch now and multi-batch growth later
-            </h2>
-            <p className="mt-4 leading-7 text-slate-700">
-              The public website presents a clear student journey while the operational model
-              supports CRM tagging, batch allocation, payment follow-up, attendance tracking,
-              and admin notes.
-            </p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {classSystem.map((item) => (
-              <div key={item} className="rounded-lg border border-slate-200 bg-white p-5">
-                <p className="text-sm font-semibold leading-6 text-slate-700">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {quickLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-lg border border-slate-200 bg-white p-5 shadow-opsh-sm transition hover:-translate-y-1 hover:border-opsh-primary hover:shadow-opsh-md"
-              >
-                <h3 className="text-lg font-black text-opsh-primary">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{item.text}</p>
-                <span className="mt-4 inline-flex text-sm font-black text-opsh-secondary">
-                  Open page
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1fr,1fr] lg:px-8">
-          <div>
+          <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              CRM and automation
+              Why choose KTM
             </p>
             <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              Every enquiry should become a trackable student workflow
+              Everything students need in one simple online system
             </h2>
-            <p className="mt-4 leading-7 text-slate-700">
-              Registration, payment, booking, mock-test purchase, attendance, follow-up notes,
-              WhatsApp communication, and export needs are represented throughout the site.
-            </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {crmWorkflows.map((item) => (
-              <div key={item} className="rounded border border-slate-200 bg-white px-4 py-3">
-                <p className="text-sm font-bold text-slate-700">{item}</p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className="rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm"
+              >
+                <span className="text-3xl" aria-hidden="true">{f.icon}</span>
+                <h3 className="mt-3 text-lg font-black text-opsh-primary">{f.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{f.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ── Split — Nepal & overseas learners ── */}
       <section className="bg-white py-14">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr,1.1fr] lg:px-8">
-          <Image
-            src="/students-computer.svg"
-            alt="Student using computer-based IELTS and PTE practice"
-            width={620}
-            height={460}
-            className="mx-auto h-auto w-full max-w-lg"
-          />
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div>
             <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
               Nepal and overseas learners
             </p>
             <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              Clear online support for students in Kathmandu, across Nepal, and abroad
+              Flexible support for students anywhere
             </h2>
             <p className="mt-4 leading-7 text-slate-700">
-              Students can register, request payment guidance, ask for IELTS or PTE exam booking
-              help, buy mock-test practice, and contact the team through WhatsApp, email, phone,
-              or the website.
+              Classes are suitable for students in Nepal, students abroad, working students, evening
+              learners, weekend learners, and one-to-one premium learners. Admin can tag students by
+              course, batch, lead source, payment status, attendance status, and follow-up notes.
             </p>
+            <div className="mt-6 space-y-4">
+              {[
+                { label: "Launch Team Workflow", text: "Lead capture → payment verification → onboarding email → WhatsApp add → CRM class tag → teacher notified." },
+                { label: "Class Operations", text: "Zoom delivery, attendance tracking, writing/speaking support, mock follow-up, and end-of-course reminders." },
+                { label: "Growth Ready", text: "Built to support the 5-year scaling goal through repeatable CRM and batch systems." },
+              ].map((item) => (
+                <div key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm font-black text-opsh-primary">{item.label}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.text}</p>
+                </div>
+              ))}
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                href="/exam-booking"
+                href="/registration"
                 className="rounded bg-opsh-primary px-5 py-3 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
               >
-                Book IELTS / PTE Exam
+                Register for a Batch
               </Link>
               <Link
-                href="/mock-tests"
+                href="/contact"
                 className="rounded border border-opsh-secondary px-5 py-3 text-sm font-black text-opsh-secondary transition hover:bg-opsh-secondary hover:text-white"
               >
-                Buy Mock Test Practice
+                Ask About Timing
               </Link>
             </div>
           </div>
+          <div className="overflow-hidden rounded-2xl shadow-opsh-md">
+            <Image
+              src="/students-computer.svg"
+              alt="Student using computer-based IELTS and PTE practice"
+              width={620}
+              height={460}
+              className="h-auto w-full"
+            />
+          </div>
         </div>
       </section>
+
+      {/* ── CTA band ── */}
+      <section className="bg-opsh-primary py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:flex lg:items-center lg:justify-between lg:px-8">
+          <div>
+            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
+              Important update
+            </p>
+            <h2 className="mt-1 text-2xl font-black text-white sm:text-3xl">
+              IELTS preparation should now be computer-based
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-white/70">
+              Paper-based IELTS is expected to be discontinued in Nepal around late June 2026. KTM
+              Test Prep is built around computer-based IELTS and PTE readiness from day one.
+            </p>
+          </div>
+          <div className="mt-6 flex flex-shrink-0 flex-wrap gap-3 lg:mt-0 lg:ml-8">
+            <Link
+              href="/registration"
+              className="rounded bg-opsh-secondary px-5 py-3 text-sm font-black text-white transition hover:bg-opsh-secondary-hover"
+            >
+              Register Now
+            </Link>
+            <Link
+              href="/exam-booking"
+              className="rounded border border-white/30 bg-white/10 px-5 py-3 text-sm font-black text-white transition hover:bg-white/20"
+            >
+              Book Exam Support
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="bg-slate-50 py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
+              Student testimonials
+            </p>
+            <h2 className="mt-2 text-3xl font-black text-opsh-primary">
+              Trusted by IELTS and PTE learners
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <article
+                key={t.name}
+                className="rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm"
+              >
+                <Image
+                  src={t.img}
+                  alt={`${t.name} — ${t.course} student`}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 rounded-full object-cover"
+                />
+                <p className="mt-3 text-base text-yellow-400" aria-label="5 stars">★★★★★</p>
+                <h3 className="mt-1 text-base font-black text-opsh-primary">{t.name}</h3>
+                <p className="text-xs font-semibold text-opsh-secondary">{t.course}</p>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{t.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Enroll CTA ── */}
+      <section className="bg-white py-16 text-center">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6">
+          <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
+            Start today
+          </p>
+          <h2 className="mt-2 text-3xl font-black text-opsh-primary">
+            Ready to improve your IELTS or PTE score?
+          </h2>
+          <p className="mt-4 leading-7 text-slate-600">
+            Join a live online batch, try the free demo class, or message us on WhatsApp to get
+            started.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/registration"
+              className="rounded bg-opsh-secondary px-6 py-3 text-sm font-black text-white shadow transition hover:bg-opsh-secondary-hover"
+            >
+              Enroll in Class Now
+            </Link>
+            <Link
+              href="/demo"
+              className="rounded border border-opsh-primary px-6 py-3 text-sm font-black text-opsh-primary transition hover:bg-opsh-primary hover:text-white"
+            >
+              Watch Demo Class
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded bg-opsh-primary px-6 py-3 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WhatsApp float ── */}
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        className="fixed bottom-5 right-5 z-50 inline-flex h-14 items-center gap-2.5 rounded-full bg-emerald-500 px-5 font-black text-sm text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-xl"
+        aria-label="Chat with us on WhatsApp"
+      >
+        <svg className="h-6 w-6 flex-shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+        </svg>
+        Chat with us
+      </a>
     </>
   );
 }

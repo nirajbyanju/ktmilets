@@ -21,9 +21,29 @@ module.exports = withMT({
         xxs: ["0.70rem", "1rem"],
       },
       colors: {
+        // ── Design system tokens ──────────────────────────
+        "accent-blue":  "#2797dc",
+        "accent-red":   "#f05b6b",
+        "deep":         "#1f3554",
+        "ink":          "#26364f",
+        "muted":        "#66768d",
+        "line":         "#d7e7f7",
+        "soft":         "#f4f9ff",
+        "paper":        "#ffffff",
+        "sky":          "#9fd0ff",
+        "sky-2":        "#dceeff",
+        "sky-3":        "#f4f9ff",
+        "navy": {
+          DEFAULT: "#1f3554",
+          2:       "#2d4b70",
+        },
+        "logo-blue":    "#30398f",
+        "logo-red":     "#ed1b2a",
+        // ─────────────────────────────────────────────────
+
         // Primary color (KTM Test Prep deep blue)
         "opsh-primary": {
-          DEFAULT: "#0B1F4D",
+          DEFAULT: "#2797dc",
           light: "#173A82",
           hover: "#102E68",
           dark: "#071638",
@@ -32,7 +52,7 @@ module.exports = withMT({
 
         // Secondary (KTM strong red)
         "opsh-secondary": {
-          DEFAULT: "#D71920",
+          DEFAULT: "#f05b6b",
           light: "#EF3E45",
           dark: "#A90F16",
           hover: "#BE151C",
@@ -184,6 +204,9 @@ module.exports = withMT({
 
       // Box shadow variants
       boxShadow: {
+        'design':   '0 18px 50px rgba(60, 121, 178, 0.16)',
+        'design-sm':'0 4px 20px rgba(60, 121, 178, 0.10)',
+        'design-lg':'0 28px 70px rgba(60, 121, 178, 0.22)',
         'opsh-sm': '0 2px 4px rgba(11, 31, 77, 0.1)',
         'opsh-md': '0 4px 8px rgba(11, 31, 77, 0.12)',
         'opsh-lg': '0 8px 16px rgba(11, 31, 77, 0.15)',
