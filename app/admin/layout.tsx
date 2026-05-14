@@ -11,7 +11,7 @@ import useAuthStore from "@/stores/auth/AuthStore";
 import useOptionStore from "@/stores/common/OptionStore";
 import { canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
 
-const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/enrollments", "/admin/settings/profile"];
+const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/enrollments", "/admin/settings/profile", "/admin/exam-booking"];
 
 export default function AdminLayout({
   children,
@@ -29,7 +29,6 @@ export default function AdminLayout({
     isAuthenticated,
     token,
     initializeAuth,
-    menuLoaded,
     loadUserMenu,
     roles,
     permissions,
@@ -70,10 +69,8 @@ export default function AdminLayout({
       setHasBootstrapped(false);
 
       try {
-        if (!menuLoaded) {
-          setBootMessage("Loading your navigation and access menu.");
-          await loadUserMenu();
-        }
+        setBootMessage("Loading your navigation and access menu.");
+        await loadUserMenu();
 
         if (canManageSystem && !isLoaded()) {
           setBootMessage("Loading shared options and admin data.");
@@ -89,7 +86,6 @@ export default function AdminLayout({
     isReady,
     isAuthenticated,
     token,
-    menuLoaded,
     loadUserMenu,
     fetchAllOptions,
     isLoaded,
