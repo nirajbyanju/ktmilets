@@ -129,6 +129,22 @@ export const createManagedUser = async (
   }
 };
 
+export const changeCurrentUserPassword = async (payload: {
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+}): Promise<void> => {
+  try {
+    await api.post("/user/change-password", {
+      current_password: payload.currentPassword,
+      new_password: payload.newPassword,
+      new_password_confirmation: payload.newPasswordConfirmation,
+    });
+  } catch (error: unknown) {
+    return handleApiError(error);
+  }
+};
+
 export const updateManagedUserStatus = async (
   userId: string | number,
   status: "0" | "1"

@@ -274,10 +274,6 @@ const useAuthStore = create<AuthState>()(
             return state.menu;
           }
 
-          if (state.menuLoaded && state.menu.length > 0) {
-            return state.menu;
-          }
-
           set({ isMenuLoading: true });
 
           try {

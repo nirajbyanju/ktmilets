@@ -5,7 +5,7 @@ import { FaCheckCircle, FaSyncAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import { getInvoices, markInvoicePaid, type Invoice } from "@/apis/courseCatalog.api";
-import { isPrivilegedUser } from "@/data/adminMenu";
+import { isAdminUser, isPrivilegedUser } from "@/data/adminMenu";
 import useAuthStore from "@/stores/auth/AuthStore";
 
 const formatMoney = (value: string | number | null | undefined) =>
@@ -21,6 +21,7 @@ export default function AdminInvoicesPage() {
   const permissions = useAuthStore((state) => state.permissions);
   const directPermissions = useAuthStore((state) => state.directPermissions);
   const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
+  const canManageInvoices = isAdminUser({ roles, permissions, directPermissions });
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [verifyingId, setVerifyingId] = useState<number | null>(null);
@@ -44,7 +45,7 @@ export default function AdminInvoicesPage() {
   }, []);
 
   const handleMarkPaid = async (invoice: Invoice) => {
-    if (!canManageSystem) {
+    if (!canManageInvoices) {
       return;
     }
 
@@ -107,7 +108,7 @@ export default function AdminInvoicesPage() {
                   "Discount",
                   "Total",
                   "Status",
-                  ...(canManageSystem ? ["Actions"] : []),
+                  ...(canManageInvoices ? ["Actions"] : []),
                 ].map((heading) => (
                   <th key={heading} className="px-4 py-3 text-left text-xs font-black uppercase tracking-wide">
                     {heading}
@@ -118,7 +119,7 @@ export default function AdminInvoicesPage() {
             <tbody className="divide-y divide-slate-200 bg-white">
               {isLoading ? (
                 <tr>
-                  <td colSpan={canManageSystem ? 8 : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
+                  <td colSpan={canManageSystem ? (canManageInvoices ? 8 : 7) : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
                     Loading invoices...
                   </td>
                 </tr>
@@ -149,7 +150,7 @@ export default function AdminInvoicesPage() {
                         {invoice.status}
                       </span>
                     </td>
-                    {canManageSystem ? (
+                    {canManageInvoices ? (
                       <td className="px-4 py-3">
                         <button
                           type="button"
@@ -166,7 +167,7 @@ export default function AdminInvoicesPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={canManageSystem ? 8 : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
+                  <td colSpan={canManageSystem ? (canManageInvoices ? 8 : 7) : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
                     No invoices found.
                   </td>
                 </tr>

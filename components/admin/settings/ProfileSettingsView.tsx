@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -8,6 +8,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import {
   FaCamera,
+  FaEye,
+  FaEyeSlash,
+  FaLock,
   FaRedoAlt,
   FaSave,
   FaSpinner,
@@ -17,6 +20,7 @@ import {
 } from "react-icons/fa";
 
 import {
+  changeCurrentUserPassword,
   deleteCurrentUserProfilePicture,
   getCurrentUserProfile,
   updateCurrentUserProfile,
@@ -52,6 +56,18 @@ type ProfileFormValues = {
   district: string;
   localBodies: string;
   streetName: string;
+};
+
+type PasswordFormValues = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+const emptyPasswordValues: PasswordFormValues = {
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
 };
 
 const emptyProfileValues: ProfileFormValues = {
@@ -110,9 +126,16 @@ export default function ProfileSettingsView() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const setUserData = useAuthStore((state) => state.setUserData);
   const authUser = useAuthStore((state) => state.user as Record<string, unknown> | null);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const profileForm = useForm<ProfileFormValues>({
     defaultValues: emptyProfileValues,
+  });
+
+  const passwordForm = useForm<PasswordFormValues>({
+    defaultValues: emptyPasswordValues,
   });
 
   const profileQuery = useQuery({
@@ -166,6 +189,23 @@ export default function ProfileSettingsView() {
     },
   });
 
+  const changePasswordMutation = useMutation({
+    mutationFn: (payload: { currentPassword: string; newPassword: string; newPasswordConfirmation: string }) =>
+      changeCurrentUserPassword(payload),
+    onSuccess: () => {
+      passwordForm.reset(emptyPasswordValues);
+      toast.success("Password changed successfully.");
+    },
+    onError: (error: unknown) => {
+      const appError = error as { errors?: Record<string, string[]>; error?: { message?: string }; message?: string };
+      if (appError?.errors?.current_password) {
+        passwordForm.setError("currentPassword", { message: appError.errors.current_password[0] });
+      } else {
+        toast.error(appError?.error?.message || appError?.message || "Failed to change password.");
+      }
+    },
+  });
+
   const profile = profileQuery.data;
   const displayName =
     profile?.fullName || String(authUser?.name ?? authUser?.full_name ?? authUser?.username ?? "Admin");
@@ -198,6 +238,19 @@ export default function ProfileSettingsView() {
     uploadPhotoMutation.mutate(file);
     event.target.value = "";
   };
+
+  const handlePasswordSubmit = passwordForm.handleSubmit((values) => {
+    if (values.newPassword !== values.confirmPassword) {
+      passwordForm.setError("confirmPassword", { message: "Passwords do not match." });
+      return;
+    }
+
+    changePasswordMutation.mutate({
+      currentPassword: values.currentPassword,
+      newPassword: values.newPassword,
+      newPasswordConfirmation: values.confirmPassword,
+    });
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-opsh-background via-opsh-background-dark to-opsh-background px-4 py-5 md:px-6">
@@ -258,7 +311,7 @@ export default function ProfileSettingsView() {
         </div> 
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[320px,minmax(0,1fr)]">
+      <div className="grid gap-6 xl:grid-cols-[320px,minmax(0,1fr)]" id="profile-section">
         <aside className={sectionCardClass + " p-5"}>
           <div className="flex items-center gap-2">
             <FaUserCog className="text-opsh-primary" />
@@ -309,6 +362,7 @@ export default function ProfileSettingsView() {
           </div>
         </aside>
 
+        <div className="flex flex-col gap-6">
         <section className={sectionCardClass + " p-6"}>
           <div className="mb-6 border-b border-opsh-grey pb-4">
             <h2 className="text-lg font-semibold text-opsh-black">My Profile</h2>
@@ -394,6 +448,95 @@ export default function ProfileSettingsView() {
             </form>
           )}
         </section>
+
+        <section className={sectionCardClass + " p-6"}>
+          <div className="mb-6 border-b border-opsh-grey pb-4">
+            <div className="flex items-center gap-2">
+              <FaLock className="text-opsh-primary" />
+              <h2 className="text-lg font-semibold text-opsh-black">Change Password</h2>
+            </div>
+            <p className="mt-1 text-sm text-opsh-muted">Update your password. You will stay logged in on this device.</p>
+          </div>
+
+          <form onSubmit={handlePasswordSubmit} className="space-y-5 max-w-md">
+            <Field label="Current Password">
+              <div className="relative">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  {...passwordForm.register("currentPassword", { required: "Current password is required." })}
+                  className={inputClass + " pr-10"}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-opsh-muted hover:text-opsh-black"
+                  tabIndex={-1}
+                >
+                  {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {passwordForm.formState.errors.currentPassword && (
+                <p className="mt-1 text-xs text-red-500">{passwordForm.formState.errors.currentPassword.message}</p>
+              )}
+            </Field>
+
+            <Field label="New Password">
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  {...passwordForm.register("newPassword", {
+                    required: "New password is required.",
+                    minLength: { value: 8, message: "Password must be at least 8 characters." },
+                  })}
+                  className={inputClass + " pr-10"}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-opsh-muted hover:text-opsh-black"
+                  tabIndex={-1}
+                >
+                  {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {passwordForm.formState.errors.newPassword && (
+                <p className="mt-1 text-xs text-red-500">{passwordForm.formState.errors.newPassword.message}</p>
+              )}
+            </Field>
+
+            <Field label="Confirm New Password">
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  {...passwordForm.register("confirmPassword", { required: "Please confirm your new password." })}
+                  className={inputClass + " pr-10"}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-opsh-muted hover:text-opsh-black"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {passwordForm.formState.errors.confirmPassword && (
+                <p className="mt-1 text-xs text-red-500">{passwordForm.formState.errors.confirmPassword.message}</p>
+              )}
+            </Field>
+
+            <div className="flex justify-end">
+              <button type="submit" className={buttonPrimaryClass} disabled={changePasswordMutation.isPending}>
+                {changePasswordMutation.isPending ? <FaSpinner className="animate-spin" /> : <FaLock />}
+                {changePasswordMutation.isPending ? "Changing..." : "Change Password"}
+              </button>
+            </div>
+          </form>
+        </section>
+        </div>
       </div>
     </div>
   );

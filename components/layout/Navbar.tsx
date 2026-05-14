@@ -127,18 +127,18 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden shrink-0 items-center gap-2 xl:flex">
-          <Link
+          {/* <Link
             href="/registration"
             className="rounded bg-opsh-secondary px-4 py-2 text-sm font-black text-white shadow-opsh-secondary transition hover:bg-opsh-secondary-hover"
           >
             Register
-          </Link>
+          </Link> */}
           {token ? (
             <div ref={profileRef} className="relative">
               <button
                 type="button"
                 onClick={() => setProfileOpen((open) => !open)}
-                className="inline-flex items-center gap-2 rounded border border-slate-200 px-3 py-1.5 text-sm font-black text-opsh-primary transition hover:bg-slate-100"
+                className="inline-flex items-center gap-2 rounded px-3 py-1.5 text-sm font-black text-opsh-primary transition hover:bg-slate-100"
                 aria-expanded={profileOpen}
               >
                 <span>Hi, {firstName}</span>

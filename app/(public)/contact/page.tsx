@@ -10,7 +10,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
-import StudentWorkflowForm from "@/components/public/ktm/StudentWorkflowForm";
+import ContactForm from "@/components/contact/ContactForm";
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
 import { ktmBrand, ktmContact, ktmSocials } from "@/data/ktm";
 import {
@@ -112,7 +112,15 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <StudentWorkflowForm kind="contact" submitLabel="Send Message" />
+          <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="text-lg font-bold text-gray-900">Send a Message</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Fill in the form below and our team will respond as soon as possible.
+              </p>
+              <div className="mt-6">
+                <ContactForm />
+              </div>
+            </div>
         </div>
       </section>
 

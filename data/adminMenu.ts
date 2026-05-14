@@ -76,6 +76,21 @@ export const canManageUsers = (source: {
   return roles.has("super admin");
 };
 
+export const isAdminUser = (source: {
+  roles?: string[];
+  permissions?: string[];
+  directPermissions?: string[];
+}): boolean => {
+  const roles = new Set((source.roles ?? []).map((role) => role.toLowerCase()));
+  const permissions = new Set([...(source.permissions ?? []), ...(source.directPermissions ?? [])]);
+
+  return (
+    permissions.has("manage_all") ||
+    roles.has("super admin") ||
+    roles.has("admin")
+  );
+};
+
 export const removeUserManagementMenus = (menuItems: AppMenuItem[]): AppMenuItem[] =>
   menuItems
     .filter((item) => item.path !== userManagementMenuItem.path && item.path !== "/admin/rbac")
@@ -119,7 +134,6 @@ export const fallbackAdminMenu: AppMenuItem[] = [
 export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem[] => {
   const hasDirectProfileEntry = menuItems.some((item) => item.path === settingsProfileMenuItem.path);
   const hasSettingsRoot = menuItems.some((item) => item.path === "/admin/settings");
-  const hasUserManagementEntry = menuItems.some((item) => item.path === userManagementMenuItem.path);
   const hasCourseCatalogEntry = menuItems.some((item) => item.path === courseCatalogMenuItem.path);
   const hasInvoicesEntry = menuItems.some((item) => item.path === invoicesMenuItem.path);
 
@@ -144,7 +158,6 @@ export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem
       ...nextMenuItems,
       ...(hasCourseCatalogEntry ? [] : [courseCatalogMenuItem]),
       ...(hasInvoicesEntry ? [] : [invoicesMenuItem]),
-      ...(hasUserManagementEntry ? [] : [userManagementMenuItem]),
     ];
   }
 
@@ -163,6 +176,5 @@ export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem
     ...menuWithSettings,
     ...(hasCourseCatalogEntry ? [] : [courseCatalogMenuItem]),
     ...(hasInvoicesEntry ? [] : [invoicesMenuItem]),
-    ...(hasUserManagementEntry ? [] : [userManagementMenuItem]),
   ];
 };

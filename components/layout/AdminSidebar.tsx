@@ -11,14 +11,6 @@ import { IconType } from 'react-icons';
 
 import Logo from '@/public/apple-icon.png';
 import useAuthStore from '@/stores/auth/AuthStore';
-import {
-  canManageUsers,
-  ensureSettingsProfileMenu,
-  fallbackAdminMenu,
-  isPrivilegedUser,
-  removeUserManagementMenus,
-  studentPortalMenu,
-} from '@/data/adminMenu';
 import { AppMenuItem } from '@/types/rbac';
 
 interface AdminSidebarProps {
@@ -59,21 +51,10 @@ const hasActiveChild = (pathname: string, menu: AppMenuItem) =>
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
   const pathname = usePathname();
   const menu = useAuthStore((state) => state.menu);
-  const menuLoaded = useAuthStore((state) => state.menuLoaded);
   const user = useAuthStore((state) => state.user);
-  const roles = useAuthStore((state) => state.roles);
-  const permissions = useAuthStore((state) => state.permissions);
-  const directPermissions = useAuthStore((state) => state.directPermissions);
   const [submenuStates, setSubmenuStates] = useState<Record<string, boolean>>({});
 
-  const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
-  const canManageUserAccounts = canManageUsers({ roles });
-  const adminMenu = ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu);
-  const sidebarMenu = canManageSystem
-    ? canManageUserAccounts
-      ? adminMenu
-      : removeUserManagementMenus(adminMenu)
-    : studentPortalMenu;
+  const sidebarMenu = menu;
 
   const toggleSubmenu = (id: string) => {
     setSubmenuStates((current) => ({ ...current, [id]: !current[id] }));
@@ -156,7 +137,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
 
                           <div
                             className={`overflow-hidden transition-all duration-300 ${
-                              isOpen ? 'max-h-96 mt-1' : 'max-h-0'
+                              isOpen && isExpand ? 'max-h-96 mt-1' : 'max-h-0'
                             }`}
                           >
                             <ul className={`${isExpand ? 'pl-11' : 'pl-0'} space-y-0.5 pr-2`}>
