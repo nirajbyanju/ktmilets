@@ -103,7 +103,7 @@ export default function MobileBottomNav() {
 
       {/* Bottom nav bar */}
       <nav className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2 xl:hidden">
-        <div className="flex items-center gap-1 rounded-2xl bg-white px-2 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
+        <div className="flex items-center gap-1 rounded-2xl bg-white px-2 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.12)] md:gap-2">
           {navItems.map((item) => {
             const isActive =
               item.href === null

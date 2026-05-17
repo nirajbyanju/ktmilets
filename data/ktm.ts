@@ -46,7 +46,7 @@ export const publicNavItems = [
   { label: "Exam Booking", href: "/exam-booking" },
   { label: "Mock Test Practice", shortLabel: "Mock Tests", href: "/mock-tests" },
   { label: "About Us", href: "/about" },
-  { label: "Contact Us", href: "/contact" },
+  // { label: "Contact Us", href: "/contact" },
 ];
 
 export const pricingPlans = [
