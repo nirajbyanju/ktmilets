@@ -120,6 +120,24 @@ export const validateResetPassword = async (
   }
 };
 
+export const setPassword = async (
+  payload: { password: string; password_confirmation: string }
+): Promise<Response<Record<string, unknown>>> => {
+  try {
+    const response = await api.post<Response<Record<string, unknown>>>(
+      '/user/set-password',
+      payload
+    );
+    return response.data;
+  } catch (error: unknown) {
+    const apiError = error as ApiFailure;
+    if (apiError.response?.data) {
+      return Promise.reject(apiError.response.data);
+    }
+    return Promise.reject(error);
+  }
+};
+
 export const resetPassword = async (
   payload: { email: string; token: string; password: string; password_confirmation: string }
 ): Promise<Response<Record<string, unknown>>> => {

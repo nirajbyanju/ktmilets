@@ -459,7 +459,7 @@ export default function MenuManagerPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-opsh-background via-opsh-background-dark to-opsh-background px-4 py-5 md:px-6">
+      <div className="min-h-screen bg-slate-50 px-4 py-5 md:px-6">
         <div className={`${sectionCardClass} p-10 text-center`}>
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-opsh-background">
             <FaSitemap className="text-2xl text-opsh-primary animate-pulse" />
@@ -474,7 +474,7 @@ export default function MenuManagerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-opsh-background via-opsh-background-dark to-opsh-background px-4 py-5 md:px-6">
+    <div className="min-h-screen bg-slate-50 px-4 py-5 md:px-6">
       {/* Header Section */}
       <div className="flex flex-col items-center gap-1 mb-1 md:gap-4 sm:flex-row">
         <h5 className="hidden text-sm text-opsh-secondary md:block">Navigation Management</h5>

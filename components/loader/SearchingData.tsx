@@ -160,7 +160,7 @@ const LoadingSpinner: React.FC<{ enablePulse?: boolean }> = ({ enablePulse = tru
         {/* Outer ring with pulse */}
         <div className={`w-12 h-12 rounded-full border-4 border-gray-200 ${enablePulse ? 'animate-pulse' : ''}`} />
         {/* Inner spinning ring */}
-        <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin" />
+        <div className="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-opsh-primary border-t-transparent animate-spin" />
         {/* Pulsing ring effect */}
         <div className="absolute inset-0 rounded-full animate-pulse-ring opacity-0" />
       </div>

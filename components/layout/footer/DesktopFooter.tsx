@@ -18,7 +18,7 @@ const contactIcons = {
 
 export default function DesktopFooter() {
   return (
-    <footer className="mt-16 hidden overflow-hidden bg-gradient-to-br from-opsh-primary-dark via-[#033331] to-opsh-primary text-opsh-text lg:block">
+    <footer className="mt-16 hidden overflow-hidden bg-opsh-primary-dark text-opsh-text lg:block">
       <div className="mx-auto max-w-7xl py-12">
         <div className="grid gap-10 xl:grid-cols-[1.2fr,0.8fr,0.8fr,1fr]">
           <div className="max-w-xl">

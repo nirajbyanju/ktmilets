@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FaCheckCircle, FaSyncAlt } from "react-icons/fa";
+import { useEffect, useMemo, useState } from "react";
+import { FaCheckCircle, FaSearch, FaSpinner, FaSyncAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import { getInvoices, markInvoicePaid, type Invoice } from "@/apis/courseCatalog.api";
@@ -25,6 +25,23 @@ export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [verifyingId, setVerifyingId] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "pending">("all");
+
+  const filteredInvoices = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return invoices.filter((invoice) => {
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "paid" ? invoice.status === "paid" : invoice.status !== "paid");
+      if (!matchesStatus) return false;
+      if (!term) return true;
+      const name = studentName(invoice).toLowerCase();
+      const course = (invoice.batch?.course?.name ?? "").toLowerCase();
+      const number = invoice.invoice_number.toLowerCase();
+      return name.includes(term) || course.includes(term) || number.includes(term);
+    });
+  }, [invoices, search, statusFilter]);
 
   const loadInvoices = async () => {
     setIsLoading(true);
@@ -95,6 +112,31 @@ export default function AdminInvoicesPage() {
         </button>
       </div>
 
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by invoice number, student, or course..."
+            className="w-full rounded border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none transition focus:border-opsh-primary focus:ring-2 focus:ring-opsh-primary/15"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as "all" | "paid" | "pending")}
+          className="rounded border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-opsh-primary focus:ring-2 focus:ring-opsh-primary/15 sm:w-40"
+        >
+          <option value="all">All statuses</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+        </select>
+        <p className="shrink-0 text-sm text-slate-500">
+          {filteredInvoices.length} of {invoices.length} invoices
+        </p>
+      </div>
+
       <section className="rounded border border-slate-200 bg-white shadow-opsh-sm">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
@@ -119,12 +161,12 @@ export default function AdminInvoicesPage() {
             <tbody className="divide-y divide-slate-200 bg-white">
               {isLoading ? (
                 <tr>
-                  <td colSpan={canManageSystem ? (canManageInvoices ? 8 : 7) : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
-                    Loading invoices...
+                  <td colSpan={canManageSystem ? (canManageInvoices ? 8 : 7) : 6} className="px-4 py-16 text-center">
+                    <FaSpinner className="mx-auto animate-spin text-2xl text-opsh-primary" />
                   </td>
                 </tr>
-              ) : invoices.length > 0 ? (
-                invoices.map((invoice) => (
+              ) : filteredInvoices.length > 0 ? (
+                filteredInvoices.map((invoice) => (
                   <tr key={invoice.id} className="transition hover:bg-slate-50">
                     <td className="px-4 py-3 text-sm font-black text-opsh-primary">{invoice.invoice_number}</td>
                     {canManageSystem ? (
@@ -168,7 +210,7 @@ export default function AdminInvoicesPage() {
               ) : (
                 <tr>
                   <td colSpan={canManageSystem ? (canManageInvoices ? 8 : 7) : 6} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
-                    No invoices found.
+                    {search || statusFilter !== "all" ? "No invoices match your filters." : "No invoices found."}
                   </td>
                 </tr>
               )}

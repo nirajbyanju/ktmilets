@@ -1,7 +1,7 @@
 
 const BlogDetailSkeleton = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8 animate-pulse">
+    <div className="min-h-screen bg-slate-50 py-8 animate-pulse">
       <div className="auto-container bg-white px-4 sm:px-6 lg:px-8 py-8 rounded-3xl shadow-xl">
         {/* Breadcrumb Skeleton */}
         <div className="mb-8">

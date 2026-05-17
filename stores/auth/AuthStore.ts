@@ -46,6 +46,7 @@ interface AuthState {
   initializeAuth: (options?: { preloadMenu?: boolean }) => Promise<void>;
   hasPermission: (required: string | string[], requireAll?: boolean) => boolean;
   hasRole: (required: string | string[]) => boolean;
+  markPasswordSet: () => void;
 }
 
 const isClient = typeof window !== "undefined";
@@ -497,6 +498,13 @@ const useAuthStore = create<AuthState>()(
           }
 
           return requestedRoles.some((role) => currentRoles.has(role));
+        },
+
+        markPasswordSet: () => {
+          const user = get().user;
+          if (user) {
+            set({ user: { ...user, has_password: true } as typeof user });
+          }
         },
       }),
       {

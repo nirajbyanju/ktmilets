@@ -291,7 +291,7 @@ export default function HomePage() {
               </article>
             ))}
           </div>
-          <div className="mt-5 flex flex-wrap gap-3">
+          {/* <div className="mt-5 flex flex-wrap gap-3">
             <Link
               href="/registration"
               className="rounded bg-opsh-primary px-5 py-3 text-sm font-black text-white transition hover:bg-opsh-primary-hover"
@@ -304,7 +304,7 @@ export default function HomePage() {
             >
               Payment / Checkout
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -378,7 +378,7 @@ export default function HomePage() {
           </div>
           <div className="overflow-hidden rounded-2xl shadow-opsh-md">
             <Image
-              src="/students-computer.svg"
+              src="/student5.jpg"
               alt="Student using computer-based IELTS and PTE practice"
               width={620}
               height={460}

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import {
+  FaCheckCircle,
   FaChevronLeft,
   FaChevronRight,
   FaEnvelope,
@@ -79,7 +80,7 @@ function MessageDetailModal({
     queryFn: () => getContactMessage(messageId),
   });
 
-  const { register, handleSubmit } = useForm<ContactMessageStatusUpdatePayload>({
+  const { register, handleSubmit, setValue } = useForm<ContactMessageStatusUpdatePayload>({
     values: message
       ? { status: message.status, admin_notes: message.admin_notes ?? '' }
       : undefined,
@@ -89,16 +90,45 @@ function MessageDetailModal({
     mutationFn: (payload: ContactMessageStatusUpdatePayload) =>
       updateContactMessageStatus(messageId, payload),
     onSuccess: () => {
-      toast.success('Status updated.');
+      toast.success('Updated successfully.');
       void queryClient.invalidateQueries({ queryKey: ['contact-messages'] });
       void queryClient.invalidateQueries({ queryKey: ['contact-message-stats'] });
       void queryClient.invalidateQueries({ queryKey: ['contact-message', messageId] });
       onClose();
     },
-    onError: () => {
-      toast.error('Failed to update status.');
-    },
+    onError: () => toast.error('Failed to update.'),
   });
+
+  const markFollowedUp = () => {
+    if (!message) return;
+    mutation.mutate({
+      status: 'in_progress',
+      admin_notes: message.admin_notes ?? '',
+    });
+  };
+
+  const markResolved = () => {
+    if (!message) return;
+    mutation.mutate({
+      status: 'replied',
+      admin_notes: message.admin_notes ?? '',
+    });
+  };
+
+  const whatsappUrl = (number: string, name: string) => {
+    const cleaned = number.replace(/\D/g, '');
+    const text = encodeURIComponent(
+      `Hi ${name}, thank you for reaching out to KTM Test Preparation Centre. We received your message and our team will get back to you shortly. How can we help you today?`
+    );
+    return `https://wa.me/${cleaned}?text=${text}`;
+  };
+
+  const emailUrl = (email: string, subject: string) => {
+    const body = encodeURIComponent(
+      `Hi,\n\nThank you for contacting KTM Test Preparation Centre.\n\nRegarding your message: "${subject}"\n\nWe have received your enquiry and would like to discuss further.\n\nBest regards,\nKTM Test Prep Team`
+    );
+    return `mailto:${email}?subject=Re: ${encodeURIComponent(subject)}&body=${body}`;
+  };
 
   const inputClass =
     'w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-opsh-primary focus:outline-none focus:ring-2 focus:ring-opsh-primary/20 transition-all';
@@ -118,17 +148,18 @@ function MessageDetailModal({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white shadow-2xl"
+        className="flex w-full max-w-xl flex-col rounded-2xl bg-white shadow-2xl"
+        style={{ maxHeight: '90vh' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 px-6 py-4">
           <div>
-            <h3 className="text-base font-bold text-gray-900">
-              Message #{messageId}
-            </h3>
+            <h3 className="text-base font-bold text-gray-900">Message #{messageId}</h3>
             {message && (
-              <p className="text-xs text-gray-500">{message.full_name} — {fmt(message.created_at)}</p>
+              <p className="text-xs text-gray-500">
+                {message.full_name} — {fmt(message.created_at)}
+              </p>
             )}
           </div>
           <button
@@ -140,103 +171,133 @@ function MessageDetailModal({
           </button>
         </div>
 
-        {/* Body */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <FaSpinner className="animate-spin text-2xl text-opsh-primary" />
-          </div>
-        ) : message ? (
-          <>
-            {/* Sender info */}
-            <div className="space-y-3 px-6 py-4 text-sm">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <p className="text-xs text-gray-400">Full Name</p>
-                  <p className="font-semibold text-gray-800">{message.full_name}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Status</p>
-                  <StatusBadge status={message.status} />
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-gray-400">Email</p>
-                  <a
-                    href={`mailto:${message.email}`}
-                    className="inline-flex items-center gap-1.5 font-medium text-opsh-primary hover:underline"
-                  >
-                    <FaEnvelope className="text-xs" />
-                    {message.email}
-                  </a>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-xs text-gray-400">WhatsApp</p>
-                  <a
-                    href={`https://wa.me/${message.whatsapp_number.replace(/\D/g, '')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 font-medium text-green-600 hover:underline"
-                  >
-                    <FaWhatsapp />
-                    {message.whatsapp_number}
-                  </a>
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Subject</p>
-                <p className="mt-1 font-semibold text-gray-800">{message.subject}</p>
-                <p className="mt-3 whitespace-pre-wrap text-gray-700 text-sm leading-relaxed">
-                  {message.message}
-                </p>
-              </div>
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <FaSpinner className="animate-spin text-2xl text-opsh-primary" />
             </div>
+          ) : message ? (
+            <>
+              {/* Sender info */}
+              <div className="space-y-3 px-6 py-4 text-sm">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs text-gray-400">Full Name</p>
+                    <p className="font-semibold text-gray-800">{message.full_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Current Status</p>
+                    <StatusBadge status={message.status} />
+                  </div>
+                </div>
 
-            {/* Status update form */}
-            <form
-              onSubmit={handleSubmit((values) => mutation.mutate(values))}
-              className="space-y-4 border-t border-gray-100 px-6 pb-6 pt-4"
-            >
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Update Status
-                </label>
-                <select {...register('status')} className={inputClass}>
-                  {CONTACT_STATUSES.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-                </select>
+                {/* Message */}
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Subject</p>
+                  <p className="mt-1 font-semibold text-gray-800">{message.subject}</p>
+                  <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+                    {message.message}
+                  </p>
+                </div>
+
+                {/* ── Follow-up actions ── */}
+                <div className="rounded-xl border border-opsh-primary/20 bg-opsh-primary/5 p-4">
+                  <p className="mb-3 text-xs font-black uppercase tracking-wide text-opsh-primary">
+                    Follow Up
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <a
+                      href={whatsappUrl(message.whatsapp_number, message.full_name)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setValue('status', 'in_progress')}
+                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600 transition-colors"
+                    >
+                      <FaWhatsapp />
+                      WhatsApp {message.whatsapp_number}
+                    </a>
+                    <a
+                      href={emailUrl(message.email, message.subject)}
+                      onClick={() => setValue('status', 'in_progress')}
+                      className="inline-flex items-center gap-2 rounded-xl bg-opsh-primary px-4 py-2 text-sm font-medium text-white hover:bg-opsh-primary-hover transition-colors"
+                    >
+                      <FaEnvelope />
+                      Email Reply
+                    </a>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={markFollowedUp}
+                      disabled={mutation.isPending || message.status === 'in_progress'}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 disabled:opacity-40"
+                    >
+                      Mark In Progress
+                    </button>
+                    <button
+                      type="button"
+                      onClick={markResolved}
+                      disabled={mutation.isPending || message.status === 'replied'}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-40"
+                    >
+                      <FaCheckCircle className="text-xs" />
+                      Mark Replied
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Admin Notes <span className="text-gray-400 font-normal">(internal)</span>
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Optional internal notes..."
-                  {...register('admin_notes')}
-                  className={inputClass + ' resize-none'}
-                />
-              </div>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={mutation.isPending}
-                  className="inline-flex items-center gap-2 rounded-xl bg-opsh-primary px-5 py-2 text-sm font-medium text-white hover:bg-opsh-primary-hover disabled:opacity-50"
-                >
-                  {mutation.isPending ? <FaSpinner className="animate-spin" /> : null}
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </>
-        ) : null}
+
+              {/* Status update form */}
+              <form
+                onSubmit={handleSubmit((values) => mutation.mutate(values))}
+                className="space-y-4 border-t border-gray-100 px-6 pb-6 pt-4"
+              >
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Update Status
+                  </label>
+                  <select {...register('status')} className={inputClass}>
+                    {CONTACT_STATUSES.map((s) => (
+                      <option key={s.value} value={s.value}>
+                        {s.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Follow-up Notes{' '}
+                    <span className="font-normal text-gray-400">(internal)</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Log what action was taken, what was discussed, next steps..."
+                    {...register('admin_notes')}
+                    className={inputClass + ' resize-none'}
+                  />
+                </div>
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={mutation.isPending}
+                    className="inline-flex items-center gap-2 rounded-xl bg-opsh-primary px-5 py-2 text-sm font-medium text-white hover:bg-opsh-primary-hover disabled:opacity-50"
+                  >
+                    {mutation.isPending ? <FaSpinner className="animate-spin" /> : null}
+                    Save
+                  </button>
+                </div>
+              </form>
+            </>
+          ) : null}
+        </div>
       </div>
     </div>
   );
@@ -279,8 +340,8 @@ export default function AdminContactMessagesView() {
 
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-48">
-          <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+        <div className="relative min-w-48 flex-1">
+          <FaSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400" />
           <input
             type="text"
             placeholder="Search by name, email, subject..."
@@ -304,7 +365,7 @@ export default function AdminContactMessagesView() {
         <button
           type="button"
           onClick={() => void refetch()}
-          className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
         >
           {isFetching ? <FaSpinner className="animate-spin" /> : <FaRedoAlt />}
           Refresh
@@ -313,7 +374,8 @@ export default function AdminContactMessagesView() {
 
       {!isLoading && (
         <p className="text-sm text-gray-500">
-          Showing <strong>{messages.length}</strong> of <strong>{total}</strong> message{total !== 1 ? 's' : ''}
+          Showing <strong>{messages.length}</strong> of <strong>{total}</strong>{' '}
+          message{total !== 1 ? 's' : ''}
         </p>
       )}
 
@@ -324,7 +386,10 @@ export default function AdminContactMessagesView() {
             <thead className="bg-opsh-primary text-white">
               <tr>
                 {['#', 'Sender', 'Subject', 'WhatsApp', 'Status', 'Received', 'Action'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide">
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide"
+                  >
                     {h}
                   </th>
                 ))}
@@ -359,10 +424,20 @@ export default function AdminContactMessagesView() {
                       <p className="text-sm font-semibold text-gray-800">{msg.full_name}</p>
                       <p className="text-xs text-gray-400">{msg.email}</p>
                     </td>
-                    <td className="px-4 py-3 max-w-48">
+                    <td className="max-w-48 px-4 py-3">
                       <p className="truncate text-sm text-gray-700">{msg.subject}</p>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{msg.whatsapp_number}</td>
+                    <td className="px-4 py-3">
+                      <a
+                        href={`https://wa.me/${msg.whatsapp_number.replace(/\D/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700"
+                      >
+                        <FaWhatsapp />
+                        {msg.whatsapp_number}
+                      </a>
+                    </td>
                     <td className="px-4 py-3">
                       <StatusBadge status={msg.status} />
                     </td>
@@ -371,10 +446,10 @@ export default function AdminContactMessagesView() {
                       <button
                         type="button"
                         onClick={() => setSelectedId(msg.id)}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-opsh-primary/10 px-3 py-1.5 text-xs font-medium text-opsh-primary hover:bg-opsh-primary/20 transition-colors"
+                        className="inline-flex items-center gap-1.5 rounded-xl bg-opsh-primary/10 px-3 py-1.5 text-xs font-medium text-opsh-primary transition-colors hover:bg-opsh-primary/20"
                       >
                         <FaEnvelope className="text-xs" />
-                        View
+                        Follow Up
                       </button>
                     </td>
                   </tr>
@@ -387,7 +462,9 @@ export default function AdminContactMessagesView() {
         {/* Pagination */}
         {lastPage > 1 && (
           <div className="flex items-center justify-between border-t border-gray-100 px-4 py-3">
-            <p className="text-sm text-gray-500">Page {page} of {lastPage}</p>
+            <p className="text-sm text-gray-500">
+              Page {page} of {lastPage}
+            </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"

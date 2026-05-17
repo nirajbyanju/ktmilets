@@ -2,7 +2,7 @@
 
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { FaEdit, FaPlus, FaSave, FaSyncAlt, FaTimes, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus, FaSave, FaSpinner, FaSyncAlt, FaTimes, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import {
@@ -11,6 +11,7 @@ import {
   getCourseCatalogResource,
   updateCourseCatalogResource,
 } from "@/apis/courseCatalog.api";
+import { getTeachers } from "@/apis/teacher.api";
 import type {
   Batch,
   Course,
@@ -18,6 +19,7 @@ import type {
   CourseCatalogResourceItem,
   CourseCatalogResourceKey,
 } from "@/types/courseCatalog";
+import type { Teacher } from "@/types/teacher";
 
 type FieldType = "text" | "number" | "textarea" | "checkbox" | "date" | "time" | "select";
 type ValueType = "string" | "number" | "boolean";
@@ -83,19 +85,6 @@ const getCourseName = (resources: ResourceCollections, courseId?: number | null)
   return course?.name ?? "Unassigned course";
 };
 
-const batchOptions = (resources: ResourceCollections): SelectOption[] =>
-  resources.batches.map((item) => {
-    const batch = asBatch(item);
-    return {
-      label: `${batch.batch_type} - ${getCourseName(resources, batch.course_id)}`,
-      value: String(batch.id),
-    };
-  });
-
-const getBatchName = (resources: ResourceCollections, batchId?: number | null): string => {
-  const batch = resources.batches.map(asBatch).find((item) => item.id === Number(batchId));
-  return batch ? `${batch.batch_type} - ${getCourseName(resources, batch.course_id)}` : "Unassigned batch";
-};
 
 const formatMoney = (value: unknown, variable = false): string => {
   if (variable || value === null || value === undefined || value === "") {
@@ -129,7 +118,7 @@ const renderValue = (value: unknown): ReactNode => {
   return String(value);
 };
 
-const resourceConfigs: ResourceConfig[] = [
+const buildResourceConfigs = (teacherOptions: SelectOption[]): ResourceConfig[] => [
   {
     key: "courses",
     label: "Courses",
@@ -185,6 +174,13 @@ const resourceConfigs: ResourceConfig[] = [
       { name: "class_link", label: "Class link", type: "text", placeholder: "https://..." },
       { name: "is_active", label: "Active batch", type: "checkbox", valueType: "boolean", defaultValue: true },
       { name: "schedule_notes", label: "Schedule notes", type: "textarea", wide: true },
+      {
+        name: "teacher_id",
+        label: "Assigned Teacher",
+        type: "select",
+        valueType: "number",
+        options: () => [{ label: "No teacher assigned", value: "" }, ...teacherOptions],
+      },
     ],
     columns: [
       { label: "Batch", render: (item) => asBatch(item).batch_type },
@@ -252,25 +248,6 @@ const resourceConfigs: ResourceConfig[] = [
       { label: "Description", render: (item) => renderValue(asRecord(item).description) },
     ],
   },
-  {
-    key: "enrollments",
-    label: "Enrollments",
-    title: "Enrollment",
-    description: "Optional student records linked to a batch.",
-    searchPlaceholder: "Search students...",
-    fields: [
-      { name: "student_name", label: "Student name", type: "text", required: true },
-      { name: "batch_id", label: "Batch", type: "select", valueType: "number", required: true, options: batchOptions },
-      { name: "enrollment_date", label: "Enrollment date", type: "date" },
-      { name: "amount_paid", label: "Amount paid", type: "number", valueType: "number" },
-    ],
-    columns: [
-      { label: "Student", render: (item) => renderValue(asRecord(item).student_name) },
-      { label: "Batch", render: (item, resources) => getBatchName(resources, Number(asRecord(item).batch_id)) },
-      { label: "Date", render: (item) => formatDate(asRecord(item).enrollment_date) },
-      { label: "Paid", render: (item) => formatMoney(asRecord(item).amount_paid, false) },
-    ],
-  },
 ];
 
 const buildInitialForm = (config: ResourceConfig): FormState =>
@@ -281,18 +258,30 @@ const buildInitialForm = (config: ResourceConfig): FormState =>
 
 const getItemId = (item: CourseCatalogResourceItem): number => Number(asRecord(item).id);
 
+const staticResourceKeys: CourseCatalogResourceKey[] = [
+  "courses", "batches", "support-channels", "skills-modules", "additional-services",
+];
+
 export default function CourseCatalogAdminPage() {
   const [activeKey, setActiveKey] = useState<CourseCatalogResourceKey>("courses");
   const [resources, setResources] = useState<ResourceCollections>(() => createEmptyResources());
-  const [formValues, setFormValues] = useState<FormState>(() => buildInitialForm(resourceConfigs[0]));
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [formValues, setFormValues] = useState<FormState>(() =>
+    buildInitialForm(buildResourceConfigs([])[0])
+  );
   const [editingItem, setEditingItem] = useState<CourseCatalogResourceItem | null>(null);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
+  const resourceConfigs = useMemo(
+    () => buildResourceConfigs(teachers.map((t) => ({ label: t.name, value: String(t.id) }))),
+    [teachers]
+  );
+
   const activeConfig = useMemo(
     () => resourceConfigs.find((config) => config.key === activeKey) ?? resourceConfigs[0],
-    [activeKey]
+    [activeKey, resourceConfigs]
   );
 
   const activeItems = resources[activeKey];
@@ -316,16 +305,19 @@ export default function CourseCatalogAdminPage() {
     setIsLoading(true);
 
     try {
-      const entries = await Promise.all(
-        resourceConfigs.map(async (config) => {
-          const response = await getCourseCatalogResource(config.key, { limit: 100 });
-          return [config.key, response.data] as const;
-        })
-      );
+      const [teacherResponse, ...entries] = await Promise.all([
+        getTeachers({ limit: 100 }),
+        ...staticResourceKeys.map(async (key) => {
+          const response = await getCourseCatalogResource(key, { limit: 100 });
+          return [key, response.data] as const;
+        }),
+      ]);
+
+      setTeachers(teacherResponse.data);
 
       const nextResources = createEmptyResources();
-      entries.forEach(([key, value]) => {
-        nextResources[key] = value as CourseCatalogResourceItem[];
+      (entries as [CourseCatalogResourceKey, CourseCatalogResourceItem[]][]).forEach(([key, value]) => {
+        nextResources[key] = value;
       });
       setResources(nextResources);
     } catch (error) {
@@ -438,8 +430,7 @@ export default function CourseCatalogAdminPage() {
           </p>
           <h1 className="mt-1 text-2xl font-black text-opsh-primary">Course Catalog</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Manage IELTS course records, batch pricing, support contacts, skill modules,
-            add-on services, and optional enrollments.
+            Manage IELTS course records, batch pricing, support contacts, skill modules, and add-on services.
           </p>
         </div>
         <button
@@ -630,8 +621,8 @@ export default function CourseCatalogAdminPage() {
               <tbody className="divide-y divide-slate-200 bg-white">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={activeConfig.columns.length + 1} className="px-4 py-10 text-center text-sm font-semibold text-slate-500">
-                      Loading course catalog...
+                    <td colSpan={activeConfig.columns.length + 1} className="px-4 py-16 text-center">
+                      <FaSpinner className="mx-auto animate-spin text-2xl text-opsh-primary" />
                     </td>
                   </tr>
                 ) : filteredItems.length > 0 ? (

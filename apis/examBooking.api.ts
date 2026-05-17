@@ -1,8 +1,9 @@
 import { api } from '@/apis/https.api';
 import type {
   ExamBooking,
-  ExamBookingStatusUpdatePayload,
+  ExamBookingAdminUpdatePayload,
   ExamBookingSubmitPayload,
+  ExamBookingStats,
   PaginatedExamBookings,
 } from '@/types/examBooking';
 
@@ -16,25 +17,27 @@ const handleApiError = (error: unknown) => {
 
 export const submitExamBooking = async (payload: ExamBookingSubmitPayload): Promise<ExamBooking> => {
   const formData = new FormData();
-  formData.append('test_type', payload.test_type);
+  formData.append('test_type',      payload.test_type);
+  formData.append('student_name',   payload.student_name);
+  formData.append('contact_number', payload.phone);          // backend field name
+  formData.append('phone',          payload.phone);          // new DB field name
+  formData.append('email',          payload.email);
   formData.append('preferred_date', payload.preferred_date);
-  formData.append('test_location', payload.test_location);
-  formData.append('passport_name', payload.passport_name);
+  formData.append('test_location',  payload.preferred_test_centre);  // backend field name
+  formData.append('preferred_test_centre', payload.preferred_test_centre);
+  formData.append('passport_name',   payload.passport_name);
   formData.append('passport_number', payload.passport_number);
-  formData.append('date_of_birth', payload.date_of_birth);
-  formData.append('contact_number', payload.contact_number);
-  formData.append('email', payload.email);
-  formData.append('passport_copy', payload.passport_copy);
-  if (payload.special_message) {
-    formData.append('special_message', payload.special_message);
-  }
+  formData.append('date_of_birth',   payload.date_of_birth);
+  formData.append('passport_copy',   payload.passport_copy);
+  if (payload.preferred_time)  formData.append('preferred_time',  payload.preferred_time);
+  if (payload.special_message) formData.append('special_message', payload.special_message);
 
   try {
     const response = await api.post<{ success: boolean; data: ExamBooking }>('/exam-bookings', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data.data;
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error);
   }
 };
@@ -43,7 +46,7 @@ export const getMyExamBookings = async (): Promise<ExamBooking[]> => {
   try {
     const response = await api.get<{ success: boolean; data: ExamBooking[] }>('/exam-bookings');
     return response.data.data;
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error);
   }
 };
@@ -56,24 +59,49 @@ export const getAllExamBookings = async (params?: {
   per_page?: number;
 }): Promise<PaginatedExamBookings> => {
   try {
-    const response = await api.get<{ success: boolean; data: PaginatedExamBookings }>('/admin/exam-bookings', { params });
+    const response = await api.get<{ success: boolean; data: PaginatedExamBookings }>(
+      '/admin/exam-bookings',
+      { params }
+    );
     return response.data.data;
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error);
   }
 };
 
-export const updateExamBookingStatus = async (
+export const getExamBookingStats = async (): Promise<ExamBookingStats> => {
+  try {
+    const response = await api.get<{ success: boolean; data: ExamBookingStats }>(
+      '/admin/exam-bookings/stats'
+    );
+    return response.data.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getExamBooking = async (id: number): Promise<ExamBooking> => {
+  try {
+    const response = await api.get<{ success: boolean; data: ExamBooking }>(
+      `/admin/exam-bookings/${id}`
+    );
+    return response.data.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const updateExamBooking = async (
   id: number,
-  payload: ExamBookingStatusUpdatePayload
+  payload: ExamBookingAdminUpdatePayload
 ): Promise<ExamBooking> => {
   try {
     const response = await api.patch<{ success: boolean; data: ExamBooking }>(
-      `/admin/exam-bookings/${id}/status`,
+      `/admin/exam-bookings/${id}`,
       payload
     );
     return response.data.data;
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error);
   }
 };
@@ -89,7 +117,7 @@ export const downloadPassportCopy = async (bookingId: number, filename: string):
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-  } catch (error: unknown) {
+  } catch (error) {
     return handleApiError(error);
   }
 };

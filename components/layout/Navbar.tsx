@@ -141,7 +141,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-2 rounded px-3 py-1.5 text-sm font-black text-opsh-primary transition hover:bg-slate-100"
                 aria-expanded={profileOpen}
               >
-                <span>Hi, {firstName}</span>
+                <span>welcome, {firstName}</span>
                 <span className="h-8 w-8 overflow-hidden rounded-full border border-opsh-primary/30">
                   <ProfileAvatar
                     firstName={firstName}

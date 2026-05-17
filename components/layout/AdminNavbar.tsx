@@ -8,11 +8,8 @@ import ProfileDropdown from "./ProfileDropdown";
 import AdminNotificationBell from "./AdminNotificationBell";
 import {
   canManageUsers,
-  ensureSettingsProfileMenu,
-  fallbackAdminMenu,
   isPrivilegedUser,
   removeUserManagementMenus,
-  studentPortalMenu,
 } from "@/data/adminMenu";
 import { flattenMenuItems } from "@/helper/rbac/normalize";
 import {
@@ -52,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const user = useAuthStore((state) => state.user as Record<string, unknown> | null);
   const menu = useAuthStore((state) => state.menu);
-  const menuLoaded = useAuthStore((state) => state.menuLoaded);
+
   const roles = useAuthStore((state) => state.roles);
   const permissions = useAuthStore((state) => state.permissions);
   const directPermissions = useAuthStore((state) => state.directPermissions);
@@ -153,12 +150,10 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
     email: toText(user?.email) || "",
   };
 
-  const adminMenu = ensureSettingsProfileMenu(menuLoaded ? menu : fallbackAdminMenu);
-  const activeMenu = canManageSystem
-    ? canManageUserAccounts
-      ? adminMenu
-      : removeUserManagementMenus(adminMenu)
-    : studentPortalMenu;
+  const activeMenu =
+    canManageSystem && !canManageUserAccounts
+      ? removeUserManagementMenus(menu)
+      : menu;
   const searchableMenus = flattenMenuItems(activeMenu).filter(
     (item) => item.path
   );
@@ -176,102 +171,98 @@ const Header: React.FC<HeaderProps> = ({ isExpand, setIsExpand }) => {
     : [];
 
   return (
-    <header className="bg-white shadow-md">
-      <div className="flex items-center justify-between p-1">
-        <div className="flex gap-3" style={{ width: "430px" }}>
+    <header className="border-b border-gray-100 bg-white shadow-sm">
+      <div className="flex items-center justify-between gap-4 px-4 py-2">
+        {/* Left — collapse toggle + search */}
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <button
-            className="p-1 text-gray-600 hover:bg-gray-100 rounded-md"
+            type="button"
+            className="shrink-0 rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-opsh-primary"
             onClick={() => setIsExpand(!isExpand)}
+            aria-label="Toggle sidebar"
           >
-            <IoReorderThreeOutline className="text-3xl" />
+            <IoReorderThreeOutline className="text-2xl" />
           </button>
-          <form className="flex items-center w-full relative" onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="simple-search" className="sr-only">Search</label>
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2"/>
+
+          <form className="relative w-full max-w-sm" onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="admin-search" className="sr-only">Search menu</label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg className="h-4 w-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
               </div>
               <input
                 type="text"
-                id="simple-search"
+                id="admin-search"
                 ref={searchInputRef}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-20 p-2"
-                placeholder="Search menu (Ctrl+K)"
+                className="block w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-20 text-sm text-gray-900 transition focus:border-opsh-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-opsh-primary/20"
+                placeholder="Search menu… (Ctrl+K)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowSearchResults(true)}
-                required
               />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <kbd className="inline-flex items-center px-2 py-1 text-xs font-sans text-gray-400 bg-gray-100 border border-gray-300 rounded">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <kbd className="inline-flex items-center rounded border border-gray-200 bg-white px-1.5 py-0.5 text-xs font-sans text-gray-400 shadow-sm">
                   Ctrl+K
                 </kbd>
               </div>
             </div>
-            <button type="submit" className="p-2 ml-2 text-sm font-medium text-white bg-opsh-primary rounded-lg border border-opsh-primary hover:bg-opsh-primary-hover focus:ring-4 focus:outline-none focus:ring-blue-300">
-              <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-              </svg>
-              <span className="sr-only">Search</span>
-            </button>
 
-            {/* Search results dropdown */}
             {showSearchResults && searchResults.length > 0 && (
-              <div ref={searchResultsRef} className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+              <div ref={searchResultsRef} className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-gray-100 bg-white shadow-opsh-lg">
                 {searchResults.map((result) => (
-                  <div 
-                    key={result.id} 
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+                  <button
+                    key={result.id}
+                    type="button"
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-50 hover:text-opsh-primary"
                     onClick={() => handleSearchResultClick(result)}
                   >
                     {result.name}
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
             {showSearchResults && searchResults.length === 0 && searchQuery && (
-              <div ref={searchResultsRef} className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                <div className="px-4 py-2 text-gray-500">
-                  No results found
-                </div>
+              <div ref={searchResultsRef} className="absolute left-0 top-full z-50 mt-1 w-full rounded-xl border border-gray-100 bg-white px-4 py-3 text-sm text-gray-400 shadow-opsh-lg">
+                No results found
               </div>
             )}
           </form>
         </div>
 
-        <div className="flex items-center space-x-4 mr-4">
+        {/* Right — notifications + user */}
+        <div className="flex shrink-0 items-center gap-3">
           {canManageSystem ? <AdminNotificationBell /> : null}
-          
-          {/* FIXED: Added relative positioning to the profile container */}
-          <div className="relative flex flex-row gap-4 items-center">
-            <label className="text-opsh-primary text-lg">
+
+          <div className="relative flex items-center gap-3">
+            <span className="hidden text-sm font-semibold text-gray-700 lg:block">
               {displayName || toText(user?.email) || "Admin"}
-            </label>
-            
-            <div 
-              onClick={handleProfileClick} 
-              className="group relative inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-opsh-primary overflow-hidden bg-gray-100 transition-all duration-200 hover:border-opsh-primary-dark hover:shadow-sm cursor-pointer"
+            </span>
+
+            <button
+              type="button"
+              onClick={handleProfileClick}
+              className="group relative inline-flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-opsh-primary/30 bg-opsh-primary/5 transition hover:border-opsh-primary hover:shadow-sm"
+              aria-label="Open profile menu"
             >
-              <ProfileAvatar 
-                firstName={profile?.first_name || ""} 
-                lastName={profile?.last_name || ""} 
+              <ProfileAvatar
+                firstName={profile?.first_name || ""}
+                lastName={profile?.last_name || ""}
                 imageUrl={profile?.userdetail?.profilePicture || null}
-                size="sm" 
-                className="w-full h-full text-sm font-medium text-gray-600 group-hover:text-opsh-primary-dark"
+                size="sm"
+                className="h-full w-full text-sm font-medium"
               />
-            </div>
-            
-            {/* ProfileDropdown - now properly positioned relative to parent container */}
-            <ProfileDropdown 
-              isOpen={isDropdownOpen} 
-              dropdownRef={dropdownRef} 
-              profile={profile} 
-              userData={userData} 
+            </button>
+
+            <ProfileDropdown
+              isOpen={isDropdownOpen}
+              dropdownRef={dropdownRef}
+              profile={profile}
+              userData={userData}
               canManageSystem={canManageSystem}
               canManageUsers={canManageUserAccounts}
-              onClose={() => setIsDropdownOpen(false)} 
+              onClose={() => setIsDropdownOpen(false)}
             />
           </div>
         </div>

@@ -78,27 +78,7 @@ export const pricingPlans = [
     note: "Volume model with controlled quality messaging",
     featured: false,
   },
-  {
-    name: "Weekend Batch",
-    size: "Variable",
-    price: "Contact",
-    note: "For working and day-time learners",
-    featured: false,
-  },
-  {
-    name: "Evening Batch",
-    size: "Variable",
-    price: "Contact",
-    note: "For office-going and busy learners",
-    featured: false,
-  },
-  {
-    name: "Global Flex Batch",
-    size: "Variable",
-    price: "Contact",
-    note: "For students abroad across time zones",
-    featured: false,
-  },
+
 ];
 
 export const valuePoints = [
