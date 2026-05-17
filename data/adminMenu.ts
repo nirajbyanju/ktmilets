@@ -67,11 +67,9 @@ export const messageTemplatesMenuItem: AppMenuItem = {
 };
 
 export const studentPortalMenu: AppMenuItem[] = [
-  {
-    ...invoicesMenuItem,
-    name: "My Invoices",
-  },
-  enrollmentsMenuItem,
+  { ...invoicesMenuItem,     name: "My Invoices" },
+  { ...enrollmentsMenuItem,  name: "My Enrollments" },
+  { ...examBookingsMenuItem, name: "My Exam Bookings" },
   settingsProfileMenuItem,
 ];
 

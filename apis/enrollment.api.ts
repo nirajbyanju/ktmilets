@@ -11,6 +11,21 @@ const handleError = (error: unknown) => {
   return Promise.reject(e.response?.data ?? error);
 };
 
+export const getMyEnrollments = async (params?: {
+  search?: string;
+  batch_id?: number;
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedAdminEnrollments> => {
+  try {
+    const res = await api.get<{ success: boolean; data: PaginatedAdminEnrollments }>(
+      '/enrollments',
+      { params }
+    );
+    return res.data.data;
+  } catch (e) { return handleError(e); }
+};
+
 export const getAdminEnrollmentStats = async (): Promise<AdminEnrollmentStats> => {
   try {
     const res = await api.get<{ success: boolean; data: AdminEnrollmentStats }>('/admin/enrollments/stats');
