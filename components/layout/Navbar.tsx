@@ -97,11 +97,11 @@ export default function Navbar() {
             className="h-10 w-auto sm:h-11"
             priority
           />
-          <div className="hidden min-w-0 md:block">
-            <p className="truncate text-sm font-black uppercase tracking-wide text-opsh-primary">
+          <div className=" min-w-0 md:block">
+            <p className="truncate text-xs md:text-sm font-black uppercase tracking-wide text-opsh-primary">
               {ktmBrand.shortName}
             </p>
-            <p className="hidden truncate text-xs font-semibold text-slate-600 2xl:block">
+            <p className=" hidden md:block truncate  md:text-xs font-semibold text-slate-600 2xl:block">
               {ktmBrand.tagline}
             </p>
           </div>
@@ -116,8 +116,8 @@ export default function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={`rounded px-3 py-2 text-sm font-bold transition ${isActive
-                    ? "bg-opsh-primary text-white"
-                    : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
+                  ? "bg-opsh-primary text-white"
+                  : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
                   }`}
               >
                 {item.shortLabel ?? item.label}
@@ -141,7 +141,7 @@ export default function Navbar() {
                 className="inline-flex items-center gap-2 rounded px-3 py-1.5 text-sm font-black text-opsh-primary transition hover:bg-slate-100"
                 aria-expanded={profileOpen}
               >
-                <span>welcome, {firstName}</span>
+                <span>Hi, {firstName}</span>
                 <span className="h-8 w-8 overflow-hidden rounded-full border border-opsh-primary/30">
                   <ProfileAvatar
                     firstName={firstName}
@@ -185,17 +185,21 @@ export default function Navbar() {
             </Link>
           )}
         </div>
-
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen((open) => !open)}
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded border border-slate-200 text-opsh-primary xl:hidden"
-          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-navigation"
-        >
-          {mobileMenuOpen ? <FaTimes aria-hidden="true" /> : <FaBars aria-hidden="true" />}
-        </button>
+        <div className="flex items-center gap-2 xl:hidden">
+          <span className="rounded border-2 border-blue-200 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-900">
+            Hi! {firstName}
+          </span>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded border border-slate-200 text-xl text-opsh-primary"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {mobileMenuOpen ? <FaTimes aria-hidden="true" /> : <FaBars aria-hidden="true" />}
+          </button>
+        </div>
       </div>
 
       {mobileMenuOpen ? (
@@ -210,8 +214,8 @@ export default function Navbar() {
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`rounded px-3 py-3 text-sm font-bold ${isActive
-                      ? "bg-opsh-primary text-white"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
+                    ? "bg-opsh-primary text-white"
+                    : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
                     }`}
                 >
                   {item.label}

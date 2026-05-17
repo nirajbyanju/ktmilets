@@ -35,7 +35,6 @@ const classTimeOptions = [
   "Day Time",
   "Evening",
   "Weekend",
-  "Global Flex",
   "Need admin suggestion",
 ];
 const examOptions = ["IELTS Academic", "IELTS General Training", "PTE Academic"];
@@ -87,7 +86,6 @@ const fieldGroups: Record<WorkflowKind, FieldConfig[]> = {
       required: true,
       options: instructionOptions,
     },
-    { name: "targetScore", label: "Target score / band", type: "text", required: true },
     {
       name: "paymentMethod",
       label: "Payment method",
