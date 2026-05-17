@@ -1,13 +1,21 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
+  FaBook,
+  FaClipboardList,
   FaEnvelope,
   FaFacebookF,
+  FaHome,
   FaInstagram,
   FaMapMarkerAlt,
+  FaPencilAlt,
   FaPhoneAlt,
   FaRegCalendarCheck,
   FaTiktok,
+  FaUserPlus,
   FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa";
@@ -26,7 +34,16 @@ const whatsappUrl = `https://api.whatsapp.com/send?phone=${ktmContact.whatsappDi
   "Hello KTM Test Prep, I would like to know more about IELTS/PTE online classes."
 )}`;
 
+const mobileNavItems = [
+  { href: "/", label: "Home", Icon: FaHome },
+  { href: "/demo", label: "Courses", Icon: FaBook },
+  { href: "/exam-booking", label: "Exam", Icon: FaClipboardList },
+  { href: "/mock-tests", label: "Practice", Icon: FaPencilAlt },
+  { href: "/registration", label: "Register", Icon: FaUserPlus },
+];
+
 export default function Footer() {
+  const pathname = usePathname();
   return (
     <>
       <footer className="mt-16 bg-opsh-primary text-white">
@@ -64,7 +81,7 @@ export default function Footer() {
               </p>
             </div>
 
-            <div>
+            <div className="hidden sm:block">
               <h2 className="text-sm font-black uppercase tracking-wide text-white/80">
                 Main Pages
               </h2>
@@ -79,7 +96,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            <div>
+            <div className="hidden sm:block">
               <h2 className="text-sm font-black uppercase tracking-wide text-white/80">
                 Student Actions
               </h2>
@@ -170,6 +187,9 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Mobile-only quick links */}
+          
+
           <div className="mt-10 border-t border-white/15 pt-6 text-sm text-white/70 md:flex md:items-center md:justify-between">
             <p>{ktmBrand.officialName} &copy; 2026 All Rights Reserved</p>
             <p className="mt-2 md:mt-0">Putalisadak, Kathmandu, Nepal</p>
@@ -177,34 +197,21 @@ export default function Footer() {
         </div>
       </footer>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-2 py-2 shadow-[0_-10px_30px_rgba(15,23,42,0.12)] backdrop-blur md:hidden">
-        <div className="mx-auto grid max-w-md grid-cols-4 gap-1">
-          <Link
-            href="/registration"
-            className="rounded px-2 py-2 text-center text-xs font-black text-opsh-primary"
-          >
-            Register
-          </Link>
-          <Link
-            href="/demo"
-            className="rounded px-2 py-2 text-center text-xs font-black text-opsh-primary"
-          >
-            Demo
-          </Link>
-          <Link
-            href="/mock-tests"
-            className="rounded px-2 py-2 text-center text-xs font-black text-opsh-primary"
-          >
-            Mock
-          </Link>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            className="rounded bg-emerald-600 px-2 py-2 text-center text-xs font-black text-white"
-          >
-            WhatsApp
-          </a>
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 shadow-[0_-10px_30px_rgba(15,23,42,0.12)] backdrop-blur md:hidden">
+        <div className="mx-auto grid max-w-md grid-cols-5">
+          {mobileNavItems.map(({ href, label, Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex flex-col items-center gap-1 px-1 py-2.5 transition ${active ? "text-opsh-primary" : "text-slate-500 hover:text-opsh-primary"}`}
+              >
+                <Icon className="text-xl" aria-hidden="true" />
+                <span className="text-[10px] font-bold leading-none">{label}</span>
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </>
