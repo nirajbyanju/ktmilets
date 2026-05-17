@@ -197,23 +197,7 @@ export default function Footer() {
         </div>
       </footer>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 shadow-[0_-10px_30px_rgba(15,23,42,0.12)] backdrop-blur md:hidden">
-        <div className="mx-auto grid max-w-md grid-cols-5">
-          {mobileNavItems.map(({ href, label, Icon }) => {
-            const active = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`flex flex-col items-center gap-1 px-1 py-2.5 transition ${active ? "text-opsh-primary" : "text-slate-500 hover:text-opsh-primary"}`}
-              >
-                <Icon className="text-xl" aria-hidden="true" />
-                <span className="text-[10px] font-bold leading-none">{label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
+      
     </>
   );
 }

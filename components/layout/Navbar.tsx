@@ -205,33 +205,25 @@ export default function Navbar() {
       {mobileMenuOpen ? (
         <div id="mobile-navigation" className="border-t border-slate-200 bg-white xl:hidden">
           <nav className="mx-auto grid max-w-7xl gap-1 px-4 py-4" aria-label="Mobile navigation">
-            {publicNavItems.map((item) => {
-              const isActive = isActivePath(pathname, item.href);
+            {/* {publicNavItems.map((item) => { */}
+              
 
-              return (
+        
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  
+                  href="/about"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded px-3 py-3 text-sm font-bold ${isActive
+                  className={`rounded px-3 py-3 text-sm font-bold transition 
                     ? "bg-opsh-primary text-white"
                     : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
                     }`}
                 >
-                  {item.label}
+                  About Us
                 </Link>
-              );
-            })}
+            
+            {/* })} */}
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                className="inline-flex items-center justify-center gap-2 rounded border border-emerald-200 bg-emerald-50 px-3 py-3 text-sm font-bold text-emerald-700"
-              >
-                <FaWhatsapp aria-hidden="true" />
-                WhatsApp
-              </a>
+             
               <Link
                 href="/registration"
                 onClick={() => setMobileMenuOpen(false)}
