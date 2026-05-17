@@ -12,7 +12,14 @@ import useAuthStore from "@/stores/auth/AuthStore";
 import useOptionStore from "@/stores/common/OptionStore";
 import { canAccessEnrollments, canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
 
-const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/settings/profile", "/admin/exam-booking"];
+const studentAllowedPaths = [
+  "/admin/dashboard",
+  "/admin/invoices",
+  "/admin/enrollments",
+  "/admin/exam-bookings",
+  "/admin/settings/profile",
+  "/admin/exam-booking",
+];
 
 export default function AdminLayout({
   children,
@@ -36,6 +43,7 @@ export default function AdminLayout({
     permissions,
     directPermissions,
     user,
+    menu,
   } = useAuthStore();
 
   const {
@@ -104,8 +112,13 @@ export default function AdminLayout({
       return;
     }
 
+    const menuPaths = menu.flatMap((item) => [
+      item.path,
+      ...(item.children ?? []).map((child) => child.path),
+    ]).filter(Boolean);
+
     const enrollmentPaths = enrollmentAllowed ? ["/admin/enrollments"] : [];
-    const allowedPaths = [...studentAllowedPaths, ...enrollmentPaths];
+    const allowedPaths = [...studentAllowedPaths, ...enrollmentPaths, ...menuPaths];
     const isAllowed =
       pathname === "/admin" ||
       allowedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
@@ -113,7 +126,7 @@ export default function AdminLayout({
     if (!isAllowed) {
       router.replace("/admin/invoices");
     }
-  }, [canManageSystem, enrollmentAllowed, isAuthenticated, isReady, pathname, router]);
+  }, [canManageSystem, enrollmentAllowed, isAuthenticated, isReady, menu, pathname, router]);
 
   useEffect(() => {
     if (!isReady || !isAuthenticated || !canManageSystem || canManageUserAccounts) {

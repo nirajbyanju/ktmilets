@@ -16,6 +16,7 @@ import {
   canAccessEnrollments,
   isPrivilegedUser,
   removeUserManagementMenus,
+  studentPortalMenu,
 } from '@/data/adminMenu';
 import { AppMenuItem } from '@/types/rbac';
 
@@ -70,14 +71,18 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
 
   const ENROLLMENT_PATHS = ['/admin/enrollments', '/admin/students'];
 
-  const baseMenu =
-    canManageSystem && !canManageUserAccounts
-      ? removeUserManagementMenus(menu)
-      : menu;
-
-  const sidebarMenu = enrollmentAllowed
-    ? baseMenu
-    : baseMenu.filter((item) => !ENROLLMENT_PATHS.includes(item.path));
+  let sidebarMenu: AppMenuItem[];
+  if (!canManageSystem) {
+    sidebarMenu = studentPortalMenu;
+  } else {
+    const baseMenu =
+      !canManageUserAccounts
+        ? removeUserManagementMenus(menu)
+        : menu;
+    sidebarMenu = enrollmentAllowed
+      ? baseMenu
+      : baseMenu.filter((item) => !ENROLLMENT_PATHS.includes(item.path));
+  }
 
   const toggleSubmenu = (id: string) => {
     setSubmenuStates((current) => ({ ...current, [id]: !current[id] }));

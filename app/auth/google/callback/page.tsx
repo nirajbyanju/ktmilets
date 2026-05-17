@@ -11,7 +11,7 @@ import type { AuthSessionPayload } from '@/types/auth/LoginTypes';
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
-  const { setToken, loadUserMenu } = useAuthStore();
+  const { setToken, loadUserMenu, markPasswordSet } = useAuthStore();
 
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [error, setError] = useState('');
@@ -83,6 +83,7 @@ export default function GoogleCallbackPage() {
     return (
       <SetPasswordModal
         onSuccess={() => {
+          markPasswordSet();
           void loadUserMenu().then(() => router.replace('/admin/courses'));
         }}
       />
