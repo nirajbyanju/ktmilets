@@ -187,7 +187,7 @@ export default async function IeltsPage() {
             </div>
           </div>
           <Image
-            src="/students-study.svg"
+            src="/student2.jpeg"
             alt="Student preparing for computer-based IELTS online"
             width={720}
             height={520}

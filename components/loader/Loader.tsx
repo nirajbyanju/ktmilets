@@ -12,7 +12,7 @@ export default function AdminLoader({
   hint = "The page will appear once the initial data is ready.",
 }: AdminLoaderProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-opsh-background via-opsh-white-pure to-opsh-grey-light">
+    <div className="min-h-screen bg-slate-50">
       <div className="mx-auto flex min-h-screen max-w-opsh items-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,360px),minmax(0,1fr)] lg:items-center">
           <section className="rounded-opsh-xl border border-opsh-grey bg-white/90 p-6 shadow-opsh-lg backdrop-blur-sm sm:p-8">
@@ -41,7 +41,7 @@ export default function AdminLoader({
 
             <div className="mt-6 space-y-3">
               <div className="h-2 overflow-hidden rounded-full bg-opsh-grey">
-                <div className="h-full w-1/2 animate-pulse rounded-full bg-gradient-to-r from-opsh-primary to-opsh-fourth" />
+                <div className="h-full w-1/2 animate-pulse rounded-full bg-opsh-primary" />
               </div>
               <p className="text-xs uppercase tracking-[0.18em] text-opsh-muted">
                 {hint}

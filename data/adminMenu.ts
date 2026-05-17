@@ -35,10 +35,34 @@ export const invoicesMenuItem: AppMenuItem = {
 };
 
 export const enrollmentsMenuItem: AppMenuItem = {
-  id: "my-enrollments",
-  name: "My Courses",
-  icon: "FaBookOpen",
+  id: "enrollments",
+  name: "Enrollments",
+  icon: "FaUserGraduate",
   path: "/admin/enrollments",
+  children: [],
+};
+
+export const examBookingsMenuItem: AppMenuItem = {
+  id: "exam-bookings",
+  name: "Exam Bookings",
+  icon: "FaPassport",
+  path: "/admin/exam-bookings",
+  children: [],
+};
+
+export const contactMessagesMenuItem: AppMenuItem = {
+  id: "contact-messages",
+  name: "Messages",
+  icon: "FaEnvelope",
+  path: "/admin/contact-messages",
+  children: [],
+};
+
+export const messageTemplatesMenuItem: AppMenuItem = {
+  id: "message-templates",
+  name: "Message Templates",
+  icon: "FaCommentDots",
+  path: "/admin/message-templates",
   children: [],
 };
 
@@ -91,6 +115,19 @@ export const isAdminUser = (source: {
   );
 };
 
+export const KTM_ENROLLMENT_EMAIL = 'ktm.testprep@gmail.com';
+
+export const canAccessEnrollments = (
+  email: string | null | undefined,
+  roles?: string[]
+): boolean => {
+  const normalizedEmail = (typeof email === 'string' ? email : '').toLowerCase();
+  if (normalizedEmail === KTM_ENROLLMENT_EMAIL) return true;
+  if (!roles || roles.length === 0) return false;
+  const roleSet = new Set(roles.map((r) => r.toLowerCase()));
+  return roleSet.has('super admin');
+};
+
 export const removeUserManagementMenus = (menuItems: AppMenuItem[]): AppMenuItem[] =>
   menuItems
     .filter((item) => item.path !== userManagementMenuItem.path && item.path !== "/admin/rbac")
@@ -99,20 +136,39 @@ export const removeUserManagementMenus = (menuItems: AppMenuItem[]): AppMenuItem
       children: removeUserManagementMenus(item.children ?? []),
     }));
 
-export const fallbackAdminMenu: AppMenuItem[] = [
-  courseCatalogMenuItem,
-  invoicesMenuItem,
-  enrollmentsMenuItem,
- 
-  userManagementMenuItem,
+export const studentsMenuItem: AppMenuItem = {
+  id: "students",
+  name: "Students",
+  icon: "FaClipboardList",
+  path: "/admin/students",
+  children: [],
+};
 
+export const teachersMenuItem: AppMenuItem = {
+  id: "teachers",
+  name: "Teachers",
+  icon: "FaChalkboardTeacher",
+  path: "/admin/teachers",
+  children: [],
+};
+
+export const fallbackAdminMenu: AppMenuItem[] = [
+  courseCatalogMenuItem,           // order 1
+  invoicesMenuItem,                // order 2
+  enrollmentsMenuItem,             // order 3
+  studentsMenuItem,                // order 4
+  teachersMenuItem,                // order 5
+  examBookingsMenuItem,            // order 6
+  contactMessagesMenuItem,         // order 6
+  messageTemplatesMenuItem,
   {
     id: "access-control",
     name: "Access Control",
     icon: "FaUserShield",
     path: "/admin/rbac",
     children: [],
-  },
+  },                               // order 7
+  userManagementMenuItem,          // order 8
   {
     id: "settings",
     name: "Settings",
@@ -128,7 +184,7 @@ export const fallbackAdminMenu: AppMenuItem[] = [
         children: [],
       },
     ],
-  },
+  },                               // order 9
 ];
 
 export const ensureSettingsProfileMenu = (menuItems: AppMenuItem[]): AppMenuItem[] => {

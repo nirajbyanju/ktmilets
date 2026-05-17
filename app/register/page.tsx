@@ -211,8 +211,7 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen bg-white">
       <div
-        style={{ backgroundColor: "#E1E6F2" }}
-        className="relative hidden w-1/3 flex-col items-center justify-center p-10 md:flex"
+        className="relative hidden w-1/3 flex-col items-center justify-center bg-[#E1E6F2] p-10 md:flex"
       >
         <div className="relative w-full max-w-xs text-center">
           <Carousel
@@ -239,7 +238,7 @@ export default function RegisterPage() {
             ))}
           </Carousel>
 
-          <h1 className="mt-20 mb-4 text-4xl font-semibold text-opsh-primary">
+          <h1 className="mt-20 mb-4 text-4xl font-black text-opsh-primary">
             Join Us
           </h1>
           <p className="text-sm font-medium text-gray-600">
@@ -247,15 +246,12 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <p className="absolute bottom-10 right-10 mt-2 text-sm font-medium text-gray-600">
-          Version 0.1.00
-        </p>
       </div>
 
       <div className="flex w-full flex-col items-center justify-center p-6 sm:p-10 md:w-2/3">
         <div className="w-full max-w-md">
           <div className="mb-6">
-            <h2 className="mb-2 text-3xl font-bold text-opsh-primary">
+            <h2 className="mb-2 text-3xl font-black text-opsh-primary">
               Create your account
             </h2>
             <p className="text-gray-400">
@@ -279,13 +275,13 @@ export default function RegisterPage() {
                 id="reg-name"
                 {...register("name")}
                 className={`block w-full rounded-lg border-2 bg-transparent py-3.5 ps-6 pe-4 text-sm text-gray-900 appearance-none focus:bg-white focus:outline-none peer ${
-                  errors.name ? "border-red-500" : "border-gray-400"
+                  errors.name ? "border-red-500" : "border-gray-200"
                 }`}
                 placeholder=" "
               />
               <label
                 htmlFor="reg-name"
-                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-600"
+                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-opsh-primary"
               >
                 Full Name
               </label>
@@ -300,13 +296,13 @@ export default function RegisterPage() {
                 id="reg-email"
                 {...register("email")}
                 className={`block w-full rounded-lg border-2 bg-transparent py-3.5 ps-6 pe-4 text-sm text-gray-900 appearance-none focus:bg-white focus:outline-none peer ${
-                  errors.email ? "border-red-500" : "border-gray-400"
+                  errors.email ? "border-red-500" : "border-gray-200"
                 }`}
                 placeholder=" "
               />
               <label
                 htmlFor="reg-email"
-                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-600"
+                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-opsh-primary"
               >
                 Email
               </label>
@@ -321,13 +317,13 @@ export default function RegisterPage() {
                 id="reg-phone"
                 {...register("phone")}
                 className={`block w-full rounded-lg border-2 bg-transparent py-3.5 ps-6 pe-4 text-sm text-gray-900 appearance-none focus:bg-white focus:outline-none peer ${
-                  errors.phone ? "border-red-500" : "border-gray-400"
+                  errors.phone ? "border-red-500" : "border-gray-200"
                 }`}
                 placeholder=" "
               />
               <label
                 htmlFor="reg-phone"
-                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-600"
+                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-400 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-opsh-primary"
               >
                 Phone Number
               </label>
@@ -342,7 +338,7 @@ export default function RegisterPage() {
                 id="reg-password"
                 {...register("password")}
                 className={`block w-full rounded-lg border-2 bg-transparent py-3.5 ps-6 pe-10 text-sm text-gray-900 appearance-none focus:bg-white focus:outline-none peer ${
-                  errors.password ? "border-red-500" : "border-gray-400"
+                  errors.password ? "border-red-500" : "border-gray-200"
                 }`}
                 placeholder=" "
               />
@@ -355,7 +351,7 @@ export default function RegisterPage() {
               </button>
               <label
                 htmlFor="reg-password"
-                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-500 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-600"
+                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-500 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-opsh-primary"
               >
                 Password
               </label>
@@ -370,7 +366,7 @@ export default function RegisterPage() {
                 id="reg-confirm-password"
                 {...register("confirmPassword")}
                 className={`block w-full rounded-lg border-2 bg-transparent py-3.5 ps-6 pe-10 text-sm text-gray-900 appearance-none focus:bg-white focus:outline-none peer ${
-                  errors.confirmPassword ? "border-red-500" : "border-gray-400"
+                  errors.confirmPassword ? "border-red-500" : "border-gray-200"
                 }`}
                 placeholder=" "
               />
@@ -383,7 +379,7 @@ export default function RegisterPage() {
               </button>
               <label
                 htmlFor="reg-confirm-password"
-                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-500 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-600"
+                className="absolute top-3 z-10 origin-[0] -translate-y-6 scale-75 bg-white text-md text-gray-500 duration-300 peer-placeholder-shown:start-6 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:translate-x-5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-opsh-primary"
               >
                 Confirm Password
               </label>
@@ -407,7 +403,7 @@ export default function RegisterPage() {
                 Already have an account?{" "}
                 <Link
                   href="/login"
-                  className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                  className="font-semibold text-opsh-primary hover:text-opsh-primary/80 hover:underline"
                 >
                   Login here
                 </Link>

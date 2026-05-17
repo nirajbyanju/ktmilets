@@ -31,8 +31,7 @@ import {
 } from "@/helper/blog/public";
 import type { Blog, Blogs, TableOfContentsItem } from "@/types/blog";
 
-const pageShellClass =
-  "min-h-screen bg-gradient-to-br from-opsh-background via-opsh-white-pure to-opsh-grey-light";
+const pageShellClass = "min-h-screen bg-slate-50";
 const cardClass =
   "rounded-opsh-xl border border-opsh-grey bg-white/95 shadow-opsh-sm backdrop-blur-sm";
 
@@ -141,7 +140,7 @@ function RelatedArticleCard({ blog }: { blog: Blogs }) {
             alt={blog.title}
             className="h-48 w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-opsh-black-dark/70 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-black/40" />
           <span className="absolute left-4 top-4 rounded-full bg-opsh-primary px-3 py-1 text-xs font-semibold text-white">
             {getBlogCategoryLabel(blog)}
           </span>
@@ -346,7 +345,7 @@ export default function BlogDetailsPage() {
               alt={blog.title}
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-opsh-black-dark/80 via-opsh-black-dark/45 to-opsh-black-dark/20" />
+            <div className="absolute inset-0 bg-black/50" />
             <div className="relative flex h-full items-end px-6 py-8 sm:px-8 sm:py-10">
               <div className="max-w-4xl flex flex-col gap-6">
                 <div className="flex flex-wrap items-center gap-3">

@@ -13,7 +13,7 @@ export default function ContactUsContent() {
               aria-hidden="true"
               className="relative h-full w-full bg-cover bg-center"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-opsh-primary-dark via-opsh-primary to-[#0b6f6a] " />
+              <div className="absolute inset-0 bg-opsh-primary" />
             </div>
           </div>
 

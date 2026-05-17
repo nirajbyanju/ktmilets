@@ -253,8 +253,8 @@ export default function ProfileSettingsView() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-opsh-background via-opsh-background-dark to-opsh-background px-4 py-5 md:px-6">
-      <section className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-opsh-primary via-[#055853] to-opsh-fourth text-white shadow-opsh-lg">
+    <div className="min-h-screen bg-slate-50 px-4 py-5 md:px-6">
+      <section className="mb-6 overflow-hidden rounded-2xl bg-opsh-primary text-white shadow-opsh-lg">
         <div className="grid gap-6 px-6 py-6 lg:grid-cols-[auto,1fr,auto] lg:items-center">
           <div className="flex items-center gap-4">
             <ProfileAvatar

@@ -1,9 +1,10 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 import { FaCalendarAlt, FaMapMarkerAlt, FaPassport, FaRedoAlt, FaSpinner } from 'react-icons/fa';
 
-import { getMyExamBookings } from '@/apis/examBooking.api';
+import { getMyExamBookings, updateExamBooking } from '@/apis/examBooking.api';
 import {
   EXAM_BOOKING_STATUSES,
   STATUS_WORKFLOW,
@@ -83,8 +84,62 @@ function StatusStepper({ status }: { status: ExamBookingStatus }) {
   );
 }
 
-function BookingCard({ booking }: { booking: ExamBooking }) {
-  const fmt = (d: string) => new Date(d).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' });
+function AdminStatusSelect({
+  booking,
+  onUpdated,
+}: {
+  booking: ExamBooking;
+  onUpdated: () => void;
+}) {
+  const mutation = useMutation({
+    mutationFn: (newStatus: ExamBookingStatus) =>
+      updateExamBooking(booking.id, {
+        status:                      newStatus,
+        payment_status:              booking.payment_status ?? 'pending',
+        available_slot_checked:      booking.available_slot_checked ?? false,
+        pte_login_details_received:  booking.pte_login_details_received ?? false,
+        admin_notes:                 booking.admin_notes ?? '',
+      }),
+    onSuccess: () => {
+      toast.success('Status updated.');
+      onUpdated();
+    },
+    onError: () => toast.error('Failed to update status.'),
+  });
+
+  return (
+    <div className="flex items-center gap-2">
+      <label className="text-xs font-semibold text-gray-500">Change status:</label>
+      <div className="relative">
+        <select
+          value={booking.status}
+          disabled={mutation.isPending}
+          onChange={(e) => mutation.mutate(e.target.value as ExamBookingStatus)}
+          className="rounded-lg border border-opsh-primary/30 bg-opsh-primary/5 py-1.5 pl-3 pr-7 text-xs font-semibold text-opsh-primary focus:border-opsh-primary focus:outline-none focus:ring-2 focus:ring-opsh-primary/20 disabled:opacity-50 appearance-none cursor-pointer"
+        >
+          {EXAM_BOOKING_STATUSES.map((s) => (
+            <option key={s.value} value={s.value}>{s.label}</option>
+          ))}
+        </select>
+        {mutation.isPending && (
+          <FaSpinner className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 animate-spin text-xs text-opsh-primary" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BookingCard({
+  booking,
+  isAdmin,
+  onRefetch,
+}: {
+  booking: ExamBooking;
+  isAdmin: boolean;
+  onRefetch: () => void;
+}) {
+  const fmt = (d: string) =>
+    new Date(d).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' });
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
@@ -98,7 +153,13 @@ function BookingCard({ booking }: { booking: ExamBooking }) {
           </div>
           <p className="mt-1 text-sm font-semibold text-gray-800">{booking.passport_name}</p>
         </div>
-        <StatusBadge status={booking.status} />
+
+        {/* Status: read-only badge for users, inline selector for admins */}
+        {isAdmin ? (
+          <AdminStatusSelect booking={booking} onUpdated={onRefetch} />
+        ) : (
+          <StatusBadge status={booking.status} />
+        )}
       </div>
 
       <div className="mt-4 grid gap-2 text-sm text-gray-600 sm:grid-cols-2">
@@ -108,7 +169,7 @@ function BookingCard({ booking }: { booking: ExamBooking }) {
         </div>
         <div className="flex items-center gap-2">
           <FaMapMarkerAlt className="shrink-0 text-opsh-primary/60" />
-          <span className="truncate">{booking.test_location}</span>
+          <span className="truncate">{booking.preferred_test_centre}</span>
         </div>
         <div className="flex items-center gap-2">
           <FaPassport className="shrink-0 text-opsh-primary/60" />
@@ -119,6 +180,7 @@ function BookingCard({ booking }: { booking: ExamBooking }) {
         </div>
       </div>
 
+      {/* Status stepper — always shown for context */}
       <StatusStepper status={booking.status} />
 
       {booking.admin_notes && (
@@ -138,11 +200,16 @@ function BookingCard({ booking }: { booking: ExamBooking }) {
   );
 }
 
-export default function MyExamBookings() {
+export default function MyExamBookings({ isAdmin = false }: { isAdmin?: boolean }) {
+  const queryClient = useQueryClient();
   const { data: bookings, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['my-exam-bookings'],
     queryFn: getMyExamBookings,
   });
+
+  const handleRefetch = () => {
+    void queryClient.invalidateQueries({ queryKey: ['my-exam-bookings'] });
+  };
 
   return (
     <div className="space-y-4">
@@ -174,7 +241,12 @@ export default function MyExamBookings() {
       ) : (
         <div className="space-y-4">
           {bookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
+            <BookingCard
+              key={booking.id}
+              booking={booking}
+              isAdmin={isAdmin}
+              onRefetch={handleRefetch}
+            />
           ))}
         </div>
       )}

@@ -7,11 +7,12 @@ import AdminFooter from "@/components/layout/AdminFooter";
 import AdminLoader from "@/components/loader/Loader";
 import AdminNavbar from "@/components/layout/AdminNavbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
+import SetPasswordModal from "@/components/auth/SetPasswordModal";
 import useAuthStore from "@/stores/auth/AuthStore";
 import useOptionStore from "@/stores/common/OptionStore";
-import { canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
+import { canAccessEnrollments, canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
 
-const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/enrollments", "/admin/settings/profile", "/admin/exam-booking"];
+const studentAllowedPaths = ["/admin/dashboard", "/admin/invoices", "/admin/settings/profile", "/admin/exam-booking"];
 
 export default function AdminLayout({
   children,
@@ -30,9 +31,11 @@ export default function AdminLayout({
     token,
     initializeAuth,
     loadUserMenu,
+    markPasswordSet,
     roles,
     permissions,
     directPermissions,
+    user,
   } = useAuthStore();
 
   const {
@@ -42,6 +45,10 @@ export default function AdminLayout({
 
   const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
   const canManageUserAccounts = canManageUsers({ roles });
+  const userEmail = typeof (user as Record<string, unknown> | null)?.email === 'string'
+    ? (user as Record<string, unknown>).email as string
+    : '';
+  const enrollmentAllowed = canAccessEnrollments(userEmail, roles);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -97,14 +104,16 @@ export default function AdminLayout({
       return;
     }
 
+    const enrollmentPaths = enrollmentAllowed ? ["/admin/enrollments"] : [];
+    const allowedPaths = [...studentAllowedPaths, ...enrollmentPaths];
     const isAllowed =
       pathname === "/admin" ||
-      studentAllowedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+      allowedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
     if (!isAllowed) {
       router.replace("/admin/invoices");
     }
-  }, [canManageSystem, isAuthenticated, isReady, pathname, router]);
+  }, [canManageSystem, enrollmentAllowed, isAuthenticated, isReady, pathname, router]);
 
   useEffect(() => {
     if (!isReady || !isAuthenticated || !canManageSystem || canManageUserAccounts) {
@@ -133,6 +142,19 @@ export default function AdminLayout({
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  // Block admin access until Google-signup users set a password
+  const needsPasswordSetup = (user as Record<string, unknown> | null)?.has_password === false;
+  if (needsPasswordSetup) {
+    return (
+      <SetPasswordModal
+        onSuccess={() => {
+          markPasswordSet();
+          void loadUserMenu();
+        }}
+      />
+    );
   }
 
   return (

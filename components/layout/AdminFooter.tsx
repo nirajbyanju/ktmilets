@@ -1,14 +1,14 @@
 
-const AdminLoader: React.FC = () => {
-    return (
-      <div className="bg-slate-50 border-t border-gray-300 py-2 px-6 text-center">
-        <div className="text-gray-700 text-xs flex gap-3 flex-row-reverse">
-            <span>Opportunitiessharing.com</span>
-            <span>Software version 1.0.1</span>
-        </div>
+const AdminFooter: React.FC = () => {
+  return (
+    <footer className="border-t border-gray-100 bg-white px-6 py-2.5">
+      <div className="flex items-center justify-between gap-3 text-xs text-gray-400">
+        <span className="font-semibold text-opsh-primary/70">KTM Test Preparation Centre</span>
+        <span>Admin Panel &copy; {new Date().getFullYear()}</span>
       </div>
-    );
-  };
-  
-  export default AdminLoader;
+    </footer>
+  );
+};
+
+export default AdminFooter;
   

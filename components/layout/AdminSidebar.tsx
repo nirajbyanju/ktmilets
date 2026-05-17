@@ -11,6 +11,12 @@ import { IconType } from 'react-icons';
 
 import Logo from '@/public/apple-icon.png';
 import useAuthStore from '@/stores/auth/AuthStore';
+import {
+  canManageUsers,
+  canAccessEnrollments,
+  isPrivilegedUser,
+  removeUserManagementMenus,
+} from '@/data/adminMenu';
 import { AppMenuItem } from '@/types/rbac';
 
 interface AdminSidebarProps {
@@ -52,9 +58,26 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
   const pathname = usePathname();
   const menu = useAuthStore((state) => state.menu);
   const user = useAuthStore((state) => state.user);
+  const roles = useAuthStore((state) => state.roles);
+  const permissions = useAuthStore((state) => state.permissions);
+  const directPermissions = useAuthStore((state) => state.directPermissions);
   const [submenuStates, setSubmenuStates] = useState<Record<string, boolean>>({});
 
-  const sidebarMenu = menu;
+  const canManageSystem = isPrivilegedUser({ roles, permissions, directPermissions });
+  const canManageUserAccounts = canManageUsers({ roles });
+  const userEmail = toText(user?.email);
+  const enrollmentAllowed = canAccessEnrollments(userEmail, roles);
+
+  const ENROLLMENT_PATHS = ['/admin/enrollments', '/admin/students'];
+
+  const baseMenu =
+    canManageSystem && !canManageUserAccounts
+      ? removeUserManagementMenus(menu)
+      : menu;
+
+  const sidebarMenu = enrollmentAllowed
+    ? baseMenu
+    : baseMenu.filter((item) => !ENROLLMENT_PATHS.includes(item.path));
 
   const toggleSubmenu = (id: string) => {
     setSubmenuStates((current) => ({ ...current, [id]: !current[id] }));
@@ -105,8 +128,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
                             onClick={() => toggleSubmenu(item.id)}
                             className={`group flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-all duration-200 ${
                               isOpen || isActiveParent
-                                ? 'bg-opsh-primary/5 text-opsh-primary'
-                                : 'hover:bg-gray-50 text-gray-700 hover:text-blue-600'
+                                ? 'bg-opsh-primary/10 text-opsh-primary font-semibold'
+                                : 'hover:bg-opsh-primary/5 text-gray-700 hover:text-opsh-primary'
                             } ${isExpand ? 'pr-3' : 'justify-center'}`}
                             title={!isExpand ? item.name : undefined}
                           >
@@ -150,12 +173,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
                                       href={child.path || '#'}
                                       className={`flex items-center py-2 px-3 rounded-lg transition-all duration-200 text-sm ${
                                         isChildActive
-                                          ? 'bg-opsh-primary/5 text-opsh-primary font-medium'
-                                          : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
+                                          ? 'bg-opsh-primary/10 text-opsh-primary font-semibold'
+                                          : 'text-gray-600 hover:bg-opsh-primary/5 hover:text-opsh-primary'
                                       } ${!isExpand ? 'justify-center' : ''}`}
                                       title={!isExpand ? child.name : undefined}
                                     >
-                                      {isExpand && <span className="mr-2 text-xs">-</span>}
+                                      {isExpand && <span className="mr-2 text-xs opacity-40">›</span>}
                                       {isExpand && <span className="truncate">{child.name}</span>}
                                     </Link>
                                   </li>
@@ -169,8 +192,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isExpand }) => {
                           href={item.path || '#'}
                           className={`group flex items-center px-3 py-2.5 rounded-lg transition-all duration-200 ${
                             isActive
-                              ? 'bg-opsh-primary/5 text-opsh-primary font-medium'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                              ? 'bg-opsh-primary/10 text-opsh-primary font-semibold'
+                              : 'text-gray-700 hover:bg-opsh-primary/5 hover:text-opsh-primary'
                           } ${isExpand ? 'pr-3' : 'justify-center'}`}
                           title={!isExpand ? item.name : undefined}
                         >

@@ -93,7 +93,7 @@ export default function AboutPage() {
             </div>
           </div>
           <Image
-            src="/students-hero.svg"
+            src="/student4.jpg"
             alt="Students learning in a modern online education setting"
             width={720}
             height={520}

@@ -174,7 +174,7 @@ export default async function PtePage() {
             </div>
           </div>
           <Image
-            src="/students-computer.svg"
+            src="/student3.jpeg"
             alt="Student preparing for PTE Academic online"
             width={720}
             height={520}
