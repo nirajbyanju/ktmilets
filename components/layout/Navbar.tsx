@@ -56,7 +56,7 @@ export default function Navbar() {
   }, []);
 
   const userDetail = toRecord(user?.userdetail) ?? toRecord(user?.userDetail) ?? toRecord(user?.user_detail);
-  const firstName = toText(user?.first_name) || toText(user?.firstName) || toText(user?.name).split(" ")[0] || "Student";
+  const firstName = toText(user?.first_name) || toText(user?.firstName) || toText(user?.name).split(" ")[0] || "";
   const lastName = toText(user?.last_name) || toText(user?.lastName);
   const profilePicture =
     toText(userDetail?.profilePicture) ||
@@ -97,12 +97,21 @@ export default function Navbar() {
             className="h-10 w-auto sm:h-11"
             priority
           />
-          <div className=" min-w-0 md:block">
+          <div className=" min-w-0 hidden md:block">
             <p className="truncate text-xs md:text-sm font-black uppercase tracking-wide text-opsh-primary">
-              {ktmBrand.shortName}
+              {ktmBrand.officialName}
             </p>
             <p className=" hidden md:block truncate  md:text-xs font-semibold text-slate-600 2xl:block">
               {ktmBrand.tagline}
+            </p>
+          </div>
+          <div className="min-w-0 md:hidden leading-tight">
+            <p className="truncate text-xl font-black uppercase tracking-wide text-opsh-primary">
+              KTM Test
+            </p>
+
+            <p className="truncate text-sm font-semibold text-slate-600 -mt-1 2xl:block">
+              Preparation Centre
             </p>
           </div>
         </Link>
@@ -186,9 +195,11 @@ export default function Navbar() {
           )}
         </div>
         <div className="flex items-center gap-2 xl:hidden">
-          <span className="rounded border-2 border-blue-200 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-900">
-            Hi! {firstName}
-          </span>
+          {token && firstName && (
+            <span className="rounded border-2 border-blue-200 bg-blue-100 px-3 py-1.5 text-sm font-bold text-blue-900">
+              Hi! {firstName}
+            </span>
+          )}
           <button
             type="button"
             onClick={() => setMobileMenuOpen((open) => !open)}
@@ -206,30 +217,30 @@ export default function Navbar() {
         <div id="mobile-navigation" className="border-t border-slate-200 bg-white xl:hidden">
           <nav className="mx-auto grid max-w-7xl gap-1 px-4 py-4" aria-label="Mobile navigation">
             {/* {publicNavItems.map((item) => { */}
-              
 
-        
-                <Link
-                  
-                  href="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded px-3 py-3 text-sm font-bold transition 
+
+
+            <Link
+
+              href="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`rounded px-3 py-3 text-sm font-bold transition 
                     ? "bg-opsh-primary text-white"
                     : "text-slate-700 hover:bg-slate-100 hover:text-opsh-primary"
                     }`}
-                >
-                  About Us
-                </Link>
-            
+            >
+              About Us
+            </Link>
+
             {/* })} */}
             <div className="mt-3 grid grid-cols-2 gap-2">
-             
+
               <Link
-                href="/registration"
+                href="/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="rounded bg-opsh-secondary px-3 py-3 text-center text-sm font-black text-white"
               >
-                Register Now
+                Log In / Sign Up
               </Link>
             </div>
             {token ? (

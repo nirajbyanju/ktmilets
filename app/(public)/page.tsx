@@ -186,7 +186,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Stats strip ── */}
+      {/* ── Stats strip ──
       <div className="grid grid-cols-2 divide-x divide-blue-100 border-y border-blue-100 bg-blue-50 sm:grid-cols-4">
         {[
           { strong: "Live", span: "Online Zoom classes" },
@@ -199,10 +199,10 @@ export default function HomePage() {
             <span className="text-xs text-slate-500">{s.span}</span>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* ── Courses ── */}
-      <section className="bg-slate-50 py-14">
+      <section className="bg-slate-50 py-9 md:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">Courses</p>
@@ -407,7 +407,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="bg-slate-50 py-14">
+      <section className="bg-slate-50 py-9 md:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
