@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 
 type Testimonial = {
@@ -16,11 +16,46 @@ export default function TestimonialsSlider({ testimonials }: { testimonials: Tes
   const prev = () => setActive((i) => (i === 0 ? testimonials.length - 1 : i - 1));
   const next = () => setActive((i) => (i === testimonials.length - 1 ? 0 : i + 1));
 
+  // Mobile swipe
+  const swipeStartX = useRef<number | null>(null);
+  const onPointerDown = (e: React.PointerEvent) => { swipeStartX.current = e.clientX; };
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (swipeStartX.current === null) return;
+    const delta = e.clientX - swipeStartX.current;
+    if (Math.abs(delta) > 40) delta < 0 ? next() : prev();
+    swipeStartX.current = null;
+  };
+
+  // Desktop drag-to-scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const scrollStartLeft = useRef(0);
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    scrollStartLeft.current = scrollRef.current?.scrollLeft ?? 0;
+    if (scrollRef.current) scrollRef.current.style.cursor = "grabbing";
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !scrollRef.current) return;
+    scrollRef.current.scrollLeft = scrollStartLeft.current - (e.clientX - dragStartX.current);
+  };
+  const onMouseUp = () => {
+    isDragging.current = false;
+    if (scrollRef.current) scrollRef.current.style.cursor = "grab";
+  };
+
   return (
     <>
-      {/* Mobile: single-item slider */}
+      {/* Mobile: single-item slider with swipe */}
       <div className="md:hidden mt-10">
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm min-h-[220px]">
+        <div
+          className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm min-h-[220px] select-none"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+        >
           {testimonials.map((t, i) => (
             <article
               key={t.name}
@@ -74,12 +109,20 @@ export default function TestimonialsSlider({ testimonials }: { testimonials: Tes
         </div>
       </div>
 
-      {/* Desktop: 3-column grid */}
-      <div className="hidden md:grid mt-10 gap-6 md:grid-cols-3">
+      {/* Desktop: horizontally draggable scroll */}
+      <div
+        ref={scrollRef}
+        className="hidden md:flex mt-10 gap-6 overflow-x-auto pb-2 select-none cursor-grab scrollbar-hide"
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        style={{ scrollbarWidth: "none" }}
+      >
         {testimonials.map((t) => (
           <article
             key={t.name}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm"
+            className="min-w-[300px] max-w-[340px] shrink-0 rounded-xl border border-slate-200 bg-white p-6 shadow-opsh-sm"
           >
             <Image
               src={t.img}

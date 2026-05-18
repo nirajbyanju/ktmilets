@@ -13,7 +13,7 @@ export default function MainLayout({
     <>
       <PublicAuthBootstrap />
       <Navbar />
-      <div className="pb-24 xl:pb-0">{children}</div>
+      <div className="xl:pb-0">{children}</div>
       <FloatingWhatsAppButton />
       <Footer />
       <MobileBottomNav />
