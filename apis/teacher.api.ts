@@ -18,6 +18,8 @@ const normalizeListResponse = (payload: unknown): TeacherListResponse => {
   return { data: [], pagination: fallbackPagination };
 };
 
+// ── Admin CRUD ────────────────────────────────────────────────────────────────
+
 export const getTeachers = (
   params: Record<string, string | number | boolean | null | undefined> = {}
 ): Promise<TeacherListResponse> => {
@@ -40,3 +42,24 @@ export const updateTeacher = (id: number, payload: TeacherInput): Promise<Teache
 
 export const deleteTeacher = (id: number): Promise<unknown> =>
   api.delete(`${ENDPOINT}/${id}`).then(({ data }) => data);
+
+// ── Teacher self-service ──────────────────────────────────────────────────────
+
+export const getMyTeacherProfile = (): Promise<Teacher> =>
+  api.get<Response<Teacher>>('/teacher/profile').then(({ data }) => data.data);
+
+export const updateMyTeacherProfile = (payload: Partial<TeacherInput>): Promise<Teacher> =>
+  api.patch<Response<Teacher>>('/teacher/profile', payload).then(({ data }) => data.data);
+
+export const uploadTeacherProfilePhoto = (file: File): Promise<{ profile_photo: string; url: string }> => {
+  const form = new FormData();
+  form.append('photo', file);
+  return api
+    .post<Response<{ profile_photo: string; url: string }>>('/teacher/profile/photo', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    .then(({ data }) => data.data);
+};
+
+export const deleteTeacherProfilePhoto = (): Promise<void> =>
+  api.delete('/teacher/profile/photo').then(() => undefined);

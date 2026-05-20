@@ -6,18 +6,16 @@ import { FaSpinner } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import useAuthStore from '@/stores/auth/AuthStore';
-import SetPasswordModal from '@/components/auth/SetPasswordModal';
 import type { AuthSessionPayload } from '@/types/auth/LoginTypes';
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
-  const { setToken, loadUserMenu, markPasswordSet } = useAuthStore();
+  const { setToken, loadUserMenu } = useAuthStore();
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    const params   = new URLSearchParams(window.location.search);
     const rawError = params.get('error');
     const session  = params.get('session');
 
@@ -32,26 +30,17 @@ export default function GoogleCallbackPage() {
     }
 
     try {
-      const decoded  = JSON.parse(atob(decodeURIComponent(session))) as AuthSessionPayload & { needs_password?: boolean };
-      const token    = decoded.token ?? decoded.access_token ?? '';
+      const decoded = JSON.parse(atob(decodeURIComponent(session))) as AuthSessionPayload;
+      const token   = decoded.token ?? decoded.access_token ?? '';
 
       if (!token) {
         setError('Invalid session data received.');
         return;
       }
 
-      // Store the session — setToken handles persisting and hydrating roles/menu
       setToken(token, decoded as Record<string, unknown>);
-
-      // Clean the URL immediately
       window.history.replaceState({}, '', '/auth/google/callback');
-
       toast.success('Signed in with Google!');
-
-      if (decoded.needs_password) {
-        setShowPasswordModal(true);
-        return;
-      }
 
       void loadUserMenu().then(() => {
         router.replace('/admin/courses');
@@ -76,17 +65,6 @@ export default function GoogleCallbackPage() {
           </button>
         </div>
       </div>
-    );
-  }
-
-  if (showPasswordModal) {
-    return (
-      <SetPasswordModal
-        onSuccess={() => {
-          markPasswordSet();
-          void loadUserMenu().then(() => router.replace('/admin/courses'));
-        }}
-      />
     );
   }
 

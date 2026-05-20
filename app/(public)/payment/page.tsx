@@ -4,6 +4,8 @@ import QRBank from "@/public/QRBank.jpeg";
 import Image from 'next/image';
 
 import InvoiceCheckout from "@/components/public/ktm/InvoiceCheckout";
+import MockTestCheckout from "@/components/public/ktm/MockTestCheckout";
+import ExamBookingCheckout from "@/components/public/ktm/ExamBookingCheckout";
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
 import { buildPageMetadata, buildWebPageSchema } from "@/helper/seo/site";
 
@@ -37,6 +39,8 @@ export default function PaymentPage() {
           <div>
             <Suspense fallback={null}>
               <InvoiceCheckout />
+              <MockTestCheckout />
+              <ExamBookingCheckout />
             </Suspense>
             </div>
           <div>

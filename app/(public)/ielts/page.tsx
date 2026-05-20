@@ -89,7 +89,7 @@ const calculateDiscount = (batch: Batch) => {
 };
 
 const getSupportValue = (catalog: CourseCatalogPayload | null, type: string, fallback: string) =>
-  catalog?.support_channels.find(
+  catalog?.support_channels?.find(
     (channel) => channel.channel_type.toLowerCase() === type.toLowerCase()
   )?.contact_value ?? fallback;
 
@@ -98,7 +98,7 @@ export default async function IeltsPage() {
   const course = catalog?.courses[0] ?? null;
   const whatsapp = getSupportValue(catalog, "WhatsApp", ktmContact.whatsapp);
   const email = getSupportValue(catalog, "Email", ktmContact.email);
-  const supportSummary = catalog?.support_channels.length
+  const supportSummary = catalog?.support_channels?.length
     ? catalog.support_channels.map((channel) => channel.channel_type).join(", ")
     : "WhatsApp, email, admin, and teacher follow-up";
   const displayedCourseFacts = course
@@ -113,9 +113,9 @@ export default async function IeltsPage() {
       ]
     : courseFacts;
   const displayedSkills =
-    catalog && (catalog.skills_modules.length > 0 || catalog.additional_services.length > 0)
+    catalog && ((catalog.skills_modules?.length ?? 0) > 0 || (catalog.additional_services?.length ?? 0) > 0)
       ? [
-          ...catalog.skills_modules.map((skill) => ({
+          ...(catalog.skills_modules ?? []).map((skill) => ({
             title: skill.skill_name,
             text: [
               skill.topics_covered,
@@ -124,7 +124,7 @@ export default async function IeltsPage() {
               .filter(Boolean)
               .join(" "),
           })),
-          ...catalog.additional_services.map((service) => ({
+          ...(catalog.additional_services ?? []).map((service) => ({
             title: service.service_name,
             text: service.description ?? "Available as an additional student support service.",
           })),

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaRegUser, FaUsers, FaSignOutAlt } from "react-icons/fa";
+import { FaRegUser, FaUsers, FaSignOutAlt, FaFileInvoiceDollar, FaUserGraduate, FaClipboardCheck, FaPassport, FaUserCog } from "react-icons/fa";
 import { RiCustomerService2Fill } from "react-icons/ri";
 import ProfileAvatar from "@/components/profileAvatar/profileAvatar";
 import useAuthStore from "@/stores/auth/AuthStore";
@@ -103,25 +103,72 @@ const ProfileDropdown = ({
       </div>
 
       <div className="py-2">
-        <Link
-          href="/admin/settings/profile"
-          className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-          onClick={onClose}
-        >
-          <FaRegUser className="mr-3 text-gray-500" />
-          My Profile
-        </Link>
+        {!canManageSystem ? (
+          <>
+            <Link
+              href="/admin/invoices"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaFileInvoiceDollar className="mr-3 text-gray-500" />
+              My Invoices
+            </Link>
+            <Link
+              href="/admin/enrollments"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaUserGraduate className="mr-3 text-gray-500" />
+              My Enrollments
+            </Link>
+            <Link
+              href="/admin/mock-tests"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaClipboardCheck className="mr-3 text-gray-500" />
+              My Mock Tests
+            </Link>
+            <Link
+              href="/admin/exam-bookings"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaPassport className="mr-3 text-gray-500" />
+              My Exam Bookings
+            </Link>
+            <Link
+              href="/admin/settings/profile"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaUserCog className="mr-3 text-gray-500" />
+              Profile Settings
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/admin/settings/profile"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+              onClick={onClose}
+            >
+              <FaRegUser className="mr-3 text-gray-500" />
+              My Profile
+            </Link>
 
-        {canManageUsers ? (
-          <Link
-            href="/admin/user-management"
-            className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
-            onClick={onClose}
-          >
-            <FaUsers className="mr-3 text-gray-500" />
-            User Management
-          </Link>
-        ) : null}
+            {canManageUsers ? (
+              <Link
+                href="/admin/user-management"
+                className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition ease-in-out duration-150"
+                onClick={onClose}
+              >
+                <FaUsers className="mr-3 text-gray-500" />
+                User Management
+              </Link>
+            ) : null}
+          </>
+        )}
 
         <Link
           href="/help-support"

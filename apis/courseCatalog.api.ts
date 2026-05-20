@@ -4,15 +4,13 @@ import type {
   CourseCatalogListResponse,
   CourseCatalogResourceKey,
   CourseCatalogResourceMap,
+  CourseModule,
   PaginationMeta,
 } from "@/types/courseCatalog";
 
 const endpoints: Record<CourseCatalogResourceKey, string> = {
   courses: "/courses",
   batches: "/batches",
-  "support-channels": "/support-channels",
-  "skills-modules": "/skills-modules",
-  "additional-services": "/additional-services",
   enrollments: "/enrollments",
 };
 
@@ -27,7 +25,7 @@ export type Invoice = {
   invoice_date: string;
   due_date: string;
   payment_method: string;
-  batch?: { batch_type?: string; course?: { name?: string } };
+  batch?: { batch_type?: string; course?: { course_name?: string } };
   user?: { email?: string; name?: string; first_name?: string; last_name?: string; phone?: string };
 };
 
@@ -150,3 +148,25 @@ export const createInvoice = (batchId: number): Promise<Invoice> =>
 
 export const markInvoicePaid = (invoiceId: number, notes?: string): Promise<Invoice> =>
   api.patch<Response<Invoice>>(`/invoices/${invoiceId}/mark-paid`, { notes }).then(({ data }) => data.data);
+
+export const getCourseModules = (courseId: number): Promise<CourseModule[]> =>
+  api.get<Response<CourseModule[]>>(`/courses/${courseId}/modules`).then(({ data }) => {
+    if (data && typeof data === "object" && Array.isArray(data.data)) return data.data;
+    return [];
+  });
+
+export const createCourseModule = (
+  courseId: number,
+  payload: { module_no: number; title: string; description?: string | null }
+): Promise<CourseModule> =>
+  api.post<Response<CourseModule>>(`/courses/${courseId}/modules`, payload).then(({ data }) => data.data);
+
+export const updateCourseModule = (
+  courseId: number,
+  id: number,
+  payload: Partial<{ module_no: number; title: string; description: string | null }>
+): Promise<CourseModule> =>
+  api.put<Response<CourseModule>>(`/courses/${courseId}/modules/${id}`, payload).then(({ data }) => data.data);
+
+export const deleteCourseModule = (courseId: number, id: number): Promise<unknown> =>
+  api.delete(`/courses/${courseId}/modules/${id}`).then(({ data }) => data);

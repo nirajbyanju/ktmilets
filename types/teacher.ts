@@ -1,7 +1,15 @@
 export type TeacherStatus = 'Active' | 'Backup' | 'Inactive';
 
+export interface TeacherUser {
+  id: number;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+}
+
 export interface Teacher {
   id: number;
+  user_id: number | null;
   teacher_id: string;
   name: string;
   course: string;
@@ -10,6 +18,8 @@ export interface Teacher {
   available_time: string;
   status: TeacherStatus;
   notes: string | null;
+  profile_photo: string | null;
+  user?: TeacherUser | null;
   created_at?: string;
   updated_at?: string;
 }

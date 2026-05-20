@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
@@ -14,16 +15,16 @@ import {
   FaPhoneAlt,
   FaSpinner,
   FaTimes,
-  FaUser,
   FaWhatsapp,
 } from 'react-icons/fa';
 
-import { submitExamBooking } from '@/apis/examBooking.api';
-import type { ExamBookingSubmitPayload, TestType } from '@/types/examBooking';
+import { getExamBookingPlans, submitExamBooking } from '@/apis/examBooking.api';
+import type { ExamBookingEnrollment, ExamBookingPlan, ExamBookingSubmitPayload } from '@/types/examBooking';
+import useAuthStore from '@/stores/auth/AuthStore';
+import LoginModal from '@/components/auth/LoginModal';
 
 type FormValues = {
-  test_type: TestType | '';
-  student_name: string;
+  exam_booking_id: string;
   phone: string;
   email: string;
   preferred_date: string;
@@ -41,38 +42,56 @@ const labelClass = 'block text-sm font-medium text-gray-700 mb-1.5';
 const errorClass = 'mt-1 text-xs text-red-500';
 
 export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void }) {
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const token = useAuthStore((s) => s.token);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileError, setFileError] = useState('');
+  const [fileError, setFileError]       = useState('');
+  const [plans, setPlans]               = useState<ExamBookingPlan[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<ExamBookingPlan | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>({
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState<ExamBookingSubmitPayload | null>(null);
+
+  useEffect(() => {
+    getExamBookingPlans()
+      .then(setPlans)
+      .catch(() => setPlans([]));
+  }, []);
+
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
-      test_type: '',
-      student_name: '',
-      phone: '',
-      email: '',
-      preferred_date: '',
-      preferred_time: '',
+      exam_booking_id:       '',
+      phone:                 '',
+      email:                 '',
+      preferred_date:        '',
+      preferred_time:        '',
       preferred_test_centre: '',
-      passport_name: '',
-      passport_number: '',
-      date_of_birth: '',
-      special_message: '',
+      passport_name:         '',
+      passport_number:       '',
+      date_of_birth:         '',
+      special_message:       '',
     },
   });
 
+  const watchedPlanId = watch('exam_booking_id');
+
+  useEffect(() => {
+    const plan = plans.find((p) => String(p.id) === watchedPlanId) ?? null;
+    setSelectedPlan(plan);
+  }, [watchedPlanId, plans]);
+
   const submitMutation = useMutation({
     mutationFn: (payload: ExamBookingSubmitPayload) => submitExamBooking(payload),
-    onSuccess: () => {
-      toast.success('Booking request submitted successfully! Our team will review and contact you shortly.');
+    onSuccess: (enrollment: ExamBookingEnrollment) => {
+      toast.success('Booking request submitted! Redirecting to payment...');
       reset();
       setSelectedFile(null);
+      setSelectedPlan(null);
       onSuccess?.();
+      router.push(`/payment?exam_booking_id=${enrollment.id}`);
     },
     onError: (error: unknown) => {
       const appError = error as { errors?: Record<string, string[]>; message?: string };
@@ -87,7 +106,6 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
     const file = e.target.files?.[0];
     setFileError('');
     if (!file) { setSelectedFile(null); return; }
-
     if (!['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'].includes(file.type)) {
       setFileError('Only JPG, PNG, or PDF files are allowed.');
       setSelectedFile(null);
@@ -108,37 +126,65 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const today = new Date().toISOString().split('T')[0];
+  const today     = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
   const onSubmit = handleSubmit((values) => {
     if (!selectedFile) { setFileError('Passport copy is required.'); return; }
-    if (!values.test_type) return;
+    if (!values.exam_booking_id) return;
 
-    submitMutation.mutate({
-      test_type:             values.test_type as TestType,
-      student_name:          values.student_name,
+    const payload: ExamBookingSubmitPayload = {
+      exam_booking_id:       parseInt(values.exam_booking_id),
       phone:                 values.phone,
+      contact_number:        values.phone,
       email:                 values.email,
       preferred_date:        values.preferred_date,
       preferred_time:        values.preferred_time || undefined,
       preferred_test_centre: values.preferred_test_centre,
+      test_location:         values.preferred_test_centre,
       passport_name:         values.passport_name,
       passport_number:       values.passport_number,
       date_of_birth:         values.date_of_birth,
       passport_copy:         selectedFile,
       special_message:       values.special_message || undefined,
-    });
+    };
+
+    if (!isAuthenticated || !token) {
+      setPendingPayload(payload);
+      setLoginOpen(true);
+      return;
+    }
+
+    submitMutation.mutate(payload);
   });
 
+  const handleLoginSuccess = () => {
+    setLoginOpen(false);
+    if (pendingPayload) {
+      const payload = pendingPayload;
+      setPendingPayload(null);
+      submitMutation.mutate(payload);
+    }
+  };
+
+  const netPrice = selectedPlan
+    ? Math.max(0, Number(selectedPlan.price ?? 0) - Number(selectedPlan.discount ?? 0))
+    : null;
+
   return (
+    <>
+    <LoginModal
+      isOpen={loginOpen}
+      onClose={() => { setLoginOpen(false); setPendingPayload(null); }}
+      onLoginSuccess={handleLoginSuccess}
+    />
     <div className="space-y-6">
       {/* Header */}
       <div className="rounded-2xl bg-opsh-primary p-5 text-white">
-        <h2 className="text-lg font-bold">IELTS and PTE Exam Booking Support</h2>
+        <h2 className="text-lg font-bold">IELTS / PTE Exam Booking Support</h2>
         <p className="mt-1 text-sm text-white/80">
-          Submit your preferred test type, date, location, and passport details. Our admin team will
-          review and guide you through the next step.
+          Select an exam package, fill in your details, and submit. An invoice will be generated
+          automatically. Our team will review and confirm your booking.
         </p>
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
           <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2">
@@ -159,64 +205,83 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
 
       {/* Status workflow */}
       <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Admin Status Workflow
-        </p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Booking Process</p>
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
-          {['New Request', 'Document Pending', 'Payment Pending', 'Booking in Process', 'Booked'].map(
-            (s, i, arr) => (
-              <span key={s} className="flex items-center gap-1.5">
-                <span className="rounded-full bg-opsh-primary/10 px-2.5 py-1 font-medium text-opsh-primary">
-                  {s}
-                </span>
-                {i < arr.length - 1 && <span className="text-gray-400">→</span>}
-              </span>
-            )
-          )}
+          {['Submit Form', 'Invoice Generated', 'Document Review', 'Booking in Process', 'Confirmed'].map((s, i, arr) => (
+            <span key={s} className="flex items-center gap-1.5">
+              <span className="rounded-full bg-opsh-primary/10 px-2.5 py-1 font-medium text-opsh-primary">{s}</span>
+              {i < arr.length - 1 && <span className="text-gray-400">→</span>}
+            </span>
+          ))}
         </div>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-5">
-        {/* ── Section: Basic Info ── */}
+        {/* ── Plan selection ── */}
         <fieldset className="space-y-4">
           <legend className="text-xs font-black uppercase tracking-wide text-opsh-secondary">
-            Student Information
+            Exam Package
+          </legend>
+
+          <div>
+            <label className={labelClass}>
+              Select exam package <span className="text-red-500">*</span>
+            </label>
+            <select
+              {...register('exam_booking_id', { required: 'Please select an exam package.' })}
+              className={inputClass}
+            >
+              <option value="">— Choose a package —</option>
+              {plans.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.exam_type}{p.exam_name ? ` — ${p.exam_name}` : ''}
+                  {p.price != null && Number(p.price) > 0
+                    ? ` (NPR ${Math.max(0, Number(p.price) - Number(p.discount ?? 0)).toLocaleString('en-NP')})`
+                    : ''}
+                </option>
+              ))}
+            </select>
+            {errors.exam_booking_id && <p className={errorClass}>{errors.exam_booking_id.message}</p>}
+          </div>
+
+          {selectedPlan && (
+            <div className="rounded-xl border border-opsh-primary/20 bg-opsh-primary/5 px-4 py-3">
+              <div className="flex flex-wrap items-center gap-4">
+                <div>
+                  <p className="text-xs text-gray-400">Exam Type</p>
+                  <p className="font-semibold text-opsh-primary">{selectedPlan.exam_type}</p>
+                </div>
+                {selectedPlan.exam_name && (
+                  <div>
+                    <p className="text-xs text-gray-400">Package</p>
+                    <p className="font-semibold text-gray-800">{selectedPlan.exam_name}</p>
+                  </div>
+                )}
+                {netPrice !== null && netPrice > 0 && (
+                  <div>
+                    <p className="text-xs text-gray-400">Fee</p>
+                    <p className="font-bold text-gray-800">NPR {netPrice.toLocaleString('en-NP')}</p>
+                  </div>
+                )}
+                {Number(selectedPlan.discount ?? 0) > 0 && (
+                  <div>
+                    <p className="text-xs text-gray-400">Discount</p>
+                    <p className="text-sm font-medium text-emerald-600">
+                      − NPR {Number(selectedPlan.discount).toLocaleString('en-NP')}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </fieldset>
+
+        {/* ── Student info ── */}
+        <fieldset className="space-y-4">
+          <legend className="text-xs font-black uppercase tracking-wide text-opsh-secondary">
+            Contact Information
           </legend>
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Test type */}
-            <div>
-              <label className={labelClass}>
-                Test type <span className="text-red-500">*</span>
-              </label>
-              <select
-                {...register('test_type', { required: 'Test type is required.' })}
-                className={inputClass}
-              >
-                <option value="">Select test type</option>
-                <option value="IELTS">IELTS</option>
-                <option value="PTE">PTE</option>
-              </select>
-              {errors.test_type && <p className={errorClass}>{errors.test_type.message}</p>}
-            </div>
-
-            {/* Student name */}
-            <div>
-              <label className={labelClass}>
-                <span className="flex items-center gap-1.5">
-                  <FaUser className="text-xs text-opsh-primary" />
-                  Student name <span className="text-red-500">*</span>
-                </span>
-              </label>
-              <input
-                type="text"
-                placeholder="Your full name"
-                {...register('student_name', { required: 'Student name is required.' })}
-                className={inputClass}
-              />
-              {errors.student_name && <p className={errorClass}>{errors.student_name.message}</p>}
-            </div>
-
-            {/* Phone */}
             <div>
               <label className={labelClass}>
                 <span className="flex items-center gap-1.5">
@@ -233,7 +298,6 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
               {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
             </div>
 
-            {/* Email */}
             <div>
               <label className={labelClass}>
                 Email address <span className="text-red-500">*</span>
@@ -252,13 +316,12 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
           </div>
         </fieldset>
 
-        {/* ── Section: Test Preferences ── */}
+        {/* ── Test preferences ── */}
         <fieldset className="space-y-4">
           <legend className="text-xs font-black uppercase tracking-wide text-opsh-secondary">
             Test Preferences
           </legend>
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Preferred date */}
             <div>
               <label className={labelClass}>
                 <span className="flex items-center gap-1.5">
@@ -275,19 +338,13 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
               {errors.preferred_date && <p className={errorClass}>{errors.preferred_date.message}</p>}
             </div>
 
-            {/* Preferred time */}
             <div>
               <label className={labelClass}>
                 Preferred test time <span className="text-xs font-normal text-gray-400">(optional)</span>
               </label>
-              <input
-                type="time"
-                {...register('preferred_time')}
-                className={inputClass}
-              />
+              <input type="time" {...register('preferred_time')} className={inputClass} />
             </div>
 
-            {/* Preferred test centre */}
             <div className="md:col-span-2">
               <label className={labelClass}>
                 <span className="flex items-center gap-1.5">
@@ -301,20 +358,17 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
                 {...register('preferred_test_centre', { required: 'Test centre is required.' })}
                 className={inputClass}
               />
-              {errors.preferred_test_centre && (
-                <p className={errorClass}>{errors.preferred_test_centre.message}</p>
-              )}
+              {errors.preferred_test_centre && <p className={errorClass}>{errors.preferred_test_centre.message}</p>}
             </div>
           </div>
         </fieldset>
 
-        {/* ── Section: Passport / Identity ── */}
+        {/* ── Passport / Identity ── */}
         <fieldset className="space-y-4">
           <legend className="text-xs font-black uppercase tracking-wide text-opsh-secondary">
             Passport &amp; Identity
           </legend>
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Passport name */}
             <div>
               <label className={labelClass}>
                 <span className="flex items-center gap-1.5">
@@ -331,7 +385,6 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
               {errors.passport_name && <p className={errorClass}>{errors.passport_name.message}</p>}
             </div>
 
-            {/* Passport number */}
             <div>
               <label className={labelClass}>
                 <span className="flex items-center gap-1.5">
@@ -348,7 +401,6 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
               {errors.passport_number && <p className={errorClass}>{errors.passport_number.message}</p>}
             </div>
 
-            {/* Date of birth */}
             <div>
               <label className={labelClass}>
                 Date of birth <span className="text-red-500">*</span>
@@ -396,11 +448,7 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
                   <p className="text-xs text-emerald-600">{(selectedFile.size / 1024).toFixed(1)} KB</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={removeFile}
-                className="rounded-lg p-1.5 text-emerald-600 hover:bg-emerald-100"
-              >
+              <button type="button" onClick={removeFile} className="rounded-lg p-1.5 text-emerald-600 hover:bg-emerald-100">
                 <FaTimes />
               </button>
             </div>
@@ -411,8 +459,7 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
         {/* Special message */}
         <div>
           <label className={labelClass}>
-            Special message or request{' '}
-            <span className="text-xs font-normal text-gray-400">(optional)</span>
+            Special message or request <span className="text-xs font-normal text-gray-400">(optional)</span>
           </label>
           <textarea
             rows={3}
@@ -428,18 +475,13 @@ export default function ExamBookingForm({ onSuccess }: { onSuccess?: () => void 
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-opsh-primary px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-opsh-primary-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {submitMutation.isPending ? (
-            <>
-              <FaSpinner className="animate-spin" />
-              Submitting…
-            </>
+            <><FaSpinner className="animate-spin" /> Submitting…</>
           ) : (
-            <>
-              <FaCheckCircle />
-              Submit Booking Request
-            </>
+            <><FaCheckCircle /> Submit Booking Request</>
           )}
         </button>
       </form>
     </div>
+    </>
   );
 }

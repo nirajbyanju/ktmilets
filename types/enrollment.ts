@@ -32,7 +32,7 @@ export interface AdminEnrollmentBatch {
   batch_type: string;
   class_time: string | null;
   is_active: boolean;
-  course?: { id: number; name: string };
+  course?: { id: number; course_name: string };
 }
 
 export interface AdminEnrollmentUser {

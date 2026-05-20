@@ -79,7 +79,7 @@ function MyEnrollmentsView() {
               {enrollments.map((e) => {
                 const crmMeta = getCrmStatusMeta(e.crm_status);
                 const payMeta = getEnrollmentPaymentMeta(e.payment_status);
-                const courseName = e.batch?.course?.name ?? '—';
+                const courseName = e.batch?.course?.course_name ?? '—';
                 const batchType  = e.batch?.batch_type ?? '';
                 const classTime  = e.batch?.class_time ?? '';
                 return (

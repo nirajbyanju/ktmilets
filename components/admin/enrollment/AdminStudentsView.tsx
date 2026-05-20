@@ -108,7 +108,7 @@ function EditModal({ enrollment, onClose }: { enrollment: AdminEnrollment; onClo
     'w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-opsh-primary focus:outline-none focus:ring-2 focus:ring-opsh-primary/20 transition-all';
   const labelClass = 'block text-xs font-semibold text-gray-600 mb-1';
 
-  const courseName = enrollment.batch?.course?.name ?? '—';
+  const courseName = enrollment.batch?.course?.course_name ?? '—';
   const batchType  = enrollment.batch?.batch_type  ?? '—';
   const classTime  = enrollment.batch?.class_time  ?? '—';
 
@@ -366,7 +366,7 @@ export default function AdminStudentsView() {
                         <p className="truncate text-gray-700">{email(e)}</p>
                       </td>
                       <td className="px-3 py-3 font-medium text-opsh-primary">
-                        {e.batch?.course?.name ?? '—'}
+                        {e.batch?.course?.course_name ?? '—'}
                       </td>
                       <td className="whitespace-nowrap px-3 py-3 text-gray-600">
                         {e.batch?.batch_type ?? '—'}

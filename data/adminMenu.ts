@@ -50,6 +50,14 @@ export const examBookingsMenuItem: AppMenuItem = {
   children: [],
 };
 
+export const mockTestsMenuItem: AppMenuItem = {
+  id: "mock-tests",
+  name: "Mock Tests",
+  icon: "FaClipboardCheck",
+  path: "/admin/mock-tests",
+  children: [],
+};
+
 export const contactMessagesMenuItem: AppMenuItem = {
   id: "contact-messages",
   name: "Messages",
@@ -69,6 +77,7 @@ export const messageTemplatesMenuItem: AppMenuItem = {
 export const studentPortalMenu: AppMenuItem[] = [
   { ...invoicesMenuItem,     name: "My Invoices" },
   { ...enrollmentsMenuItem,  name: "My Enrollments" },
+  { ...mockTestsMenuItem,    name: "My Mock Tests" },
   { ...examBookingsMenuItem, name: "My Exam Bookings" },
   settingsProfileMenuItem,
 ];
@@ -154,10 +163,11 @@ export const fallbackAdminMenu: AppMenuItem[] = [
   courseCatalogMenuItem,           // order 1
   invoicesMenuItem,                // order 2
   enrollmentsMenuItem,             // order 3
-  studentsMenuItem,                // order 4
-  teachersMenuItem,                // order 5
-  examBookingsMenuItem,            // order 6
-  contactMessagesMenuItem,         // order 6
+  mockTestsMenuItem,               // order 4
+  studentsMenuItem,                // order 5
+  teachersMenuItem,                // order 6
+  examBookingsMenuItem,            // order 7
+  contactMessagesMenuItem,         // order 8
   messageTemplatesMenuItem,
   {
     id: "access-control",

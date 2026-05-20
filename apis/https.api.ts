@@ -27,6 +27,15 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+// Use for public endpoints that must never trigger auth redirects.
+export const publicApi = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: false,
+});
+
 type RetriableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };

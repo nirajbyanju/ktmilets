@@ -7,7 +7,6 @@ import AdminFooter from "@/components/layout/AdminFooter";
 import AdminLoader from "@/components/loader/Loader";
 import AdminNavbar from "@/components/layout/AdminNavbar";
 import AdminSidebar from "@/components/layout/AdminSidebar";
-import SetPasswordModal from "@/components/auth/SetPasswordModal";
 import useAuthStore from "@/stores/auth/AuthStore";
 import useOptionStore from "@/stores/common/OptionStore";
 import { canAccessEnrollments, canManageUsers, isPrivilegedUser } from "@/data/adminMenu";
@@ -16,6 +15,7 @@ const studentAllowedPaths = [
   "/admin/dashboard",
   "/admin/invoices",
   "/admin/enrollments",
+  "/admin/mock-tests",
   "/admin/exam-bookings",
   "/admin/settings/profile",
   "/admin/exam-booking",
@@ -38,7 +38,6 @@ export default function AdminLayout({
     token,
     initializeAuth,
     loadUserMenu,
-    markPasswordSet,
     roles,
     permissions,
     directPermissions,
@@ -155,19 +154,6 @@ export default function AdminLayout({
 
   if (!isAuthenticated) {
     return null;
-  }
-
-  // Block admin access until Google-signup users set a password
-  const needsPasswordSetup = (user as Record<string, unknown> | null)?.has_password === false;
-  if (needsPasswordSetup) {
-    return (
-      <SetPasswordModal
-        onSuccess={() => {
-          markPasswordSet();
-          void loadUserMenu();
-        }}
-      />
-    );
   }
 
   return (

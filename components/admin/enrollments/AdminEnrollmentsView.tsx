@@ -5,9 +5,11 @@ import { useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import {
+  FaCheck,
   FaChevronLeft,
   FaChevronRight,
   FaEdit,
+  FaFileAlt,
   FaRedoAlt,
   FaSearch,
   FaSpinner,
@@ -19,6 +21,7 @@ import {
   getAdminEnrollments,
   updateAdminEnrollment,
 } from '@/apis/enrollment.api';
+import { createInvoice, markInvoicePaid } from '@/apis/courseCatalog.api';
 import {
   CRM_STATUSES,
   ENROLLMENT_PAYMENT_STATUSES,
@@ -125,7 +128,7 @@ function EditModal({
   const inputClass =
     'w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:border-opsh-primary focus:outline-none focus:ring-2 focus:ring-opsh-primary/20 transition-all';
 
-  const course = enrollment.batch?.course?.name ?? '—';
+  const course = enrollment.batch?.course?.course_name ?? '—';
   const batch  = enrollment.batch?.batch_type   ?? '—';
 
   return (
@@ -265,6 +268,28 @@ export default function AdminEnrollmentsView() {
   const [payFilter, setPayFilter]         = useState<EnrollmentPaymentStatus | ''>('');
   const [page, setPage]                   = useState(1);
   const [selected, setSelected]           = useState<AdminEnrollment | null>(null);
+  const [processingId, setProcessingId]   = useState<number | null>(null);
+  const queryClient                       = useQueryClient();
+
+  const generateInvoiceMutation = useMutation({
+    mutationFn: (batchId: number) => createInvoice(batchId),
+    onSuccess: () => {
+      toast.success('Invoice generated successfully.');
+      void queryClient.invalidateQueries({ queryKey: ['admin-enrollments'] });
+    },
+    onError: () => toast.error('Failed to generate invoice.'),
+    onSettled: () => setProcessingId(null),
+  });
+
+  const markPaidMutation = useMutation({
+    mutationFn: (invoiceId: number) => markInvoicePaid(invoiceId),
+    onSuccess: () => {
+      toast.success('Invoice marked as paid.');
+      void queryClient.invalidateQueries({ queryKey: ['admin-enrollments'] });
+    },
+    onError: () => toast.error('Failed to mark invoice paid.'),
+    onSettled: () => setProcessingId(null),
+  });
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['admin-enrollments', search, crmFilter, payFilter, page],
@@ -381,7 +406,7 @@ export default function AdminEnrollmentsView() {
                     </td>
 
                     <td className="px-4 py-3">
-                      <p className="text-sm font-medium text-gray-800">{e.batch?.course?.name ?? '—'}</p>
+                      <p className="text-sm font-medium text-gray-800">{e.batch?.course?.course_name ?? '—'}</p>
                       <p className="text-xs text-gray-400">{e.batch?.batch_type ?? ''}</p>
                       {e.batch?.class_time && (
                         <p className="text-xs text-gray-400">{e.batch.class_time.slice(0, 5)}</p>
@@ -415,14 +440,46 @@ export default function AdminEnrollmentsView() {
                     </td>
 
                     <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => setSelected(e)}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-opsh-primary/10 px-3 py-1.5 text-xs font-medium text-opsh-primary transition-colors hover:bg-opsh-primary/20"
-                      >
-                        <FaEdit className="text-xs" />
-                        Edit
-                      </button>
+                      <div className="flex flex-col gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setSelected(e)}
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-opsh-primary/10 px-3 py-1.5 text-xs font-medium text-opsh-primary transition-colors hover:bg-opsh-primary/20"
+                        >
+                          <FaEdit className="text-xs" />
+                          Edit
+                        </button>
+
+                        {!e.invoice && (
+                          <button
+                            type="button"
+                            disabled={processingId === e.id}
+                            onClick={() => {
+                              setProcessingId(e.id);
+                              generateInvoiceMutation.mutate(e.batch_id);
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100 disabled:opacity-50"
+                          >
+                            {processingId === e.id ? <FaSpinner className="animate-spin text-xs" /> : <FaFileAlt className="text-xs" />}
+                            Invoice
+                          </button>
+                        )}
+
+                        {e.invoice?.status === 'unpaid' && (
+                          <button
+                            type="button"
+                            disabled={processingId === e.id}
+                            onClick={() => {
+                              setProcessingId(e.id);
+                              markPaidMutation.mutate(e.invoice!.id);
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100 disabled:opacity-50"
+                          >
+                            {processingId === e.id ? <FaSpinner className="animate-spin text-xs" /> : <FaCheck className="text-xs" />}
+                            Mark Paid
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

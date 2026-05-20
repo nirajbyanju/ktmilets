@@ -5,14 +5,29 @@ export interface PaginationMeta {
   last_page: number;
 }
 
+export interface CourseModule {
+  id: number;
+  course_id: number;
+  module_no: number;
+  title: string;
+  description: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Course {
   id: number;
-  name: string;
-  duration_weeks: number;
-  total_hours: number;
-  delivery_mode: string;
-  instruction_lang: string;
-  skills: string | null;
+  course_name: string;
+  description: string | null;
+  duration: number | null;
+  duration_type: string | null;
+  delivery_mode: string | null;
+  delivery: 'online' | 'offline' | 'hybrid' | string | null;
+  support: Record<string, unknown> | null;
+  instruction: Record<string, unknown> | null;
+  schedule: Record<string, unknown> | null;
+  features: Record<string, unknown> | null;
+  modules?: CourseModule[];
   batches?: Batch[];
   batches_count?: number;
   created_at?: string;
@@ -22,13 +37,13 @@ export interface Course {
 export interface Batch {
   id: number;
   course_id: number;
-  course?: Pick<Course, "id" | "name">;
+  course?: Pick<Course, 'id' | 'course_name'>;
   batch_type: string;
   min_size: number | null;
   max_size: number | null;
   price_npr: string | number | null;
   offer_label?: string | null;
-  discount_type?: "percent" | "fixed" | string | null;
+  discount_type?: 'percent' | 'fixed' | string | null;
   discount_value?: string | number | null;
   offer_starts_at?: string | null;
   offer_ends_at?: string | null;
@@ -39,34 +54,9 @@ export interface Batch {
   class_time: string | null;
   class_link?: string | null;
   is_active?: boolean;
+  teacher_id?: number | null;
+  teacher?: { id: number; name: string; teacher_id: string } | null;
   enrollments?: Enrollment[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface SupportChannel {
-  id: number;
-  channel_type: string;
-  contact_value: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface SkillModule {
-  id: number;
-  skill_name: string;
-  topics_covered: string | null;
-  feedback_included: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface AdditionalService {
-  id: number;
-  service_name: string;
-  description: string | null;
-  is_add_on: boolean;
-  price_npr: string | number | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -91,42 +81,46 @@ export interface Enrollment {
   updated_at?: string;
 }
 
-export type CourseCatalogResourceKey =
-  | "courses"
-  | "batches"
-  | "support-channels"
-  | "skills-modules"
-  | "additional-services"
-  | "enrollments";
+export type CourseCatalogResourceKey = 'courses' | 'batches' | 'enrollments';
 
 export interface CourseCatalogResourceMap {
   courses: Course;
   batches: Batch;
-  "support-channels": SupportChannel;
-  "skills-modules": SkillModule;
-  "additional-services": AdditionalService;
   enrollments: Enrollment;
 }
 
-export type CourseCatalogResourceItem =
-  | Course
-  | Batch
-  | SupportChannel
-  | SkillModule
-  | AdditionalService
-  | Enrollment;
+export type CourseCatalogResourceItem = Course | Batch | Enrollment;
 
 export interface CourseCatalogListResponse<K extends CourseCatalogResourceKey> {
   data: CourseCatalogResourceMap[K][];
   pagination: PaginationMeta;
 }
 
+export interface SupportChannel {
+  id: number;
+  channel_type: string;
+  contact_value: string;
+}
+
+export interface SkillModule {
+  id: number;
+  skill_name: string;
+  topics_covered: string | null;
+  feedback_included: boolean;
+}
+
+export interface AdditionalService {
+  id: number;
+  service_name: string;
+  description: string | null;
+}
+
 export interface CourseCatalogPayload {
   courses: Course[];
   batches: Batch[];
-  support_channels: SupportChannel[];
-  skills_modules: SkillModule[];
-  additional_services: AdditionalService[];
+  support_channels?: SupportChannel[];
+  skills_modules?: SkillModule[];
+  additional_services?: AdditionalService[];
 }
 
 export type CourseCatalogInput = Record<string, string | number | boolean | null>;

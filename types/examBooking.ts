@@ -27,67 +27,73 @@ export const STATUS_WORKFLOW: ExamBookingStatus[] = [
 export const getStatusMeta = (status: ExamBookingStatus) =>
   EXAM_BOOKING_STATUSES.find((s) => s.value === status) ?? EXAM_BOOKING_STATUSES[0];
 
-// ── Payment status ────────────────────────────────────────────────────────────
-export type PaymentStatus = 'pending' | 'paid' | 'waived' | 'refunded';
+// ── Exam types ────────────────────────────────────────────────────────────────
+export const EXAM_TYPES = ['IELTS', 'PTE', 'TOEFL', 'Duolingo'] as const;
+export type ExamType = (typeof EXAM_TYPES)[number];
 
-export const PAYMENT_STATUSES: { value: PaymentStatus; label: string; color: string }[] = [
-  { value: 'pending',  label: 'Pending',  color: 'amber' },
-  { value: 'paid',     label: 'Paid',     color: 'emerald' },
-  { value: 'waived',   label: 'Waived',   color: 'blue' },
-  { value: 'refunded', label: 'Refunded', color: 'red' },
-];
+// ── Plan catalog (exam_bookings) ──────────────────────────────────────────────
+export interface ExamBookingPlan {
+  id: number;
+  exam_name: string | null;
+  exam_type: string;
+  price: string | number | null;
+  discount: string | number | null;
+  enrollments_count?: number;
+  created_at?: string;
+  updated_at?: string;
+}
 
-export const getPaymentStatusMeta = (status: PaymentStatus) =>
-  PAYMENT_STATUSES.find((s) => s.value === status) ?? PAYMENT_STATUSES[0];
+export interface ExamBookingPlanCreatePayload {
+  exam_name?: string;
+  exam_type: string;
+  price?: number | null;
+  discount?: number | null;
+}
 
-// ── Test type ─────────────────────────────────────────────────────────────────
-export type TestType = 'IELTS' | 'PTE';
+export type ExamBookingPlanUpdatePayload = Partial<ExamBookingPlanCreatePayload>;
 
-// ── Entities ──────────────────────────────────────────────────────────────────
+// ── Enrollment (exam_bookings_enrollments) ────────────────────────────────────
 export interface ExamBookingUser {
   id: number;
   first_name?: string;
   last_name?: string;
-  name?: string;
   email?: string;
   phone?: string;
 }
 
-export interface ExamBooking {
+export interface ExamBookingInvoice {
   id: number;
-  lead_id: number | null;
+  invoice_number: string;
+  status: string;
+  total_npr: string | number;
+}
+
+export interface ExamBookingEnrollment {
+  id: number;
   user_id: number;
+  exam_booking_id: number;
   user?: ExamBookingUser;
+  examBooking?: ExamBookingPlan;
+  exam_booking?: ExamBookingPlan;
+  invoice?: ExamBookingInvoice;
 
-  // Student info
-  student_name: string;
-  phone: string;
-  email: string;
-
-  // Test preferences
-  test_type: TestType;
   preferred_date: string;
   preferred_time: string | null;
-  preferred_test_centre: string;
-
-  // Passport / identity
+  test_location: string | null;
+  preferred_test_centre: string | null;
   passport_name: string;
   passport_number: string;
   date_of_birth: string;
+  contact_number: string;
+  phone: string | null;
+  email: string;
   passport_copy_path: string | null;
   passport_copy_original_name: string | null;
-
-  // PTE-specific admin fields
-  pte_login_details_received: boolean;
-  pte_username_email: string | null;
-  pte_password_notes: string | null;
-
-  // Admin workflow
-  available_slot_checked: boolean;
-  status: ExamBookingStatus;
-  payment_status: PaymentStatus;
-  admin_notes: string | null;
   special_message: string | null;
+
+  status: ExamBookingStatus;
+  available_slot_checked: boolean;
+  admin_notes: string | null;
 
   created_at: string;
   updated_at: string;
@@ -95,33 +101,30 @@ export interface ExamBooking {
 
 // ── Payloads ──────────────────────────────────────────────────────────────────
 export interface ExamBookingSubmitPayload {
-  test_type: TestType;
-  student_name: string;
-  phone: string;
-  email: string;
+  exam_booking_id: number;
   preferred_date: string;
   preferred_time?: string;
-  preferred_test_centre: string;
+  preferred_test_centre?: string;
+  test_location?: string;
   passport_name: string;
   passport_number: string;
   date_of_birth: string;
+  contact_number?: string;
+  phone?: string;
+  email: string;
   passport_copy: File;
   special_message?: string;
 }
 
 export interface ExamBookingAdminUpdatePayload {
-  status: ExamBookingStatus;
-  payment_status: PaymentStatus;
-  available_slot_checked: boolean;
-  pte_login_details_received: boolean;
-  pte_username_email?: string;
-  pte_password_notes?: string;
+  status?: ExamBookingStatus;
+  available_slot_checked?: boolean;
   admin_notes?: string;
 }
 
 // ── Pagination ────────────────────────────────────────────────────────────────
 export interface PaginatedExamBookings {
-  data: ExamBooking[];
+  data: ExamBookingEnrollment[];
   current_page: number;
   last_page: number;
   total: number;

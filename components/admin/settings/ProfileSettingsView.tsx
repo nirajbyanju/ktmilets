@@ -26,6 +26,7 @@ import {
   updateCurrentUserProfile,
   uploadCurrentUserProfilePicture,
 } from "@/apis/user/user.api";
+import { setPassword as setPasswordApi } from "@/apis/auth/auth.api";
 import {
   buttonOutlineClass,
   buttonPrimaryClass,
@@ -59,7 +60,7 @@ type ProfileFormValues = {
 };
 
 type PasswordFormValues = {
-  currentPassword: string;
+  currentPassword?: string;
   newPassword: string;
   confirmPassword: string;
 };
@@ -124,8 +125,10 @@ const mapProfilePayload = (values: ProfileFormValues): UserProfileUpdatePayload 
 export default function ProfileSettingsView() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const setUserData = useAuthStore((state) => state.setUserData);
-  const authUser = useAuthStore((state) => state.user as Record<string, unknown> | null);
+  const setUserData    = useAuthStore((state) => state.setUserData);
+  const markPasswordSet = useAuthStore((state) => state.markPasswordSet);
+  const authUser       = useAuthStore((state) => state.user as Record<string, unknown> | null);
+  const hasPassword    = !!authUser?.has_password;
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -206,6 +209,20 @@ export default function ProfileSettingsView() {
     },
   });
 
+  const setPasswordMutation = useMutation({
+    mutationFn: (payload: { password: string; password_confirmation: string }) =>
+      setPasswordApi(payload),
+    onSuccess: () => {
+      passwordForm.reset(emptyPasswordValues);
+      markPasswordSet();
+      toast.success("Password set successfully.");
+    },
+    onError: (error: unknown) => {
+      const appError = error as { error?: { message?: string }; message?: string };
+      toast.error(appError?.error?.message || appError?.message || "Failed to set password.");
+    },
+  });
+
   const profile = profileQuery.data;
   const displayName =
     profile?.fullName || String(authUser?.name ?? authUser?.full_name ?? authUser?.username ?? "Admin");
@@ -245,11 +262,18 @@ export default function ProfileSettingsView() {
       return;
     }
 
-    changePasswordMutation.mutate({
-      currentPassword: values.currentPassword,
-      newPassword: values.newPassword,
-      newPasswordConfirmation: values.confirmPassword,
-    });
+    if (!hasPassword) {
+      setPasswordMutation.mutate({
+        password: values.newPassword,
+        password_confirmation: values.confirmPassword,
+      });
+    } else {
+      changePasswordMutation.mutate({
+        currentPassword: values.currentPassword ?? "",
+        newPassword: values.newPassword,
+        newPasswordConfirmation: values.confirmPassword,
+      });
+    }
   });
 
   return (
@@ -453,33 +477,41 @@ export default function ProfileSettingsView() {
           <div className="mb-6 border-b border-opsh-grey pb-4">
             <div className="flex items-center gap-2">
               <FaLock className="text-opsh-primary" />
-              <h2 className="text-lg font-semibold text-opsh-black">Change Password</h2>
+              <h2 className="text-lg font-semibold text-opsh-black">
+                {hasPassword ? "Change Password" : "Set Password"}
+              </h2>
             </div>
-            <p className="mt-1 text-sm text-opsh-muted">Update your password. You will stay logged in on this device.</p>
+            <p className="mt-1 text-sm text-opsh-muted">
+              {hasPassword
+                ? "Update your password. You will stay logged in on this device."
+                : "You signed in with Google. Set a password to also log in with email."}
+            </p>
           </div>
 
           <form onSubmit={handlePasswordSubmit} className="space-y-5 max-w-md">
-            <Field label="Current Password">
-              <div className="relative">
-                <input
-                  type={showCurrentPassword ? "text" : "password"}
-                  {...passwordForm.register("currentPassword", { required: "Current password is required." })}
-                  className={inputClass + " pr-10"}
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowCurrentPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-opsh-muted hover:text-opsh-black"
-                  tabIndex={-1}
-                >
-                  {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-              {passwordForm.formState.errors.currentPassword && (
-                <p className="mt-1 text-xs text-red-500">{passwordForm.formState.errors.currentPassword.message}</p>
-              )}
-            </Field>
+            {hasPassword && (
+              <Field label="Current Password">
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    {...passwordForm.register("currentPassword", { required: "Current password is required." })}
+                    className={inputClass + " pr-10"}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-opsh-muted hover:text-opsh-black"
+                    tabIndex={-1}
+                  >
+                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+                {passwordForm.formState.errors.currentPassword && (
+                  <p className="mt-1 text-xs text-red-500">{passwordForm.formState.errors.currentPassword.message}</p>
+                )}
+              </Field>
+            )}
 
             <Field label="New Password">
               <div className="relative">
@@ -529,9 +561,19 @@ export default function ProfileSettingsView() {
             </Field>
 
             <div className="flex justify-end">
-              <button type="submit" className={buttonPrimaryClass} disabled={changePasswordMutation.isPending}>
-                {changePasswordMutation.isPending ? <FaSpinner className="animate-spin" /> : <FaLock />}
-                {changePasswordMutation.isPending ? "Changing..." : "Change Password"}
+              <button
+                type="submit"
+                className={buttonPrimaryClass}
+                disabled={changePasswordMutation.isPending || setPasswordMutation.isPending}
+              >
+                {(changePasswordMutation.isPending || setPasswordMutation.isPending)
+                  ? <FaSpinner className="animate-spin" />
+                  : <FaLock />}
+                {changePasswordMutation.isPending
+                  ? "Changing..."
+                  : setPasswordMutation.isPending
+                    ? "Setting..."
+                    : hasPassword ? "Change Password" : "Set Password"}
               </button>
             </div>
           </form>
