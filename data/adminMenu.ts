@@ -74,7 +74,16 @@ export const messageTemplatesMenuItem: AppMenuItem = {
   children: [],
 };
 
+export const dashboardMenuItem: AppMenuItem = {
+  id: 'dashboard',
+  name: 'Dashboard',
+  icon: 'FaTachometerAlt',
+  path: '/admin/dashboard',
+  children: [],
+};
+
 export const studentPortalMenu: AppMenuItem[] = [
+  dashboardMenuItem,
   { ...invoicesMenuItem,     name: "My Invoices" },
   { ...enrollmentsMenuItem,  name: "My Enrollments" },
   { ...mockTestsMenuItem,    name: "My Mock Tests" },
@@ -160,6 +169,7 @@ export const teachersMenuItem: AppMenuItem = {
 };
 
 export const fallbackAdminMenu: AppMenuItem[] = [
+  dashboardMenuItem,               // order 0
   courseCatalogMenuItem,           // order 1
   invoicesMenuItem,                // order 2
   enrollmentsMenuItem,             // order 3

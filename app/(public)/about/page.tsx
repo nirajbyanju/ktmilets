@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import StandardPageStructuredData from "@/components/seo/StandardPageStructuredData";
@@ -11,34 +10,66 @@ import {
 } from "@/helper/seo/site";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "About KTM Test Preparation Centre",
+  title: "About KTM Test Preparation Centre — IELTS & PTE Training in Nepal",
   description:
-    "Learn about KTM Test Preparation Centre, an online IELTS and PTE preparation unit under KTM Educational Consultancy.",
+    "About KTM Test Preparation Centre — IELTS & PTE classes for Nepalese students in Nepal and abroad. Backed by 10+ years of education experience. Contact us in Putalisadak, Kathmandu.",
   path: "/about",
   keywords: ["KTM Test Preparation Centre", "KTM Educational Consultancy", "IELTS PTE Nepal"],
 });
 
-const reasons = [
-  "Dedicated online IELTS and PTE test-preparation unit",
-  "Computer-based preparation for current test delivery",
-  "Student support before and after enrolment",
-  "Admin, teacher, WhatsApp, and email support",
-  "CRM-managed follow-up, batch tagging, and attendance workflow",
-  "Future-ready teacher profiles and anonymous rating summaries",
+const offerings = [
+  "IELTS Academic preparation (online and physical)",
+  "PTE Academic preparation (online and physical)",
+  "Computer-based mock test practice",
+  "IELTS and PTE exam booking support",
+  "Basic study-abroad guidance through KTM Educational Consultancy",
 ];
 
-const supportModel = [
+const consultancyServices = [
+  "Study abroad counselling",
+  "University selection",
+  "Scholarship guidance",
+  "Visa documentation",
+  "Admission support",
+  "Pre-departure guidance",
+];
+
+const contactItems = [
   {
-    title: "Admin support",
-    text: "Registration, payment verification, batch allocation, exam booking requests, and mock access coordination.",
+    icon: "📞",
+    label: "Phone",
+    value: ktmContact.phone,
+    href: `tel:${ktmContact.phone.replace(/\s/g, "")}`,
   },
   {
-    title: "Teacher support",
-    text: "Academic structure, skill practice, Zoom-based feedback, writing and speaking correction, and class discipline.",
+    icon: "💬",
+    label: "WhatsApp",
+    value: ktmContact.whatsapp,
+    href: `https://wa.me/${ktmContact.whatsappDigits}`,
   },
   {
-    title: "Communication support",
-    text: "WhatsApp and email communication notes help the team follow up without losing student context.",
+    icon: "✉️",
+    label: "Email",
+    value: ktmContact.email,
+    href: `mailto:${ktmContact.email}`,
+  },
+  {
+    icon: "📍",
+    label: "Address",
+    value: ktmContact.address,
+    href: null,
+  },
+  {
+    icon: "🕒",
+    label: "Office Hours",
+    value: "8:00 AM – 5:00 PM\nSunday to Friday",
+    href: null,
+  },
+  {
+    icon: "🌐",
+    label: "Parent Consultancy",
+    value: "www.ktmeducational.edu.np",
+    href: ktmBrand.motherCompanyWebsite,
   },
 ];
 
@@ -63,154 +94,234 @@ export default function AboutPage() {
         ]}
       />
 
-      <section className="bg-white">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr,0.9fr] lg:px-8 lg:py-16">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              About us
-            </p>
-            <h1 className="mt-3 text-4xl font-black leading-tight text-opsh-primary sm:text-5xl">
-              {ktmBrand.officialName}
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700">
-              A separate online test-preparation unit under {ktmBrand.motherCompany},
-              built for computer-based IELTS and PTE readiness, student trust, and
-              disciplined support.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                href="/registration"
-                className="rounded bg-opsh-secondary px-5 py-3 text-sm font-black text-white transition hover:bg-opsh-secondary-hover"
-              >
-                Register Now
-              </Link>
-              <Link
-                href="/contact"
-                className="rounded border border-opsh-primary px-5 py-3 text-sm font-black text-opsh-primary transition hover:bg-opsh-primary hover:text-white"
-              >
-                Contact Team
-              </Link>
-            </div>
-          </div>
-          <Image
-            src="/student4.jpg"
-            alt="Students learning in a modern online education setting"
-            width={720}
-            height={520}
-            className="mx-auto h-auto w-full max-w-xl"
-            priority
-          />
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr,1.1fr] lg:px-8">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Why students choose us
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              Professional preparation with clear student operations
-            </h2>
-            <p className="mt-4 leading-7 text-slate-700">
-              The centre combines KTM Educational Consultancy's study-abroad guidance
-              background with a dedicated online class model for IELTS, PTE, mock practice,
-              and booking support.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {reasons.map((reason) => (
-              <div key={reason} className="rounded border border-slate-200 bg-white p-4">
-                <p className="text-sm font-bold leading-6 text-slate-700">{reason}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-14">
+      {/* Hero */}
+      <section className="bg-opsh-primary py-14 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Support system
-            </p>
-            <h2 className="mt-2 text-3xl font-black text-opsh-primary">
-              Students are supported before and after enrolment
-            </h2>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {supportModel.map((item) => (
-              <article key={item.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-opsh-sm">
-                <h3 className="text-lg font-black text-opsh-primary">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{item.text}</p>
-              </article>
-            ))}
+          <nav className="mb-4 flex items-center gap-2 text-sm text-white/70">
+            <Link href="/" className="hover:text-white">Home</Link>
+            <span>›</span>
+            <span className="text-white">About Us</span>
+          </nav>
+          <h1 className="text-4xl font-black leading-tight sm:text-5xl">
+            About {ktmBrand.officialName}
+          </h1>
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/85">
+            A focused IELTS and PTE training arm of {ktmBrand.motherCompany} — built to give
+            Nepalese students the computer-based preparation they actually need.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a
+              href="#contact"
+              className="rounded bg-white px-5 py-3 text-sm font-black text-opsh-primary transition hover:bg-slate-100"
+            >
+              Contact Us →
+            </a>
+            <Link
+              href="/demo"
+              className="rounded border border-white px-5 py-3 text-sm font-black text-white transition hover:bg-white/10"
+            >
+              Book a Free Demo
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 py-14">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1fr,1fr] lg:px-8">
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-opsh-sm">
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Teacher list
+      {/* About */}
+      <section className="bg-white py-14" id="about">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="prose prose-slate max-w-none">
+            <p className="text-lg leading-8 text-slate-700">
+              For more than 10 years, <strong>{ktmBrand.motherCompany}</strong> has helped
+              Nepalese students achieve their study-abroad dreams.{" "}
+              <strong>{ktmBrand.officialName}</strong> is our dedicated IELTS and PTE training
+              arm — built to give students the focused, computer-based preparation they need to
+              succeed.
             </p>
-            <h2 className="mt-2 text-2xl font-black text-opsh-primary">
-              Academic team profiles
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-700">
-              Teacher profiles can be expanded as the team grows. The academic teacher
-              defines the detailed course structure while the website communicates the
-              class model clearly for students and parents.
+            <p className="mt-4 leading-8 text-slate-700">
+              We offer both online and physical classes, with a strong focus on computer-based
+              IELTS and PTE preparation. Our classes are designed for two groups: students in
+              Nepal and Nepalese students living abroad who want simple teaching, regular
+              practice, and honest guidance.
             </p>
-            <div className="mt-5 rounded border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm font-black text-opsh-primary">Lead IELTS / PTE Teacher</p>
-              <p className="mt-1 text-sm text-slate-600">
-                Course structure, live class delivery, four-skills practice, and student feedback.
-              </p>
-            </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-opsh-sm">
-            <p className="text-sm font-black uppercase tracking-wide text-opsh-secondary">
-              Anonymous rating display
+          {/* Our Promise */}
+          <div className="mt-8 rounded-lg border border-opsh-primary/20 bg-opsh-primary/5 p-6">
+            <h3 className="text-lg font-black text-opsh-primary">Our Promise</h3>
+            <p className="mt-2 leading-7 text-slate-700">
+              Honest teaching, regular practice, and real exam-style preparation — at a fee
+              every Nepalese student can afford.
             </p>
-            <h2 className="mt-2 text-2xl font-black text-opsh-primary">
-              Quality signals without exposing student identity
+          </div>
+
+          {/* What We Offer */}
+          <div className="mt-10">
+            <h2 className="text-2xl font-black text-opsh-primary">What We Offer</h2>
+            <ul className="mt-4 space-y-2">
+              {offerings.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-slate-700">
+                  <span className="mt-1 shrink-0 text-opsh-secondary">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 10+ Years */}
+          <div className="mt-10">
+            <h2 className="text-2xl font-black text-opsh-primary">
+              Backed by 10+ Years of Education Experience
             </h2>
-            <div className="mt-5 space-y-3">
-              {[
-                ["Academic clarity", "4.8/5"],
-                ["Support response", "4.7/5"],
-                ["Class discipline", "4.9/5"],
-              ].map(([label, score]) => (
-                <div key={label} className="flex items-center justify-between rounded border border-slate-200 bg-slate-50 px-4 py-3">
-                  <span className="text-sm font-bold text-slate-700">{label}</span>
-                  <strong className="text-opsh-secondary">{score}</strong>
+            <p className="mt-4 leading-8 text-slate-700">
+              {ktmBrand.officialName} operates under{" "}
+              <strong>{ktmBrand.motherCompany}</strong>, an education consultancy based in
+              Putalisadak, Kathmandu, with more than 10 years of experience in student
+              counselling and education support.
+            </p>
+            <p className="mt-4 leading-7 text-slate-700">
+              Through our parent consultancy, students can also get help with:
+            </p>
+            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+              {consultancyServices.map((service) => (
+                <li key={service} className="flex items-start gap-3 text-slate-700">
+                  <span className="mt-1 shrink-0 text-opsh-secondary">✓</span>
+                  {service}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 leading-7 text-slate-700">
+              We support students planning to study in the UK, Australia, Canada, Japan, Korea,
+              Malta, the Netherlands, and other popular destinations.
+            </p>
+            <p className="mt-3">
+              <strong>Learn more: </strong>
+              <a
+                href={ktmBrand.motherCompanyWebsite}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-opsh-secondary hover:underline"
+              >
+                {ktmBrand.motherCompanyWebsite.replace("https://", "")}
+              </a>
+            </p>
+          </div>
+
+          {/* Why We Built */}
+          <div className="mt-10">
+            <h2 className="text-2xl font-black text-opsh-primary">
+              Why We Built {ktmBrand.officialName}
+            </h2>
+            <p className="mt-4 leading-8 text-slate-700">
+              Over the years we noticed two things.{" "}
+              <strong>First</strong>, many Nepalese students were paying high fees for IELTS and
+              PTE classes but not getting the computer-based practice that matches the real test.{" "}
+              <strong>Second</strong>, Nepalese students who had already moved abroad were
+              struggling to find IELTS/PTE classes that worked in their time zone.
+            </p>
+            <p className="mt-4 leading-8 text-slate-700">
+              So we built this — a focused IELTS and PTE centre that solves both problems. Live
+              online teaching. Real computer-based practice. Time-zone-friendly batches. And fees
+              that don&apos;t break the bank.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact */}
+      <section className="bg-slate-50 py-14" id="contact">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-black text-opsh-primary">Need Help? Contact Support</h2>
+            <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600">
+              For class enrolment, mock test subscriptions, and exam booking, please use your{" "}
+              <Link href="/login" className="font-semibold text-opsh-secondary hover:underline">
+                student dashboard
+              </Link>{" "}
+              — it&apos;s faster and gives you live status updates. Contact us here for technical
+              issues, payment problems, or anything that isn&apos;t working as expected.
+            </p>
+          </div>
+
+          {/* Contact card */}
+          <div className="mx-auto mt-10 max-w-3xl rounded-lg border border-slate-200 bg-white p-6 shadow-opsh-sm">
+            <h3 className="text-xl font-black text-opsh-primary">Reach Us</h3>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {contactItems.map((item) => (
+                <div key={item.label} className="flex items-start gap-3">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-wide text-slate-400">
+                      {item.label}
+                    </p>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target={item.href.startsWith("http") ? "_blank" : undefined}
+                        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        className="mt-0.5 text-sm font-semibold text-opsh-secondary hover:underline"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p className="mt-0.5 whitespace-pre-line text-sm text-slate-700">
+                        {item.value}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-sm leading-6 text-slate-600">
-              Rating summaries should remain anonymous and must never reveal student identity.
-            </p>
+
+            <div className="mt-8 text-center">
+              <a
+                href={`https://wa.me/${ktmContact.whatsappDigits}?text=Hi%20KTM%20Test%20Prep%2C%20I%20have%20a%20question.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded bg-[#25D366] px-6 py-3 text-sm font-black text-white transition hover:bg-[#1ebe5d]"
+              >
+                💬 Chat with Us on WhatsApp
+              </a>
+            </div>
+          </div>
+
+          {/* Map */}
+          <div className="mt-10">
+            <h2 className="mb-4 text-center text-2xl font-black text-opsh-primary">
+              Find Us on the Map
+            </h2>
+            <div className="overflow-hidden rounded-lg border border-slate-200 shadow-opsh-sm">
+              <iframe
+                src={ktmContact.mapEmbedUrl}
+                width="100%"
+                height="400"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="KTM Test Preparation Centre — Putalisadak, Kathmandu"
+                className="block w-full"
+              />
+            </div>
           </div>
         </div>
       </section>
 
+      {/* CTA */}
       <section className="bg-white py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-lg bg-opsh-primary p-6 text-white md:flex md:items-center md:justify-between md:gap-6">
             <div>
-              <h2 className="text-2xl font-black">Need help choosing IELTS or PTE?</h2>
+              <h2 className="text-2xl font-black">
+                Prefer to See How Our Class Works First?
+              </h2>
               <p className="mt-2 text-sm text-white/80">
-                Call {ktmContact.phone}, WhatsApp {ktmContact.whatsapp}, or send a message.
+                Watch our free demo class or book a 30-minute live session with a teacher.
               </p>
             </div>
             <Link
-              href="/contact"
-              className="mt-5 inline-flex rounded bg-white px-5 py-3 text-sm font-black text-opsh-primary md:mt-0"
+              href="/demo"
+              className="mt-5 inline-flex shrink-0 rounded bg-white px-5 py-3 text-sm font-black text-opsh-primary transition hover:bg-slate-100 md:mt-0"
             >
-              Contact KTM Test Prep
+              Book a Free Demo Class →
             </Link>
           </div>
         </div>

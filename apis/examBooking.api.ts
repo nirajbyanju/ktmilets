@@ -146,21 +146,13 @@ export const deleteExamBookingEnrollment = async (id: number): Promise<void> => 
   } catch (e) { return handleApiError(e); }
 };
 
-export const downloadPassportCopy = async (
-  enrollmentId: number,
-  filename: string
-): Promise<void> => {
+export const viewPassportCopy = async (enrollmentId: number): Promise<void> => {
   try {
-    const res = await api.get(`/exam-bookings/${enrollmentId}/passport`, {
-      responseType: 'blob',
-    });
-    const url  = window.URL.createObjectURL(new Blob([res.data as BlobPart]));
-    const link = document.createElement('a');
-    link.href  = url;
-    link.setAttribute('download', filename || 'passport_copy');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    const res      = await api.get(`/exam-bookings/${enrollmentId}/passport`, { responseType: 'blob' });
+    const mimeType = (res.headers['content-type'] as string | undefined) || 'image/jpeg';
+    const blob     = new Blob([res.data as BlobPart], { type: mimeType });
+    const url      = window.URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => window.URL.revokeObjectURL(url), 30000);
   } catch (e) { return handleApiError(e); }
 };

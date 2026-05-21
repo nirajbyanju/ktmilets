@@ -40,19 +40,19 @@ const testimonials = [
     name: "Aashish Karki",
     course: "IELTS Academic",
     text: "The online class felt organised and practical. The computer-based practice made the real test feel less stressful.",
-    img: "/student-portrait-1.svg",
+    img: "/test1.jpg",
   },
   {
     name: "Prakriti Shrestha",
     course: "PTE Academic",
     text: "I liked the speaking practice and quick WhatsApp support. The mock test follow-up helped me understand my weak areas.",
-    img: "/student-portrait-2.svg",
+    img: "/test2.jpg",
   },
   {
     name: "Sagar Thapa",
     course: "IELTS Academic",
     text: "The registration and payment process was clear, and the admin team guided me for exam booking without confusion.",
-    img: "/student-portrait-3.svg",
+    img: "/test3.jpg",
   },
 ];
 

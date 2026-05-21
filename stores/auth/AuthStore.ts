@@ -88,6 +88,17 @@ const hasAccessFields = (value: unknown): boolean => {
   return keys.some((key) => key in value || (candidate ? key in candidate : false));
 };
 
+const hasPermissionFields = (value: unknown): boolean => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const candidate = isRecord(value.user) ? value.user : null;
+  const keys = ["permissions", "direct_permissions", "directPermissions"];
+
+  return keys.some((key) => key in value || (candidate ? key in candidate : false));
+};
+
 const hasEmbeddedMenu = (value: unknown): boolean => {
   if (!isRecord(value)) {
     return false;
@@ -234,6 +245,7 @@ const useAuthStore = create<AuthState>()(
         hydrateAccess: (source: unknown) => {
           const access = normalizeAccessSnapshot(source);
           const shouldUpdateAccess = hasAccessFields(source);
+          const shouldUpdatePermissions = hasPermissionFields(source);
           const shouldUpdateMenu = hasEmbeddedMenu(source) && access.menu.length > 0;
           const sourceUser = isRecord(source) && isRecord(source.user) ? source.user : source;
 
@@ -257,8 +269,8 @@ const useAuthStore = create<AuthState>()(
               userData: nextUserData,
               roles: shouldUpdateAccess ? access.roles : state.roles,
               roleIds: shouldUpdateAccess ? access.roleIds : state.roleIds,
-              permissions: shouldUpdateAccess ? access.permissions : state.permissions,
-              directPermissions: shouldUpdateAccess ? access.directPermissions : state.directPermissions,
+              permissions: shouldUpdatePermissions ? access.permissions : state.permissions,
+              directPermissions: shouldUpdatePermissions ? access.directPermissions : state.directPermissions,
               menu: shouldUpdateMenu ? access.menu : state.menu,
               menuLoaded: shouldUpdateMenu ? true : state.menuLoaded,
             };

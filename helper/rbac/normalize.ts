@@ -171,7 +171,7 @@ const extractRecord = (value: unknown, keys: string[], depth = 0): LooseRecord |
     }
   }
 
-  return value;
+  return null;
 };
 
 const derivePermissionGroup = (permissionKey: string, sourceGroup?: string): string => {

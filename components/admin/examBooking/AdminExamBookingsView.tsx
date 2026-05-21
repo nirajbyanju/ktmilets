@@ -7,8 +7,8 @@ import { toast } from 'react-toastify';
 import {
   FaChevronLeft,
   FaChevronRight,
-  FaDownload,
   FaEdit,
+  FaEye,
   FaPlus,
   FaRedoAlt,
   FaSearch,
@@ -21,7 +21,7 @@ import {
   createExamBookingPlan,
   deleteExamBookingEnrollment,
   deleteExamBookingPlan,
-  downloadPassportCopy,
+  viewPassportCopy,
   getAdminExamBookingPlans,
   getAllExamBookings,
   getExamBookingStats,
@@ -443,10 +443,10 @@ function ManageModal({
           {enrollment.passport_copy_path && (
             <button
               type="button"
-              onClick={() => void downloadPassportCopy(enrollment.id, enrollment.passport_copy_original_name ?? 'passport_copy')}
+              onClick={() => void viewPassportCopy(enrollment.id)}
               className="mt-3 inline-flex items-center gap-2 rounded-xl border border-opsh-primary/30 bg-opsh-primary/5 px-3 py-2 text-xs font-medium text-opsh-primary hover:bg-opsh-primary/10"
             >
-              <FaDownload /> Download Passport Copy
+              <FaEye /> View Passport Copy
             </button>
           )}
         </div>
